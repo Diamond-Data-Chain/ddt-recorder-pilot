@@ -1,0 +1,34 @@
+FROM node:22-bookworm-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      python3 \
+      python3-venv \
+      python3-pip \
+      ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+RUN python3 -m venv /app/docs/ddt/reference/.venv \
+ && /app/docs/ddt/reference/.venv/bin/pip install --no-cache-dir --upgrade pip \
+ && /app/docs/ddt/reference/.venv/bin/pip install --no-cache-dir \
+      -r /app/docs/ddt/reference/v0.2/requirements.txt
+
+RUN npm run build
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV DDT_OFFLINE_PYTHON=/app/docs/ddt/reference/.venv/bin/python
+ENV DDT_RECORDER_STATE_DIR=/tmp/ddt-recorder
+ENV DDT_RECORDER_OFFLINE_DIR=/tmp/ddt-recorder/offline-packages
+
+RUN mkdir -p /tmp/ddt-recorder/offline-packages \
+ && chmod -R 1777 /tmp/ddt-recorder
+
+CMD ["sh", "-c", "npx next start -H 0.0.0.0 -p ${PORT:-80}"]

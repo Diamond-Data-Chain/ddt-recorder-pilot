@@ -11,3 +11,5 @@ __pycache__/
 docs/ddt/reference/.venv/
 
 tsconfig.tsbuildinfo
+.vercel
+.env*

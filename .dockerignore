@@ -1,0 +1,13 @@
+.git
+.github
+.next
+node_modules
+.vercel
+.env
+.env.*
+.ddc-state
+docs/ddt/reference/.venv
+*.log
+*.tsbuildinfo
+__pycache__
+*.pyc

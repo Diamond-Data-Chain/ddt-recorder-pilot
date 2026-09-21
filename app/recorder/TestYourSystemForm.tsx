@@ -11,6 +11,10 @@ import type {
   DDTRecorderSourceType,
 } from "@/lib/ddt-recorder/ingest/types";
 
+import type {
+  DDTJsonValue,
+} from "@/lib/ddt-recorder/producer/canonical";
+
 import EvidenceEditor, {
   mergeRecorderEvidence,
 } from "./EvidenceEditor";
@@ -62,6 +66,22 @@ const initialDraft: TestSystemDraft = {
 
   previousDDTNumber: "",
 };
+
+
+function parseFlexiblePayloadValue(
+  value: string
+): DDTJsonValue {
+  const trimmed =
+    value.trim();
+
+  try {
+    return JSON.parse(
+      trimmed
+    ) as DDTJsonValue;
+  } catch {
+    return trimmed;
+  }
+}
 
 
 const sourceTypes: {
@@ -197,7 +217,7 @@ export function buildTestSystemRecorderInput(
 
   const payload: Record<
     string,
-    string
+    DDTJsonValue
   > = {};
 
   if (
@@ -211,28 +231,36 @@ export function buildTestSystemRecorderInput(
     draft.inputContext.trim()
   ) {
     payload.inputContext =
-      draft.inputContext.trim();
+      parseFlexiblePayloadValue(
+        draft.inputContext
+      );
   }
 
   if (
     draft.decisionOutput.trim()
   ) {
     payload.decisionOutput =
-      draft.decisionOutput.trim();
+      parseFlexiblePayloadValue(
+        draft.decisionOutput
+      );
   }
 
   if (
     draft.executionAction.trim()
   ) {
     payload.executionAction =
-      draft.executionAction.trim();
+      parseFlexiblePayloadValue(
+        draft.executionAction
+      );
   }
 
   if (
     draft.outcome.trim()
   ) {
     payload.outcome =
-      draft.outcome.trim();
+      parseFlexiblePayloadValue(
+        draft.outcome
+      );
   }
 
   const sourceEvidence = {
@@ -884,6 +912,13 @@ export default function TestYourSystemForm() {
         </Field>
       </FormSection>
 
+
+      <div className="mb-5 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm leading-relaxed text-amber-100">
+        <strong>Public Pilot:</strong>{" "}
+        Do not submit confidential, personal, secret or regulated data.
+        Evidence attached to a DDT Record is cryptographically bound and may
+        be included in its downloadable Offline Verification Package.
+      </div>
 
       <EvidenceEditor
         value={
