@@ -38,12 +38,25 @@ function verificationKeyringFromEnv():
     );
   }
 
+  const legacyVerificationMethod =
+    "urn:ddt:local:recorder:key:1";
+
   return {
     keys: [
       {
         verificationMethod,
         publicKeyBase64url,
       },
+      ...(verificationMethod !==
+      legacyVerificationMethod
+        ? [
+            {
+              verificationMethod:
+                legacyVerificationMethod,
+              publicKeyBase64url,
+            },
+          ]
+        : []),
     ],
   };
 }
