@@ -467,6 +467,16 @@ export async function buildOfflinePackageForDDT(
               verificationMethod,
               publicKeyBase64url,
             },
+            ...(verificationMethod !==
+            "urn:ddt:local:recorder:key:1"
+              ? [
+                  {
+                    verificationMethod:
+                      "urn:ddt:local:recorder:key:1",
+                    publicKeyBase64url,
+                  },
+                ]
+              : []),
           ],
         },
         null,
