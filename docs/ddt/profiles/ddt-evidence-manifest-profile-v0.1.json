@@ -1,0 +1,138 @@
+{
+  "specification": {
+    "standard": "DDT-EVIDENCE-MANIFEST-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.evidence-manifest.reference-recorder-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "evidenceManifestTarget": {
+    "standard": "DDT-EVIDENCE-MANIFEST",
+    "version": "0.1.0-draft.1",
+    "specificationId": "DDT-EVIDENCE-MANIFEST-0.1-DRAFT.1",
+    "schema": {
+      "artifactId": "DDT-EVIDENCE-MANIFEST-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "150e7f7f59ff86349d107d3f9db86314f378119b9f403cbc32a76e3f490593c6"
+      },
+      "immutableRef": "../schemas/ddt-evidence-manifest-v0.1.schema.json",
+      "mediaType": "application/schema+json"
+    }
+  },
+  "representationPolicy": {
+    "permittedMode": "RAW_BYTES",
+    "input": "EXACT_ORIGINAL_BYTES",
+    "byteLengthRequired": true,
+    "transformations": "NONE"
+  },
+  "commitmentPolicy": {
+    "commitmentType": "DIGEST",
+    "encoding": "LOWERCASE_HEX",
+    "profile": {
+      "artifactId": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "d0408be2633164aff62e5341064e971644e07105fd85abbdbb9b081d55b056e8"
+      },
+      "immutableRef": "../profiles/ddt-evidence-digest-commitment-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "profileId": "ddt.evidence-commitment.sha256-raw-bytes-v1"
+  },
+  "entryPolicy": {
+    "evidencePolicyCount": "MUST_EQUAL_INGESTED_EVIDENCE_COUNT",
+    "roleVocabulary": [
+      "SOURCE_PAYLOAD",
+      "SUPPORTING_EVIDENCE",
+      "SEMANTIC_DEPENDENCY",
+      "POLICY_OR_RULEBOOK",
+      "FRAMEWORK_OR_DEFINITION",
+      "AUTHORITY_EVIDENCE",
+      "IDENTITY_OR_KEY_EVIDENCE",
+      "PROVENANCE_EVIDENCE",
+      "TIME_OR_ORDERING_EVIDENCE",
+      "VALIDATION_ARTIFACT",
+      "PROFILE_DEFINED"
+    ],
+    "profileDefinedRoleRequiresBoundVocabulary": true
+  },
+  "semanticScopePolicy": {
+    "loadBearingRequiresDependencyClass": true,
+    "loadBearingRequiresReconstructionScope": true,
+    "loadBearingForbidsNotApplicable": true,
+    "nonLoadBearingForbidsDependencyClass": true,
+    "nonLoadBearingUnresolvedResult": "NOT_APPLICABLE"
+  },
+  "confidentialityPolicy": {
+    "disclosureProfileRequiredForNonPublic": true,
+    "disclosureProfileRequiredForRedaction": true,
+    "permittedPublicCommitmentRisk": [
+      "LOW",
+      "REVIEWED"
+    ],
+    "rejectedPublicCommitmentRisk": [
+      "HIGH",
+      "UNRESOLVED"
+    ]
+  },
+  "orderingPolicy": {
+    "comparison": "UNICODE_CODE_POINT_ASCENDING",
+    "entries": "EVIDENCE_ID",
+    "retrievalRefs": "REFERENCE_ID",
+    "preservationObligationRefs": "VALUE",
+    "signatureProofRefs": "VALUE",
+    "authorityEvidenceRefs": "VALUE",
+    "reconstructionScopes": "VALUE",
+    "relatedEvidenceRefs": "VALUE",
+    "relatedEvidence": "RELATIONSHIP_TYPE_THEN_TARGET_EVIDENCE_ID",
+    "duplicates": "REJECT"
+  },
+  "emptyManifestPolicy": "DEFER_TO_ENTERPRISE_PROFILE_AND_PRESERVATION_CONTRACT",
+  "retrievalReferencePolicy": {
+    "locatorRequirement": "DEFER_TO_ENTERPRISE_PROFILE_AND_PRESERVATION_CONTRACT",
+    "embeddedCredentials": "FORBIDDEN",
+    "mutableLocationEstablishesIdentity": false
+  },
+  "extensionPolicy": {
+    "permitted": false,
+    "extensions": []
+  },
+  "verificationPolicy": {
+    "historicalProfileDigestRequired": true,
+    "schemaValidationRequired": true,
+    "independentRecomputationRequired": true,
+    "silentRepair": "FORBIDDEN"
+  },
+  "claimBoundary": {
+    "substantiveTruth": "NOT_ESTABLISHED",
+    "evidenceCompleteness": "NOT_ESTABLISHED",
+    "lawfulCollection": "NOT_ESTABLISHED",
+    "provenanceCorrectness": "NOT_ESTABLISHED",
+    "signerIdentity": "NOT_ESTABLISHED",
+    "signerAuthority": "NOT_ESTABLISHED",
+    "independentTime": "NOT_ESTABLISHED",
+    "networkFinality": "NOT_ESTABLISHED",
+    "continuingAvailability": "NOT_ESTABLISHED",
+    "legalValidity": "NOT_ESTABLISHED",
+    "regulatoryCompliance": "NOT_ESTABLISHED"
+  },
+  "errorCodes": [
+    "EVIDENCE_COMMITTED_ARRAY_ORDER_INVALID",
+    "EVIDENCE_COMMITTED_REFERENCE_DUPLICATE",
+    "EVIDENCE_COMMITMENT_ENCODING_MISMATCH",
+    "EVIDENCE_COMMITMENT_PROFILE_MISMATCH",
+    "EVIDENCE_COUNT_POLICY_MISMATCH",
+    "EVIDENCE_DISCLOSURE_PROFILE_REQUIRED",
+    "EVIDENCE_ID_DUPLICATE",
+    "EVIDENCE_MANIFEST_EXTENSION_FORBIDDEN",
+    "EVIDENCE_MANIFEST_SCHEMA_MISMATCH",
+    "EVIDENCE_RAW_PUBLIC_COMMITMENT_UNSAFE",
+    "EVIDENCE_RELATIONSHIP_DUPLICATE",
+    "EVIDENCE_REPRESENTATION_UNSUPPORTED",
+    "EVIDENCE_RETRIEVAL_REFERENCE_DUPLICATE",
+    "EVIDENCE_SEMANTIC_SCOPE_INVALID"
+  ],
+  "extensions": []
+}

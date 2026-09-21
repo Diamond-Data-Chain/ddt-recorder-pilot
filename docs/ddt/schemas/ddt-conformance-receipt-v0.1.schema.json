@@ -1,0 +1,436 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/conformance-receipt/0.1.0-draft.1/schema.json",
+  "title": "DDT Conformance Receipt v0.1 Draft.1",
+  "description": "Machine-readable draft schema for non-circular DDT registration-time conformance receipts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specification", "receiptCore", "receiptCoreHash", "proofs"],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "receiptCore": { "$ref": "#/$defs/receiptCore" },
+    "receiptCoreHash": { "$ref": "#/$defs/structuralDigest" },
+    "proofs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/receiptProof" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-CONFORMANCE-RECEIPT" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validatorId", "version", "digest", "executionId"],
+      "properties": {
+        "validatorId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "executionId": { "$ref": "#/$defs/identifier" },
+        "instanceIdentityRef": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "validationInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordHash",
+        "preservationContractCommitment",
+        "evaluatedArtifactSetHash",
+        "evaluatedEvidenceSetHash",
+        "inputManifestHash"
+      ],
+      "properties": {
+        "recordHash": { "$ref": "#/$defs/structuralDigest" },
+        "preservationContractCommitment": { "$ref": "#/$defs/structuralDigest" },
+        "evaluatedArtifactSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "evaluatedEvidenceSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "inputManifestHash": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "artifactEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "artifact", "availability", "integrity", "reasonCodes"],
+      "properties": {
+        "role": { "$ref": "#/$defs/identifier" },
+        "artifact": { "$ref": "#/$defs/artifactReference" },
+        "availability": { "enum": ["AVAILABLE", "UNAVAILABLE"] },
+        "integrity": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "NOT_EVALUATED"] },
+        "reasonCodes": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "availability": { "const": "UNAVAILABLE" } },
+            "required": ["availability"]
+          },
+          "then": {
+            "properties": { "integrity": { "const": "UNAVAILABLE" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "integrity": { "enum": ["FAIL", "UNAVAILABLE"] } },
+            "required": ["integrity"]
+          },
+          "then": {
+            "properties": { "reasonCodes": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "evidenceEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRef", "availability", "integrity", "reasonCodes"],
+      "properties": {
+        "evidenceRef": { "$ref": "#/$defs/identifier" },
+        "commitment": { "$ref": "#/$defs/structuralDigest" },
+        "availability": { "enum": ["AVAILABLE", "UNAVAILABLE", "NOT_REQUIRED"] },
+        "integrity": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "NOT_EVALUATED", "NOT_APPLICABLE"] },
+        "reasonCodes": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "availability": { "const": "UNAVAILABLE" } },
+            "required": ["availability"]
+          },
+          "then": {
+            "properties": { "integrity": { "const": "UNAVAILABLE" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "availability": { "const": "NOT_REQUIRED" } },
+            "required": ["availability"]
+          },
+          "then": {
+            "properties": { "integrity": { "const": "NOT_APPLICABLE" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "integrity": { "enum": ["FAIL", "UNAVAILABLE"] } },
+            "required": ["integrity"]
+          },
+          "then": {
+            "properties": { "reasonCodes": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "requirementLevel": {
+      "enum": ["REQUIRED", "CONDITIONAL", "OPTIONAL"]
+    },
+    "ruleResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultId",
+        "sourceType",
+        "sourceId",
+        "requirement",
+        "applicability",
+        "status",
+        "reasonCodes",
+        "targetRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "resultId": { "$ref": "#/$defs/identifier" },
+        "sourceType": {
+          "enum": [
+            "CORE_REQUIREMENT",
+            "SCHEMA_RULE",
+            "PROFILE_RULE",
+            "CONTRACT_OBLIGATION",
+            "EXTENSION_RULE"
+          ]
+        },
+        "sourceId": { "$ref": "#/$defs/identifier" },
+        "originTemplateId": { "$ref": "#/$defs/identifier" },
+        "requirement": { "$ref": "#/$defs/requirementLevel" },
+        "conditionResultRef": { "$ref": "#/$defs/identifier" },
+        "applicability": { "enum": ["APPLICABLE", "NOT_APPLICABLE", "UNRESOLVED"] },
+        "status": { "enum": ["PASS", "FAIL", "INDETERMINATE", "NOT_APPLICABLE"] },
+        "reasonCodes": { "$ref": "#/$defs/identifierArray" },
+        "targetRefs": { "$ref": "#/$defs/identifierArray" },
+        "evidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "sourceType": { "const": "CONTRACT_OBLIGATION" } },
+            "required": ["sourceType"]
+          },
+          "then": { "required": ["originTemplateId"] }
+        },
+        {
+          "if": {
+            "properties": { "requirement": { "const": "CONDITIONAL" } },
+            "required": ["requirement"]
+          },
+          "then": { "required": ["conditionResultRef"] },
+          "else": { "not": { "required": ["conditionResultRef"] } }
+        },
+        {
+          "if": {
+            "properties": { "applicability": { "const": "APPLICABLE" } },
+            "required": ["applicability"]
+          },
+          "then": {
+            "properties": { "status": { "enum": ["PASS", "FAIL", "INDETERMINATE"] } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "applicability": { "const": "NOT_APPLICABLE" } },
+            "required": ["applicability"]
+          },
+          "then": { "properties": { "status": { "const": "NOT_APPLICABLE" } } }
+        },
+        {
+          "if": {
+            "properties": { "applicability": { "const": "UNRESOLVED" } },
+            "required": ["applicability"]
+          },
+          "then": { "properties": { "status": { "const": "INDETERMINATE" } } }
+        },
+        {
+          "if": {
+            "properties": { "status": { "enum": ["FAIL", "INDETERMINATE"] } },
+            "required": ["status"]
+          },
+          "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "resultCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pass", "fail", "indeterminate", "notApplicable"],
+      "properties": {
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "indeterminate": { "type": "integer", "minimum": 0 },
+        "notApplicable": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "overallResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "derivationProfile", "ruleResultSetHash", "counts", "reasonCodes"],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL", "INDETERMINATE"] },
+        "derivationProfile": { "$ref": "#/$defs/artifactReference" },
+        "ruleResultSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "counts": { "$ref": "#/$defs/resultCounts" },
+        "reasonCodes": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "enum": ["FAIL", "INDETERMINATE"] } },
+            "required": ["status"]
+          },
+          "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substantiveTruth",
+        "legalValidity",
+        "registrantAuthority",
+        "independentTime",
+        "contractApplicability"
+      ],
+      "properties": {
+        "substantiveTruth": { "const": "NOT_EVALUATED" },
+        "legalValidity": { "const": "NOT_EVALUATED" },
+        "registrantAuthority": { "const": "SEPARATE_AXIS" },
+        "independentTime": { "const": "SEPARATE_AXIS" },
+        "contractApplicability": { "const": "SEPARATE_AXIS" }
+      }
+    },
+    "validationTimeClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startedAt": { "$ref": "#/$defs/dateTime" },
+        "completedAt": { "$ref": "#/$defs/dateTime" }
+      }
+    },
+    "receiptCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receiptId",
+        "recordHash",
+        "preservationContractCommitment",
+        "validator",
+        "validationInput",
+        "artifactEvaluations",
+        "evidenceEvaluations",
+        "ruleResults",
+        "overallResult",
+        "claimBoundary",
+        "validationTimeClaims"
+      ],
+      "properties": {
+        "receiptId": { "$ref": "#/$defs/identifier" },
+        "recordHash": { "$ref": "#/$defs/structuralDigest" },
+        "preservationContractCommitment": { "$ref": "#/$defs/structuralDigest" },
+        "validator": { "$ref": "#/$defs/validator" },
+        "validationInput": { "$ref": "#/$defs/validationInput" },
+        "artifactEvaluations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/artifactEvaluation" }
+        },
+        "evidenceEvaluations": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/evidenceEvaluation" }
+        },
+        "ruleResults": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": { "$ref": "#/$defs/ruleResult" }
+        },
+        "overallResult": { "$ref": "#/$defs/overallResult" },
+        "claimBoundary": { "$ref": "#/$defs/claimBoundary" },
+        "validationTimeClaims": { "$ref": "#/$defs/validationTimeClaims" }
+      }
+    },
+    "signedObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "digest"],
+      "properties": {
+        "type": { "const": "RECEIPT_CORE_HASH" },
+        "digest": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "receiptProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proofId",
+        "proofType",
+        "proofProfile",
+        "verificationMethod",
+        "proofPurpose",
+        "signedObject"
+      ],
+      "properties": {
+        "proofId": { "$ref": "#/$defs/identifier" },
+        "proofType": { "$ref": "#/$defs/identifier" },
+        "proofProfile": { "$ref": "#/$defs/artifactReference" },
+        "verificationMethod": { "$ref": "#/$defs/identifier" },
+        "proofPurpose": { "const": "CONFORMANCE_ATTESTATION" },
+        "signedObject": { "$ref": "#/$defs/signedObject" },
+        "proofValue": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "proofRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "createdAtClaim": { "$ref": "#/$defs/dateTime" }
+      },
+      "oneOf": [
+        {
+          "required": ["proofValue"],
+          "not": { "required": ["proofRef"] }
+        },
+        {
+          "required": ["proofRef"],
+          "not": { "required": ["proofValue"] }
+        }
+      ]
+    }
+  }
+}

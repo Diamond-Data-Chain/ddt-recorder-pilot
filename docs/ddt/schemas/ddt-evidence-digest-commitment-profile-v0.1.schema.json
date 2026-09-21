@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/evidence-digest-commitment-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Evidence Digest Commitment Profile v0.1 Draft.1 Schema",
+  "description": "Machine-readable schema for deterministic SHA-256 commitments over exact raw evidence bytes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "lifecycleStatus",
+    "deploymentStatus",
+    "representation",
+    "commitment",
+    "verification",
+    "privacyBoundary",
+    "claimBoundary"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": {
+          "const": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+
+    "profileId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+
+    "lifecycleStatus": {
+      "enum": [
+        "DRAFT",
+        "CANDIDATE",
+        "ACTIVE",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+
+    "deploymentStatus": {
+      "enum": [
+        "TEST_ONLY",
+        "PRODUCTION_PERMITTED"
+      ]
+    },
+
+    "representation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "input",
+        "transformationsPermitted",
+        "byteLengthInDigestInput"
+      ],
+      "properties": {
+        "mode": {
+          "const": "RAW_BYTES"
+        },
+        "input": {
+          "const": "EXACT_EVIDENCE_BYTE_SEQUENCE"
+        },
+        "transformationsPermitted": {
+          "const": false
+        },
+        "byteLengthInDigestInput": {
+          "const": false
+        }
+      }
+    },
+
+    "commitment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commitmentType",
+        "algorithm",
+        "encoding",
+        "inputFormation",
+        "domainSeparation",
+        "randomization",
+        "secretKey"
+      ],
+      "properties": {
+        "commitmentType": {
+          "const": "DIGEST"
+        },
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "encoding": {
+          "const": "LOWERCASE_HEX"
+        },
+        "inputFormation": {
+          "const": "SHA256(EXACT_EVIDENCE_BYTE_SEQUENCE)"
+        },
+        "domainSeparation": {
+          "const": "NONE"
+        },
+        "randomization": {
+          "const": "NONE"
+        },
+        "secretKey": {
+          "const": "NONE"
+        }
+      }
+    },
+
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historicalProfileDigestRequired",
+        "exactBytesRequired",
+        "transformationsForbidden",
+        "declaredByteLengthCheckedSeparately",
+        "digestMismatchIsFailure",
+        "currentProfileSubstitutionForbidden"
+      ],
+      "properties": {
+        "historicalProfileDigestRequired": {
+          "const": true
+        },
+        "exactBytesRequired": {
+          "const": true
+        },
+        "transformationsForbidden": {
+          "const": true
+        },
+        "declaredByteLengthCheckedSeparately": {
+          "const": true
+        },
+        "digestMismatchIsFailure": {
+          "const": true
+        },
+        "currentProfileSubstitutionForbidden": {
+          "const": true
+        }
+      }
+    },
+
+    "privacyBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawDigestUniversallySafe",
+        "enterprisePolicyRequired",
+        "sensitiveLowEntropyEvidenceRequiresPolicyDecision"
+      ],
+      "properties": {
+        "rawDigestUniversallySafe": {
+          "const": false
+        },
+        "enterprisePolicyRequired": {
+          "const": true
+        },
+        "sensitiveLowEntropyEvidenceRequiresPolicyDecision": {
+          "const": true
+        }
+      }
+    },
+
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "successfulVerificationMeans",
+        "doesNotProve"
+      ],
+      "properties": {
+        "successfulVerificationMeans": {
+          "const": "PRESENTED_EXACT_BYTES_MATCH_HISTORICAL_SHA256_RAW_BYTE_COMMITMENT"
+        },
+        "doesNotProve": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "TRUTH",
+              "COMPLETENESS",
+              "AUTHORITY",
+              "PROVENANCE",
+              "LAWFUL_ACQUISITION",
+              "HISTORICAL_AVAILABILITY",
+              "CONFIDENTIALITY_SAFETY"
+            ]
+          },
+          "allOf": [
+            {
+              "contains": { "const": "TRUTH" }
+            },
+            {
+              "contains": { "const": "COMPLETENESS" }
+            },
+            {
+              "contains": { "const": "AUTHORITY" }
+            },
+            {
+              "contains": { "const": "PROVENANCE" }
+            },
+            {
+              "contains": { "const": "LAWFUL_ACQUISITION" }
+            },
+            {
+              "contains": { "const": "HISTORICAL_AVAILABILITY" }
+            },
+            {
+              "contains": { "const": "CONFIDENTIALITY_SAFETY" }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

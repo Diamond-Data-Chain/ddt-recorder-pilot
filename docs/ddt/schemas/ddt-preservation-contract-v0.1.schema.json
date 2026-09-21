@@ -1,0 +1,393 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/preservation-contract/0.1.0-draft.1/schema.json",
+  "title": "DDT Preservation Contract v0.1 Draft.1",
+  "description": "Machine-readable draft schema for the historically bound DDT Preservation Contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "contractId",
+    "contractVersion",
+    "artifacts",
+    "validator",
+    "applicability",
+    "obligations"
+  ],
+  "properties": {
+    "specification": {
+      "$ref": "#/$defs/specification"
+    },
+    "contractId": {
+      "$ref": "#/$defs/identifier"
+    },
+    "contractVersion": {
+      "$ref": "#/$defs/version"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/artifacts"
+    },
+    "validator": {
+      "$ref": "#/$defs/validator"
+    },
+    "applicability": {
+      "$ref": "#/$defs/applicability"
+    },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/obligation"
+      },
+      "maxItems": 10000
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-PRESERVATION-CONTRACT"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelopeSchema",
+        "enterpriseProfile",
+        "validationRuleSet",
+        "canonicalizationProfile",
+        "cryptographicProfile",
+        "evidenceManifestProfile",
+        "relationshipVocabulary",
+        "verificationResultProfile"
+      ],
+      "properties": {
+        "envelopeSchema": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "enterpriseProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "validationRuleSet": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "canonicalizationProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "cryptographicProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "evidenceManifestProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "relationshipVocabulary": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "verificationResultProfile": {
+          "$ref": "#/$defs/artifactReference"
+        }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validatorId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "validatorId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      }
+    },
+    "identifierArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifier"
+      },
+      "uniqueItems": true,
+      "maxItems": 10000
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "basis": {
+          "enum": [
+            "PROFILE_REGISTRY_STATE",
+            "SIGNED_ASSIGNMENT",
+            "CONTRACT_SIGNATURE",
+            "NETWORK_GOVERNANCE_STATE",
+            "REGISTRANT_ASSERTED",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/identifierArray"
+        },
+        "authorityProfile": {
+          "$ref": "#/$defs/artifactReference"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "not": {
+                  "const": "REGISTRANT_ASSERTED"
+                }
+              }
+            },
+            "required": [
+              "basis"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidenceRefs": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "const": "PROFILE_DEFINED"
+              }
+            },
+            "required": [
+              "basis"
+            ]
+          },
+          "then": {
+            "required": [
+              "authorityProfile"
+            ]
+          }
+        }
+      ]
+    },
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obligationId",
+        "category",
+        "targetRefs",
+        "requirement",
+        "temporalScope",
+        "failureCode"
+      ],
+      "properties": {
+        "obligationId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "category": {
+          "enum": [
+            "FIELD_PRESENCE",
+            "EVIDENCE_PRESENTATION_AT_REGISTRATION",
+            "EVIDENCE_AVAILABILITY",
+            "SEMANTIC_DEPENDENCY_PRESERVATION",
+            "SIGNATURE_REQUIREMENT",
+            "AUTHORITY_EVIDENCE",
+            "TIME_PROOF_REQUIREMENT",
+            "RELATIONSHIP_REQUIREMENT",
+            "CONFIDENTIALITY_CONTROL",
+            "RETENTION_OR_ARCHIVE",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/identifierArray"
+        },
+        "requirement": {
+          "enum": [
+            "REQUIRED",
+            "CONDITIONAL",
+            "OPTIONAL"
+          ]
+        },
+        "conditionRuleId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "temporalScope": {
+          "$ref": "#/$defs/temporalScope"
+        },
+        "failureCode": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{2,127}$"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "requirement": {
+                "const": "CONDITIONAL"
+              }
+            },
+            "required": [
+              "requirement"
+            ]
+          },
+          "then": {
+            "required": [
+              "conditionRuleId"
+            ]
+          }
+        }
+      ]
+    },
+    "temporalScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "AT_REGISTRATION",
+            "INDEFINITE",
+            "UNTIL",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "until": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "temporalRuleRef": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "UNTIL"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "until"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "PROFILE_DEFINED"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "temporalRuleRef"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

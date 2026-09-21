@@ -1,0 +1,126 @@
+{
+  "specification": {
+    "standard": "DDT-SIGNATURE-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.signature.ed25519-jcs-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "proofStructure": {
+    "schema": {
+      "artifactId": "DDT-SIGNATURE-PROOF-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "886eb99cf524fc88b01fe2881e8be9c2fa3f7e933d0fed5409bdba8bce3eacff"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.1.0-draft.1/schema.json",
+      "mediaType": "application/schema+json"
+    }
+  },
+  "algorithm": {
+    "id": "Ed25519",
+    "variant": "PURE_EDDSA",
+    "curve": "edwards25519",
+    "internalHash": "SHA-512",
+    "prehash": "NONE",
+    "context": "NONE",
+    "publicKeyBytes": 32,
+    "signatureBytes": 64,
+    "securityStrengthBits": 128,
+    "normativeReference": {
+      "standardId": "RFC8032",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc8032.html"
+    }
+  },
+  "canonicalization": {
+    "id": "RFC8785-JCS",
+    "inputModel": "I-JSON",
+    "duplicateProperties": "REJECT",
+    "stringNormalization": "NONE_PRESERVE_AS_IS",
+    "textEncoding": "UTF-8",
+    "normativeReference": {
+      "standardId": "RFC8785",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc8785.html"
+    }
+  },
+  "signatureEncoding": {
+    "id": "base64url",
+    "padding": "FORBIDDEN",
+    "encodedLength": 86,
+    "unusedFinalBits": "ZERO_REQUIRED",
+    "canonicalReencoding": "EXACT_MATCH_REQUIRED",
+    "normativeReference": {
+      "standardId": "RFC4648-SECTION5",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc4648.html#section-5"
+    }
+  },
+  "signingInput": {
+    "domain": "DDT_SIGNATURE_PROOF_V1",
+    "construction": "DOMAIN_AND_PROOF_CORE_OBJECT",
+    "canonicalization": "RFC8785-JCS",
+    "textEncoding": "UTF-8",
+    "prehash": "NONE",
+    "proofValueExcluded": true,
+    "allOtherPresentProofFieldsIncluded": true,
+    "missingCreatedAtRepresentation": "OMIT"
+  },
+  "allowedBindings": [
+    {
+      "proofPurpose": "CONFORMANCE_ATTESTATION",
+      "signedObjectType": "RECEIPT_CORE_HASH"
+    },
+    {
+      "proofPurpose": "DDT_REGISTRATION",
+      "signedObjectType": "REGISTRATION_STATEMENT_HASH"
+    },
+    {
+      "proofPurpose": "VERIFICATION_RESULT_ATTESTATION",
+      "signedObjectType": "VERIFICATION_RESULT_CORE_HASH"
+    }
+  ],
+  "verificationRequirements": {
+    "strictRfc8032Parsing": true,
+    "rejectDecodingFailure": true,
+    "rejectNonCanonicalPointEncoding": true,
+    "rejectSmallOrderPublicKey": true,
+    "rejectSmallOrderR": true,
+    "rejectScalarOutOfRange": true,
+    "forbidAlgorithmFallback": true,
+    "canonicalBase64urlReencoding": true,
+    "carrierDigestComparisonRequired": true,
+    "exactHistoricalKeyBytesRequired": true
+  },
+  "claimBoundary": {
+    "validSignatureDoesNotEstablish": [
+      "ALGORITHM_CURRENT_SECURITY",
+      "CREATED_TIME",
+      "EVENT_HISTORY_COMPLETENESS",
+      "KEY_HISTORICAL_STATUS",
+      "SIGNER_AUTHORITY",
+      "SIGNER_CIVIL_OR_ORGANIZATIONAL_IDENTITY",
+      "SUBSTANTIVE_TRUTH"
+    ]
+  },
+  "errorCodes": [
+    "ALGORITHM_STATUS_UNRESOLVED",
+    "CREATED_AT_CLAIM_UNPROVEN",
+    "KEY_LIFECYCLE_UNRESOLVED",
+    "PROOF_CORE_CANONICALIZATION_FAILED",
+    "PROOF_PROFILE_BINDING_MISMATCH",
+    "PROOF_PROFILE_DIGEST_MISMATCH",
+    "PROOF_PROFILE_UNAVAILABLE",
+    "PROOF_PURPOSE_TARGET_MISMATCH",
+    "PROOF_SCHEMA_INVALID",
+    "PROOF_VALUE_ENCODING_INVALID",
+    "PUBLIC_KEY_ENCODING_INVALID",
+    "PUBLIC_KEY_SMALL_ORDER",
+    "PUBLIC_KEY_UNAVAILABLE",
+    "SIGNATURE_INVALID",
+    "SIGNATURE_R_SMALL_ORDER",
+    "SIGNATURE_SCALAR_OUT_OF_RANGE",
+    "SIGNED_OBJECT_BINDING_MISMATCH",
+    "SIGNER_AUTHORITY_UNRESOLVED",
+    "SIGNER_IDENTITY_UNRESOLVED"
+  ],
+  "extensions": []
+}

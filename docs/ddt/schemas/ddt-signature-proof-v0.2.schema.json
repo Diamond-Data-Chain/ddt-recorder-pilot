@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json",
+  "title": "DDT Signature Proof v0.2 Draft.1",
+  "description": "Common DDT signature-proof object with a closed purpose/target registry for the active DDT evidence carriers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proofId",
+    "proofType",
+    "proofPurpose",
+    "proofProfile",
+    "algorithm",
+    "verificationMethod",
+    "signedObject",
+    "signatureEncoding",
+    "proofValue"
+  ],
+  "properties": {
+    "proofId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,254}$"
+    },
+    "proofType": {
+      "const": "DDT_SIGNATURE"
+    },
+    "proofPurpose": {
+      "enum": [
+        "CHECKPOINT_ATTESTATION",
+        "CONFORMANCE_ATTESTATION",
+        "COVERAGE_TOMBSTONE_ATTESTATION",
+        "CRYPTOGRAPHIC_RENEWAL_ATTESTATION",
+        "DDT_REGISTRATION",
+        "NETWORK_FINALITY_ATTESTATION",
+        "OFFLINE_PACKAGE_ATTESTATION",
+        "SOURCE_COVERAGE_ATTESTATION",
+        "SOURCE_WITNESS_ATTESTATION",
+        "VERIFICATION_RESULT_ATTESTATION"
+      ]
+    },
+    "proofProfile": {
+      "allOf": [
+        {"$ref": "#/$defs/artifactReference"},
+        {
+          "properties": {
+            "artifactId": {"const": "ddt.signature.ed25519-jcs-v2"},
+            "version": {"const": "0.2.0-draft.1"}
+          }
+        }
+      ]
+    },
+    "algorithm": {
+      "const": "Ed25519"
+    },
+    "verificationMethod": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "signedObject": {
+      "$ref": "#/$defs/signedObject"
+    },
+    "signatureEncoding": {
+      "const": "base64url"
+    },
+    "proofValue": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{85}[AQgw]$"
+    },
+    "createdAtClaim": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "proofPurpose": {"const": "CHECKPOINT_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "CHECKPOINT_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "CONFORMANCE_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "RECEIPT_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "COVERAGE_TOMBSTONE_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "COVERAGE_TOMBSTONE_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "CRYPTOGRAPHIC_RENEWAL_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "RENEWAL_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "DDT_REGISTRATION"},
+        "signedObject": {"properties": {"type": {"const": "REGISTRATION_STATEMENT_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "NETWORK_FINALITY_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "FINALITY_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "OFFLINE_PACKAGE_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "MANIFEST_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "SOURCE_COVERAGE_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "COVERAGE_STATEMENT_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "SOURCE_WITNESS_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "SOURCE_WITNESS_ATTESTATION_CORE_HASH"}}}
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "VERIFICATION_RESULT_ATTESTATION"},
+        "signedObject": {"properties": {"type": {"const": "VERIFICATION_RESULT_CORE_HASH"}}}
+      }
+    }
+  ],
+  "$defs": {
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"const": "SHA-256"},
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {"$ref": "#/$defs/structuralDigest"},
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "signedObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "digest"],
+      "properties": {
+        "type": {
+          "enum": [
+            "CHECKPOINT_CORE_HASH",
+            "COVERAGE_STATEMENT_CORE_HASH",
+            "COVERAGE_TOMBSTONE_CORE_HASH",
+            "FINALITY_CORE_HASH",
+            "MANIFEST_CORE_HASH",
+            "RECEIPT_CORE_HASH",
+            "REGISTRATION_STATEMENT_HASH",
+            "RENEWAL_CORE_HASH",
+            "SOURCE_WITNESS_ATTESTATION_CORE_HASH",
+            "VERIFICATION_RESULT_CORE_HASH"
+          ]
+        },
+        "digest": {"$ref": "#/$defs/structuralDigest"}
+      }
+    }
+  }
+}

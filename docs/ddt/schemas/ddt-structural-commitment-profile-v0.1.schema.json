@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/structural-commitment-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Structural Commitment Profile v0.1 Draft.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "envelopeTarget",
+    "canonicalizationProfile",
+    "digestPolicy",
+    "commitmentRules",
+    "recordHashInput",
+    "recordHashExclusions",
+    "constructionOrder",
+    "verificationPolicy",
+    "claimBoundary",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-STRUCTURAL-COMMITMENT-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "profileId": {
+      "const": "ddt.structural.sha256-jcs-envelope-v1"
+    },
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "envelopeTarget": {
+      "const": "DDT-ENVELOPE-0.3-DRAFT.5"
+    },
+    "canonicalizationProfile": {
+      "$ref": "#/$defs/canonicalizationProfileReference"
+    },
+    "digestPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "inputEncoding",
+        "digestEncoding",
+        "hexCase",
+        "prefix",
+        "length"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "digestEncoding": {
+          "const": "HEX"
+        },
+        "hexCase": {
+          "const": "LOWERCASE"
+        },
+        "prefix": {
+          "const": "NONE"
+        },
+        "length": {
+          "const": 64
+        }
+      }
+    },
+    "commitmentRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registeredUpstreamCommitment",
+        "evidenceManifestCommitment",
+        "preservationContractCommitment",
+        "recordHash",
+        "registrationStatementHash"
+      ],
+      "properties": {
+        "registeredUpstreamCommitment": {
+          "$ref": "#/$defs/upstreamRule"
+        },
+        "evidenceManifestCommitment": {
+          "$ref": "#/$defs/evidenceRule"
+        },
+        "preservationContractCommitment": {
+          "$ref": "#/$defs/contractRule"
+        },
+        "recordHash": {
+          "$ref": "#/$defs/recordHashRule"
+        },
+        "registrationStatementHash": {
+          "$ref": "#/$defs/registrationStatementRule"
+        }
+      }
+    },
+    "recordHashInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "memberOrderSignificant",
+        "members"
+      ],
+      "properties": {
+        "memberOrderSignificant": {
+          "const": false
+        },
+        "members": {
+          "const": [
+            "specification",
+            "identity",
+            "registeredUpstreamCommitment",
+            "evidenceManifestCommitment",
+            "preservationContractCommitment",
+            "relationships"
+          ]
+        }
+      }
+    },
+    "recordHashExclusions": {
+      "const": [
+        "commitments",
+        "commitments.recordHash",
+        "registration",
+        "conformanceReceiptBytes",
+        "signatureProofBytes",
+        "timeProofBytes",
+        "laterCheckpointArtifacts",
+        "laterEventCoverageArtifacts",
+        "laterNetworkFinalityArtifacts",
+        "laterVerificationResults",
+        "laterRenewalEvents"
+      ]
+    },
+    "constructionOrder": {
+      "const": [
+        "registeredUpstreamCommitment",
+        "evidenceManifestCommitment",
+        "preservationContractCommitment",
+        "recordHash",
+        "conformanceReceipt",
+        "conformanceReceiptCommitment",
+        "registrationStatement",
+        "registrationStatementHash",
+        "registrationProofsAndTimeProofs"
+      ]
+    },
+    "verificationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "independentRecomputationRequired",
+        "historicalCanonicalizationProfileDigestRequired",
+        "registeredValueRepair",
+        "statementRecordHashMustMatch",
+        "statementPreservationContractCommitmentMustMatch",
+        "statementConformanceReceiptCommitmentMustBeIndependentlyVerified"
+      ],
+      "properties": {
+        "independentRecomputationRequired": {
+          "const": true
+        },
+        "historicalCanonicalizationProfileDigestRequired": {
+          "const": true
+        },
+        "registeredValueRepair": {
+          "const": "FORBIDDEN"
+        },
+        "statementRecordHashMustMatch": {
+          "const": true
+        },
+        "statementPreservationContractCommitmentMustMatch": {
+          "const": true
+        },
+        "statementConformanceReceiptCommitmentMustBeIndependentlyVerified": {
+          "const": true
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "structuralIntegrity",
+        "substantiveTruth",
+        "evidenceProvenance",
+        "signerIdentity",
+        "signerAuthority",
+        "independentTime",
+        "networkFinality",
+        "eventHistoryCompleteness",
+        "legalValidity"
+      ],
+      "properties": {
+        "structuralIntegrity": {
+          "const": "ESTABLISHED_WHEN_ALL_REQUIRED_CHECKS_PASS"
+        },
+        "substantiveTruth": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "evidenceProvenance": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "signerIdentity": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "signerAuthority": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "independentTime": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "networkFinality": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "eventHistoryCompleteness": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "legalValidity": {
+          "const": "NOT_ESTABLISHED"
+        }
+      }
+    },
+    "errorCodes": {
+      "const": [
+        "CANONICALIZATION_PROFILE_MISMATCH",
+        "DIGEST_REPRESENTATION_INVALID",
+        "EVIDENCE_MANIFEST_COMMITMENT_MISMATCH",
+        "PRESERVATION_CONTRACT_COMMITMENT_MISMATCH",
+        "RECORD_HASH_INPUT_INVALID",
+        "RECORD_HASH_MISMATCH",
+        "REGISTERED_UPSTREAM_COMMITMENT_MISMATCH",
+        "REGISTRATION_STATEMENT_CONTRACT_BINDING_MISMATCH",
+        "REGISTRATION_STATEMENT_HASH_MISMATCH",
+        "REGISTRATION_STATEMENT_RECEIPT_BINDING_MISMATCH",
+        "REGISTRATION_STATEMENT_RECORD_BINDING_MISMATCH"
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "$defs": {
+    "canonicalizationProfileReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest",
+        "immutableRef",
+        "mediaType"
+      ],
+      "properties": {
+        "artifactId": {
+          "const": "DDT-CANONICALIZATION-PROFILE-ARTIFACT-0.1-DRAFT.1"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "algorithm",
+            "value"
+          ],
+          "properties": {
+            "algorithm": {
+              "const": "SHA-256"
+            },
+            "value": {
+              "const": "988a4b770177ebfb595de9c2e286a76cd4b4f108e8cffdd0844656d03d2f443e"
+            }
+          }
+        },
+        "immutableRef": {
+          "const": "../profiles/ddt-canonicalization-profile-v0.1.json"
+        },
+        "mediaType": {
+          "const": "application/json"
+        }
+      }
+    },
+    "baseRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "inputEncoding",
+        "input"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "input": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "upstreamRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "inputEncoding",
+        "input"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "input": {
+          "const": "envelope.upstream"
+        }
+      }
+    },
+    "evidenceRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "inputEncoding",
+        "input"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "input": {
+          "const": "envelope.evidenceManifest"
+        }
+      }
+    },
+    "contractRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "inputEncoding",
+        "input"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "input": {
+          "const": "envelope.preservationContract"
+        }
+      }
+    },
+    "recordHashRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "inputEncoding",
+        "input"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "input": {
+          "const": "canonicalRecordHashInput"
+        }
+      }
+    },
+    "registrationStatementRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "inputEncoding",
+        "input"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "inputEncoding": {
+          "const": "UTF-8"
+        },
+        "input": {
+          "const": "envelope.registration.statement"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/enterprise/examples/ai-decision-payload/0.1/schema.json",
+  "title": "DDT AI Decision Payload v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decisionId",
+    "systemId",
+    "modelId",
+    "modelVersion",
+    "decisionType",
+    "riskLevel",
+    "inputEvidenceRefs",
+    "outputSummary"
+  ],
+  "properties": {
+    "decisionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "systemId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modelVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decisionType": {
+      "enum": [
+        "RECOMMENDATION",
+        "CLASSIFICATION",
+        "RISK_SCORE",
+        "AUTOMATED_ACTION_PROPOSAL"
+      ]
+    },
+    "riskLevel": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "inputEvidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "outputSummary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "humanReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewerRef",
+        "disposition"
+      ],
+      "properties": {
+        "reviewerRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "disposition": {
+          "enum": [
+            "APPROVED",
+            "REJECTED",
+            "DEFERRED"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "riskLevel": {
+            "enum": [
+              "HIGH",
+              "CRITICAL"
+            ]
+          }
+        },
+        "required": [
+          "riskLevel"
+        ]
+      },
+      "then": {
+        "required": [
+          "humanReview"
+        ]
+      }
+    }
+  ]
+}

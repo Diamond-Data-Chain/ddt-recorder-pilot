@@ -1,0 +1,233 @@
+{
+  "specification": {
+    "standard": "DDT-NETWORK-FINALITY-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.network-finality.deterministic-test-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "deploymentStatus": "TEST_ONLY",
+  "requiredArtifacts": [
+    {
+      "artifactId": "DDT-NETWORK-FINALITY-ADAPTER-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "18bde86962a14b25840b2f8e8b2d6d8efc0199c4fa999b1a1e39e7eab86d0edc"
+      },
+      "immutableRef": "../specs/DDT_NETWORK_FINALITY_ADAPTER_V0.1_DRAFT.md",
+      "mediaType": "text/markdown"
+    },
+    {
+      "artifactId": "DDT-NETWORK-FINALITY-PROFILE-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "9342d4fde335168bf66377b949b69cc0a7d474b4c570c003ea616f8292b2d3bf"
+      },
+      "immutableRef": "../schemas/ddt-network-finality-profile-v0.1.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-NETWORK-FINALITY-EVIDENCE-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "601ba5ee88ea12c1c31a40c96a8b85601f7a3d29b3f9059352ac5d5a3ba29cfe"
+      },
+      "immutableRef": "../schemas/ddt-network-finality-evidence-v0.1.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "087fbf8a6b07acff64c5e4bfbe2d5b168c9826228b27bcb8d0fbd650bf12c12d"
+      },
+      "immutableRef": "ddt-ed25519-signature-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+      },
+      "immutableRef": "ddt-historical-identity-authority-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-TIME-CHECKPOINT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "16ca0b5b7b60c317a42b2c47d0cd5529935b529d10fbc256a97adcb0f9c8c349"
+      },
+      "immutableRef": "ddt-time-checkpoint-profile-v0.1.json",
+      "mediaType": "application/json"
+    }
+  ],
+  "networkIdentity": {
+    "networkId": "ddt-test-ledger-v1",
+    "networkClass": "TEST_LEDGER",
+    "genesisCommitmentInput": "UTF8(DDT_TEST_LEDGER_GENESIS_V1)",
+    "genesisCommitment": {
+      "algorithm": "SHA-256",
+      "value": "893ffb702b2801ab493b804981cace29159e1c6ce8977c3dbbb5b1fd898f3acc"
+    },
+    "chainId": "ddt-test-1",
+    "protocolUpgradePolicy": "NO_UPGRADES_TEST_PROFILE"
+  },
+  "transaction": {
+    "domain": "DDT_TEST_TRANSACTION_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "transactionIdAlgorithm": "SHA-256",
+    "canonicalTransactionBytes": "UTF8(RFC8785-JCS(transactionCore))",
+    "transactionIdInput": "canonicalTransactionBytes",
+    "transactionBytesCommitmentInput": "canonicalTransactionBytes",
+    "targetExtractionMode": "EXACT_TRANSACTION_TARGET_OBJECT",
+    "targetJsonPointer": "/target",
+    "allowedTargetTypes": [
+      "DDT_RECORD_HASH",
+      "DDT_REGISTRATION_STATEMENT_HASH",
+      "DDT_CHECKPOINT_CORE_HASH",
+      "DDT_COVERAGE_STATEMENT_CORE_HASH"
+    ]
+  },
+  "inclusionTree": {
+    "leafDomain": "DDT_NETWORK_TRANSACTION_LEAF_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "digestAlgorithm": "SHA-256",
+    "leafPrefixHex": "00",
+    "internalNodePrefixHex": "01",
+    "leafHashInput": "HEX(00)||UTF8(RFC8785-JCS(transactionLeaf))",
+    "internalNodeHashInput": "HEX(01)||RAW(leftDigest)||RAW(rightDigest)",
+    "auditPathOrientation": "DERIVED_FROM_TRANSACTION_INDEX_TREE_SIZE_AND_SPLIT_RULE",
+    "leafOrder": "ASCENDING_TRANSACTION_INDEX",
+    "splitRule": "LARGEST_POWER_OF_TWO_LESS_THAN_N",
+    "padding": "NONE",
+    "duplicateLastNode": false
+  },
+  "blockHeader": {
+    "domain": "DDT_TEST_BLOCK_HEADER_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "blockIdAlgorithm": "SHA-256",
+    "blockIdInput": "UTF8(RFC8785-JCS(blockHeaderCore))",
+    "requiredFields": [
+      "domain",
+      "networkId",
+      "genesisCommitment",
+      "height",
+      "parentBlockId",
+      "transactionCount",
+      "transactionRoot",
+      "stateRoot",
+      "validatorSetId",
+      "proposedAtClaim"
+    ]
+  },
+  "finality": {
+    "model": "DETERMINISTIC_CERTIFICATE",
+    "certificateDomain": "DDT_TEST_FINALITY_CERTIFICATE_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "coreHashAlgorithm": "SHA-256",
+    "coreHashInput": "UTF8(RFC8785-JCS(finalityCore))",
+    "signatureProfile": {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "087fbf8a6b07acff64c5e4bfbe2d5b168c9826228b27bcb8d0fbd650bf12c12d"
+      },
+      "immutableRef": "ddt-ed25519-signature-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "validatorSetRequired": true,
+    "minimumValidSignatures": 1,
+    "weightModel": "ONE_AUTHORIZED_TEST_SIGNER",
+    "historicalKeyStateRequired": true
+  },
+  "forkHandling": {
+    "incompatibleFinalizedBlocksAtSameHeight": "CONFLICTING",
+    "rpcPreferenceResolvesConflict": false,
+    "laterConflictRewritesEarlierResult": false,
+    "conflictObservationEvidenceRequired": true
+  },
+  "timePolicy": {
+    "blockTimeClaimStatus": "ASSERTED",
+    "blockTimeIsIndependentUtcProof": false,
+    "externalTimeRequiresSeparateEvidence": true
+  },
+  "resultModel": {
+    "axes": [
+      {
+        "axisId": "NETWORK_TARGET_BINDING",
+        "statusClass": "BINDING"
+      },
+      {
+        "axisId": "NETWORK_OBJECT_INCLUSION",
+        "statusClass": "VALIDITY"
+      },
+      {
+        "axisId": "NETWORK_FINALITY",
+        "statusClass": "FINALITY"
+      }
+    ],
+    "finalityStatuses": [
+      "FINALIZED",
+      "CONFIRMED_PROBABILISTIC",
+      "NOT_FINAL",
+      "REVERTED",
+      "CONFLICTING",
+      "UNAVAILABLE",
+      "UNRESOLVED",
+      "NOT_APPLICABLE",
+      "NOT_EVALUATED"
+    ]
+  },
+  "claimBoundary": {
+    "finalityImpliesExternalUtcTime": false,
+    "finalityImpliesSourceCompleteness": false,
+    "finalityImpliesSignerAuthority": false,
+    "finalityImpliesSubstantiveTruth": false,
+    "testProfileImpliesProductionDdcFinality": false
+  },
+  "errorCodes": [
+    "NETWORK_ANCESTRY_INVALID",
+    "NETWORK_ANCESTRY_UNAVAILABLE",
+    "NETWORK_BLOCK_BYTES_UNAVAILABLE",
+    "NETWORK_BLOCK_FIELD_MISMATCH",
+    "NETWORK_BLOCK_ID_MISMATCH",
+    "NETWORK_BLOCK_TIME_ASSERTED_ONLY",
+    "NETWORK_CONFLICTING_FINALITY",
+    "NETWORK_CONFLICT_OBSERVATION_INSUFFICIENT",
+    "NETWORK_EXTERNAL_TIME_UNAVAILABLE",
+    "NETWORK_FINALITY_CERTIFICATE_INVALID",
+    "NETWORK_FINALITY_MODEL_OVERSTATED",
+    "NETWORK_FINALITY_NOT_REACHED",
+    "NETWORK_FINALITY_QUORUM_NOT_MET",
+    "NETWORK_GENESIS_MISMATCH",
+    "NETWORK_HISTORICAL_TRUST_STATE_UNAVAILABLE",
+    "NETWORK_IDENTITY_MISMATCH",
+    "NETWORK_INCLUSION_PROOF_INVALID",
+    "NETWORK_INCLUSION_PROOF_UNAVAILABLE",
+    "NETWORK_INCLUSION_ROOT_MISMATCH",
+    "NETWORK_OBJECT_BYTES_UNAVAILABLE",
+    "NETWORK_OBJECT_DECODING_FAILED",
+    "NETWORK_OBJECT_ID_MISMATCH",
+    "NETWORK_PROFILE_INTEGRITY_FAILED",
+    "NETWORK_PROFILE_UNAVAILABLE",
+    "NETWORK_PROTOCOL_VERSION_UNRESOLVED",
+    "NETWORK_REORGANIZATION_DETECTED",
+    "NETWORK_TARGET_BINDING_MISMATCH",
+    "NETWORK_TARGET_EXTRACTION_FAILED",
+    "NETWORK_UNSUPPORTED_PROTOCOL_UPGRADE",
+    "NETWORK_VALIDATOR_SET_MISMATCH"
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/canonicalization-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Canonicalization Profile v0.1 Draft.1",
+  "description": "Schema for the exact TEST_ONLY RFC 8785 JCS canonicalization profile used by the DDT Reference Recorder.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "normativeReference",
+    "inputPolicy",
+    "canonicalization",
+    "outputPolicy",
+    "verificationPolicy",
+    "claimBoundary",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-CANONICALIZATION-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "profileId": {
+      "const": "ddt.canonicalization.rfc8785-jcs-v1"
+    },
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "normativeReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standardId",
+        "scheme",
+        "immutableRef"
+      ],
+      "properties": {
+        "standardId": {
+          "const": "RFC8785"
+        },
+        "scheme": {
+          "const": "JCS"
+        },
+        "immutableRef": {
+          "const": "https://www.rfc-editor.org/rfc/rfc8785.html"
+        }
+      }
+    },
+    "inputPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "duplicateMemberNames",
+        "interoperableJsonRequired",
+        "nonFiniteNumbers",
+        "invalidUnicodeScalarValues",
+        "unpairedSurrogates",
+        "silentRepair",
+        "unicodeNormalization"
+      ],
+      "properties": {
+        "duplicateMemberNames": {
+          "const": "REJECT"
+        },
+        "interoperableJsonRequired": {
+          "const": true
+        },
+        "nonFiniteNumbers": {
+          "const": "REJECT"
+        },
+        "invalidUnicodeScalarValues": {
+          "const": "REJECT"
+        },
+        "unpairedSurrogates": {
+          "const": "REJECT"
+        },
+        "silentRepair": {
+          "const": "FORBIDDEN"
+        },
+        "unicodeNormalization": {
+          "const": "NONE"
+        }
+      }
+    },
+    "canonicalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scheme",
+        "objectMemberOrdering",
+        "numberSerialization",
+        "stringSerialization",
+        "arrayOrdering",
+        "literalSerialization",
+        "inputObjectPropertyOrderSignificant"
+      ],
+      "properties": {
+        "scheme": {
+          "const": "RFC8785-JCS"
+        },
+        "objectMemberOrdering": {
+          "const": "ECMASCRIPT_UTF16_CODE_UNIT_LEXICOGRAPHIC"
+        },
+        "numberSerialization": {
+          "const": "RFC8785_ECMASCRIPT_JSON_NUMBER_SERIALIZATION"
+        },
+        "stringSerialization": {
+          "const": "RFC8785_ECMASCRIPT_JSON_STRING_SERIALIZATION"
+        },
+        "arrayOrdering": {
+          "const": "PRESERVE_INPUT_ORDER"
+        },
+        "literalSerialization": {
+          "const": "JSON_LOWERCASE_LITERALS"
+        },
+        "inputObjectPropertyOrderSignificant": {
+          "const": false
+        }
+      }
+    },
+    "outputPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "bom",
+        "insignificantWhitespace",
+        "unicodeNormalization",
+        "output"
+      ],
+      "properties": {
+        "encoding": {
+          "const": "UTF-8"
+        },
+        "bom": {
+          "const": false
+        },
+        "insignificantWhitespace": {
+          "const": "NONE"
+        },
+        "unicodeNormalization": {
+          "const": "NONE"
+        },
+        "output": {
+          "const": "CANONICAL_JSON_BYTES"
+        }
+      }
+    },
+    "verificationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historicalProfileDigestRequired",
+        "duplicateAwareParsingRequired",
+        "canonicalReencoding",
+        "networkDependency",
+        "hashingDefinedHere"
+      ],
+      "properties": {
+        "historicalProfileDigestRequired": {
+          "const": true
+        },
+        "duplicateAwareParsingRequired": {
+          "const": true
+        },
+        "canonicalReencoding": {
+          "const": "EXACT_BYTE_MATCH"
+        },
+        "networkDependency": {
+          "const": "NONE"
+        },
+        "hashingDefinedHere": {
+          "const": false
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serializationOnly",
+        "substantiveTruth",
+        "signerAuthority",
+        "independentTime",
+        "networkFinality",
+        "eventHistoryCompleteness",
+        "legalValidity"
+      ],
+      "properties": {
+        "serializationOnly": {
+          "const": true
+        },
+        "substantiveTruth": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "signerAuthority": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "independentTime": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "networkFinality": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "eventHistoryCompleteness": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "legalValidity": {
+          "const": "NOT_ESTABLISHED"
+        }
+      }
+    },
+    "errorCodes": {
+      "const": [
+        "CANONICALIZATION_DUPLICATE_MEMBER",
+        "CANONICALIZATION_FAILED",
+        "CANONICALIZATION_INVALID_UNICODE",
+        "CANONICALIZATION_NON_FINITE_NUMBER",
+        "CANONICALIZATION_NON_IJSON_VALUE",
+        "CANONICALIZATION_UNPAIRED_SURROGATE",
+        "CANONICAL_REENCODING_MISMATCH"
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  }
+}

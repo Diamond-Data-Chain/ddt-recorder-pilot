@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/identifier-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Identifier Profile v0.1 Draft.1",
+  "description": "Schema for the exact baseline DDT UUIDv4 identifier profile artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "normativeReference",
+    "identifierForms",
+    "generation",
+    "subjectReferencePolicy",
+    "collisionPolicy",
+    "displayIdPolicy",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": {"const": "DDT-IDENTIFIER-PROFILE"},
+        "version": {"const": "0.1.0-draft.1"}
+      }
+    },
+    "profileId": {"const": "ddt.identifier.rfc9562-uuid-v4"},
+    "profileVersion": {"const": "0.1.0-draft.1"},
+    "normativeReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standardId", "immutableRef", "uuidVersion", "variant"],
+      "properties": {
+        "standardId": {"const": "RFC9562"},
+        "immutableRef": {"const": "https://www.rfc-editor.org/rfc/rfc9562.html"},
+        "uuidVersion": {"const": 4},
+        "variant": {"const": "RFC9562"}
+      }
+    },
+    "identifierForms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record", "family", "subjectNamespace"],
+      "properties": {
+        "record": {"$ref": "#/$defs/recordForm"},
+        "family": {"$ref": "#/$defs/familyForm"},
+        "subjectNamespace": {"$ref": "#/$defs/namespaceForm"}
+      }
+    },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["randomSource", "generationStage", "timeSemantic", "contentDerived"],
+      "properties": {
+        "randomSource": {"const": "CSPRNG"},
+        "generationStage": {"const": "BEFORE_RECORD_COMMITMENT"},
+        "timeSemantic": {"const": "NONE"},
+        "contentDerived": {"const": false}
+      }
+    },
+    "subjectReferencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "normalization",
+        "maxUtf8Bytes",
+        "rejectControlCharacters",
+        "rejectUnpairedSurrogates",
+        "rejectLeadingTrailingWhitespace",
+        "comparison"
+      ],
+      "properties": {
+        "encoding": {"const": "UTF-8"},
+        "normalization": {"const": "NFC_ALREADY_NORMALIZED"},
+        "maxUtf8Bytes": {"const": 512},
+        "rejectControlCharacters": {"const": true},
+        "rejectUnpairedSurrogates": {"const": true},
+        "rejectLeadingTrailingWhitespace": {"const": true},
+        "comparison": {"const": "EXACT_CODE_POINT_AFTER_VALIDATION"}
+      }
+    },
+    "collisionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registrarOperation",
+        "permanentNonReuse",
+        "globalIdentifierIndex",
+        "crossRoleReuse",
+        "exactReplay",
+        "conflictingReuse"
+      ],
+      "properties": {
+        "registrarOperation": {"const": "ATOMIC_CREATE_IF_ABSENT"},
+        "permanentNonReuse": {"const": true},
+        "globalIdentifierIndex": {"const": "RECORD_FAMILY_SUBJECT_NAMESPACE"},
+        "crossRoleReuse": {"const": "REJECT"},
+        "exactReplay": {"const": "RETURN_EXISTING_NO_NEW_POSITION"},
+        "conflictingReuse": {"const": "REJECT"}
+      }
+    },
+    "displayIdPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["globallyUniqueRequired", "cryptographicIdentity", "relationshipTarget", "familyContinuityKey"],
+      "properties": {
+        "globallyUniqueRequired": {"const": false},
+        "cryptographicIdentity": {"const": false},
+        "relationshipTarget": {"const": false},
+        "familyContinuityKey": {"const": false}
+      }
+    },
+    "errorCodes": {
+      "const": [
+        "DDT_RECORD_ID_COLLISION_OR_REUSE",
+        "DISPLAY_ID_USED_AS_CRYPTOGRAPHIC_IDENTITY",
+        "EXACT_REPLAY_DETECTED",
+        "FAMILY_ID_COLLISION_OR_REUSE",
+        "FAMILY_ID_MISMATCH",
+        "FAMILY_PREDECESSOR_FORBIDDEN_FOR_GENESIS",
+        "FAMILY_PREDECESSOR_REQUIRED",
+        "IDENTIFIER_SYNTAX_INVALID",
+        "SUBJECT_NAMESPACE_ASSIGNMENT_UNRESOLVED",
+        "SUBJECT_NAMESPACE_SYNTAX_INVALID",
+        "SUBJECT_REFERENCE_CONTROL_CHARACTER",
+        "SUBJECT_REFERENCE_NOT_NFC",
+        "SUBJECT_REFERENCE_TOO_LONG",
+        "SUBJECT_REFERENCE_UNPAIRED_SURROGATE",
+        "SUBJECT_REFERENCE_WHITESPACE_AMBIGUOUS",
+        "UUID_CANONICAL_CASE_INVALID",
+        "UUID_NIL_OR_MAX_FORBIDDEN",
+        "UUID_ROLE_REUSE",
+        "UUID_VARIANT_INVALID",
+        "UUID_VERSION_INVALID"
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "$defs": {
+    "baseForm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefix", "uuidVersion", "variant", "textCase", "pattern"],
+      "properties": {
+        "prefix": {"type": "string"},
+        "uuidVersion": {"const": 4},
+        "variant": {"const": "RFC9562"},
+        "textCase": {"const": "LOWERCASE"},
+        "pattern": {"type": "string"}
+      }
+    },
+    "recordForm": {
+      "allOf": [
+        {"$ref": "#/$defs/baseForm"},
+        {
+          "properties": {
+            "prefix": {"const": "urn:uuid:"},
+            "pattern": {"const": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"}
+          }
+        }
+      ]
+    },
+    "familyForm": {
+      "allOf": [
+        {"$ref": "#/$defs/baseForm"},
+        {
+          "properties": {
+            "prefix": {"const": "urn:uuid:"},
+            "pattern": {"const": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"}
+          }
+        }
+      ]
+    },
+    "namespaceForm": {
+      "allOf": [
+        {"$ref": "#/$defs/baseForm"},
+        {
+          "properties": {
+            "prefix": {"const": "urn:uuid:"},
+            "pattern": {"const": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"}
+          }
+        }
+      ]
+    }
+  }
+}

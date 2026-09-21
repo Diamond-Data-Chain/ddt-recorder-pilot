@@ -1,0 +1,27 @@
+{
+  "specification": {
+    "standard": "DDT-ENTERPRISE-EVIDENCE-COMMITMENT-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.enterprise.example.confidential-evidence-commitment",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "construction": {
+    "commitmentType": "RANDOMIZED_COMMITMENT",
+    "algorithm": "SHA-256",
+    "domainSeparator": "DDT_ENTERPRISE_CONFIDENTIAL_EVIDENCE_V1",
+    "saltMode": "PER_EVIDENCE_RANDOM_SECRET_UNTIL_DISCLOSURE",
+    "minimumSaltBytes": 32,
+    "inputFormation": "UTF8(domainSeparator) || 0x00 || salt || 0x00 || rawEvidenceBytes"
+  },
+  "disclosure": {
+    "saltDisclosure": "AUTHORIZED_VERIFICATION_ONLY",
+    "evidenceDisclosure": "AUTHORIZED_VERIFICATION_ONLY",
+    "unavailableSaltResult": "UNAVAILABLE"
+  },
+  "claimBoundary": {
+    "provesByteBindingOnly": true,
+    "provesSubstantiveTruth": false,
+    "productionApproved": false
+  }
+}

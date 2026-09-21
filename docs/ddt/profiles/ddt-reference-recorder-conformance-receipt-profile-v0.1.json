@@ -1,0 +1,52 @@
+{
+  "specification": {
+    "standard": "DDT-CONFORMANCE-RECEIPT-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.conformance-receipt.reference-recorder-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "roles": [
+    "CONFORMANCE_RECEIPT_PROFILE",
+    "CONFORMANCE_RESULT_DERIVATION_BINDING"
+  ],
+  "receiptSpecification": {
+    "artifactId": "DDT-CONFORMANCE-RECEIPT-0.3-DRAFT.1",
+    "version": "0.3.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "ce9d6fd957a5378818a4a86f9812efac198240c5404d80852f3ffdb83c0ff892"},
+    "immutableRef": "specs/DDT_CONFORMANCE_RECEIPT_V0.3_DRAFT.md",
+    "mediaType": "text/markdown"
+  },
+  "receiptSchema": {
+    "artifactId": "DDT-CONFORMANCE-RECEIPT-SCHEMA-0.3-DRAFT.1",
+    "version": "0.3.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "927108f1e372743b1d5f10a16c2e8b85d650f4c37ca69d4acf26bd7d557e84a8"},
+    "immutableRef": "schemas/ddt-conformance-receipt-v0.3.schema.json",
+    "mediaType": "application/schema+json"
+  },
+  "derivationProfile": {
+    "artifactId": "DDT-CONFORMANCE-RESULT-DERIVATION-PROFILE-0.1-DRAFT.1",
+    "version": "0.1.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "31f0f96ddf7d59d6e524cd67eb339d3265fe6fd2cf94f1f0d2f822232ff46504"},
+    "immutableRef": "profiles/ddt-conformance-result-derivation-profile-v0.1.json",
+    "mediaType": "application/json"
+  },
+  "signatureProfile": {
+    "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+    "version": "0.2.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"}
+  },
+  "requirements": {
+    "minimumReceiptProofs": 1,
+    "proofPurpose": "CONFORMANCE_ATTESTATION",
+    "signedObjectType": "RECEIPT_CORE_HASH",
+    "registrationRequiresOverallPass": true,
+    "normativeDependencyClosureExactMatchRequired": true
+  },
+  "claimBoundary": {
+    "substantiveTruthEstablished": false,
+    "legalValidityEstablished": false,
+    "independentTimeEstablished": false,
+    "networkFinalityEstablished": false
+  },
+  "extensions": []
+}

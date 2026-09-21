@@ -1,0 +1,208 @@
+{
+  "specification": {
+    "standard": "DDT-ENTERPRISE-PROFILE",
+    "version": "0.2.0-draft.1"
+  },
+  "profileId": "ddt.enterprise.reference-recorder",
+  "profileVersion": "0.2.0-draft.1",
+  "lifecycle": {
+    "status": "DRAFT",
+    "governanceEvidenceRefs": []
+  },
+  "domain": {
+    "namespace": "urn:ddt:enterprise:reference-recorder",
+    "name": "DDT Reference Recorder",
+    "description": "TEST_ONLY enterprise profile for the current DDT Reference Recorder integration baseline. Passing this profile establishes only conformance to the defined Recorder rules and does not establish substantive truth.",
+    "recordTypes": [
+      "REFERENCE_RECORDER_EVENT"
+    ],
+    "subjectNamespaces": [
+      "urn:ddt:subject:reference-recorder"
+    ],
+    "sourceTypes": [
+      "HUMAN",
+      "SYSTEM",
+      "DEVICE",
+      "SENSOR",
+      "MODEL",
+      "BLOCKCHAIN_NATIVE",
+      "VERIFIED_EXTERNAL",
+      "ORACLE",
+      "OTHER"
+    ],
+    "eventTypes": [
+      "REFERENCE_RECORDER_EVENT"
+    ]
+  },
+  "compatibility": {
+    "envelopeSpecifications": [
+      {
+        "artifactId": "DDT-ENVELOPE-0.3-DRAFT.5",
+        "version": "0.3.0-draft.5",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "42083e9b8c538fa10cd1c494d83863ef831b8ae1873fcfb6168ddff50857f5a6"
+        },
+        "mediaType": "text/markdown"
+      }
+    ],
+    "preservationContractSpecifications": [
+      {
+        "artifactId": "DDT-PRESERVATION-CONTRACT-0.3-DRAFT.1",
+        "version": "0.3.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "8abb79f6f5fa0e7945dac7c4faa7d376eb600fa5b3597f36c5e37b16259caac8"
+        },
+        "mediaType": "text/markdown"
+      }
+    ],
+    "evidenceManifestProfiles": [
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "74ea30e4f37cf23851f89b962507d0e2176ac9a1136455c924e274afd10bab51"
+        },
+        "immutableRef": "profiles/ddt-evidence-manifest-profile-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "validationRuleSets": [
+      {
+        "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-VALIDATION-RULESET-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "6211edf15ff1094b4200d48952a1e4f1eb9659e9b73c998135b82d0a96c3d585"
+        },
+        "immutableRef": "profiles/enterprise/rules/ddt-reference-recorder-validation-rules-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "materializationMode": "FULLY_MATERIALIZED",
+    "requiredArtifacts": []
+  },
+  "payload": {
+    "payloadSchemas": [
+      {
+        "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-PAYLOAD-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f7df51c5c33b3b5214cfb96a0fff69727827fa662b8e20d55852257e267d344d"
+        },
+        "immutableRef": "schemas/enterprise/ddt-reference-recorder-payload-v0.1.schema.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "mediaTypes": [
+      "application/json"
+    ],
+    "unknownFieldPolicy": "REJECT",
+    "detachedPayloadPermitted": false
+  },
+  "requirements": {
+    "fieldRules": [],
+    "evidenceRules": [
+      {
+        "ruleId": "REFERENCE_RECORDER.EVIDENCE.01",
+        "requirement": "REQUIRED",
+        "failureCode": "REFERENCE_RECORDER_EVIDENCE_REQUIRED",
+        "evidenceClass": "REFERENCE_RECORDER_EVIDENCE",
+        "presentationAtRegistration": "REQUIRED",
+        "commitmentRequired": true,
+        "commitmentProfiles": [
+          {
+            "artifactId": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+            "version": "0.1.0-draft.1",
+            "digest": {
+              "algorithm": "SHA-256",
+              "value": "d0408be2633164aff62e5341064e971644e07105fd85abbdbb9b081d55b056e8"
+            },
+            "immutableRef": "profiles/ddt-evidence-digest-commitment-profile-v0.1.json",
+            "mediaType": "application/json"
+          }
+        ],
+        "availability": {
+          "mode": "NOT_REQUIRED_AFTER_REGISTRATION"
+        },
+        "confidentialityClass": "INTERNAL",
+        "unavailableResult": "FAIL"
+      }
+    ],
+    "relationshipRules": [],
+    "proofRules": [],
+    "semanticDependencyRules": []
+  },
+  "governance": {
+    "permittedApplicabilityBases": [
+      "PROFILE_DEFINED"
+    ],
+    "authorityProfiles": [
+      {
+        "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+        },
+        "mediaType": "application/json"
+      }
+    ],
+    "registrantAssertionPermitted": true,
+    "assignmentEvidenceClasses": [
+      "PROFILE_ASSIGNMENT",
+      "REGISTRANT_AUTHORITY_GRANT"
+    ]
+  },
+  "registration": {
+    "mechanismProfiles": [
+      {
+        "artifactId": "DDT-REGISTRATION-MECHANISM-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f2c21f7bdb7c56ff115027df9f0182c87e5891eb3d631f7660400680d9f60bb0"
+        },
+        "immutableRef": "profiles/ddt-reference-registrar-registration-mechanism-profile-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "failedAttemptPolicy": "REJECT_NO_DDT",
+    "registrationTimeClaimRequired": true,
+    "independentTimeProofRequired": false,
+    "registrantIdentityResolutionRequired": false,
+    "registrantAuthorityResolutionRequired": false
+  },
+  "privacy": {
+    "prohibitedPublicDataClasses": [
+      "CREDENTIAL",
+      "PRIVATE_KEY",
+      "SECRET_ACCESS_TOKEN",
+      "SENSITIVE_LOW_ENTROPY_EVIDENCE"
+    ],
+    "permittedConfidentialityClasses": [
+      "CONFIDENTIAL",
+      "INTERNAL",
+      "PUBLIC",
+      "RESTRICTED"
+    ],
+    "publicRawDigestPolicy": "CONTEXTUAL_REVIEW_REQUIRED",
+    "saferCommitmentProfiles": [
+      {
+        "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+        },
+        "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "obligationTemplates": [],
+  "extensions": []
+}

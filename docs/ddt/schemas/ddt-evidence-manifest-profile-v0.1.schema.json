@@ -1,0 +1,480 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/evidence-manifest-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Evidence Manifest Profile v0.1 Draft.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "evidenceManifestTarget",
+    "representationPolicy",
+    "commitmentPolicy",
+    "entryPolicy",
+    "semanticScopePolicy",
+    "confidentialityPolicy",
+    "orderingPolicy",
+    "emptyManifestPolicy",
+    "retrievalReferencePolicy",
+    "extensionPolicy",
+    "verificationPolicy",
+    "claimBoundary",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-EVIDENCE-MANIFEST-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "profileId": {
+      "const": "ddt.evidence-manifest.reference-recorder-v1"
+    },
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "evidenceManifestTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version",
+        "specificationId",
+        "schema"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-EVIDENCE-MANIFEST"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        },
+        "specificationId": {
+          "const": "DDT-EVIDENCE-MANIFEST-0.1-DRAFT.1"
+        },
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifactId",
+            "version",
+            "digest"
+          ],
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "digest": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "algorithm",
+                "value"
+              ],
+              "properties": {
+                "algorithm": {
+                  "const": "SHA-256"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "immutableRef": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mediaType": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "representationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "permittedMode",
+        "input",
+        "byteLengthRequired",
+        "transformations"
+      ],
+      "properties": {
+        "permittedMode": {
+          "const": "RAW_BYTES"
+        },
+        "input": {
+          "const": "EXACT_ORIGINAL_BYTES"
+        },
+        "byteLengthRequired": {
+          "const": true
+        },
+        "transformations": {
+          "const": "NONE"
+        }
+      }
+    },
+    "commitmentPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commitmentType",
+        "encoding",
+        "profile",
+        "profileId"
+      ],
+      "properties": {
+        "commitmentType": {
+          "const": "DIGEST"
+        },
+        "encoding": {
+          "const": "LOWERCASE_HEX"
+        },
+        "profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifactId",
+            "version",
+            "digest"
+          ],
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "digest": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "algorithm",
+                "value"
+              ],
+              "properties": {
+                "algorithm": {
+                  "const": "SHA-256"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "immutableRef": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mediaType": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "profileId": {
+          "const": "ddt.evidence-commitment.sha256-raw-bytes-v1"
+        }
+      }
+    },
+    "entryPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidencePolicyCount",
+        "roleVocabulary",
+        "profileDefinedRoleRequiresBoundVocabulary"
+      ],
+      "properties": {
+        "evidencePolicyCount": {
+          "const": "MUST_EQUAL_INGESTED_EVIDENCE_COUNT"
+        },
+        "roleVocabulary": {
+          "const": [
+            "SOURCE_PAYLOAD",
+            "SUPPORTING_EVIDENCE",
+            "SEMANTIC_DEPENDENCY",
+            "POLICY_OR_RULEBOOK",
+            "FRAMEWORK_OR_DEFINITION",
+            "AUTHORITY_EVIDENCE",
+            "IDENTITY_OR_KEY_EVIDENCE",
+            "PROVENANCE_EVIDENCE",
+            "TIME_OR_ORDERING_EVIDENCE",
+            "VALIDATION_ARTIFACT",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "profileDefinedRoleRequiresBoundVocabulary": {
+          "const": true
+        }
+      }
+    },
+    "semanticScopePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "loadBearingRequiresDependencyClass",
+        "loadBearingRequiresReconstructionScope",
+        "loadBearingForbidsNotApplicable",
+        "nonLoadBearingForbidsDependencyClass",
+        "nonLoadBearingUnresolvedResult"
+      ],
+      "properties": {
+        "loadBearingRequiresDependencyClass": {
+          "const": true
+        },
+        "loadBearingRequiresReconstructionScope": {
+          "const": true
+        },
+        "loadBearingForbidsNotApplicable": {
+          "const": true
+        },
+        "nonLoadBearingForbidsDependencyClass": {
+          "const": true
+        },
+        "nonLoadBearingUnresolvedResult": {
+          "const": "NOT_APPLICABLE"
+        }
+      }
+    },
+    "confidentialityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "disclosureProfileRequiredForNonPublic",
+        "disclosureProfileRequiredForRedaction",
+        "permittedPublicCommitmentRisk",
+        "rejectedPublicCommitmentRisk"
+      ],
+      "properties": {
+        "disclosureProfileRequiredForNonPublic": {
+          "const": true
+        },
+        "disclosureProfileRequiredForRedaction": {
+          "const": true
+        },
+        "permittedPublicCommitmentRisk": {
+          "const": [
+            "LOW",
+            "REVIEWED"
+          ]
+        },
+        "rejectedPublicCommitmentRisk": {
+          "const": [
+            "HIGH",
+            "UNRESOLVED"
+          ]
+        }
+      }
+    },
+    "orderingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "comparison",
+        "entries",
+        "retrievalRefs",
+        "preservationObligationRefs",
+        "signatureProofRefs",
+        "authorityEvidenceRefs",
+        "reconstructionScopes",
+        "relatedEvidenceRefs",
+        "relatedEvidence",
+        "duplicates"
+      ],
+      "properties": {
+        "comparison": {
+          "const": "UNICODE_CODE_POINT_ASCENDING"
+        },
+        "entries": {
+          "const": "EVIDENCE_ID"
+        },
+        "retrievalRefs": {
+          "const": "REFERENCE_ID"
+        },
+        "preservationObligationRefs": {
+          "const": "VALUE"
+        },
+        "signatureProofRefs": {
+          "const": "VALUE"
+        },
+        "authorityEvidenceRefs": {
+          "const": "VALUE"
+        },
+        "reconstructionScopes": {
+          "const": "VALUE"
+        },
+        "relatedEvidenceRefs": {
+          "const": "VALUE"
+        },
+        "relatedEvidence": {
+          "const": "RELATIONSHIP_TYPE_THEN_TARGET_EVIDENCE_ID"
+        },
+        "duplicates": {
+          "const": "REJECT"
+        }
+      }
+    },
+    "emptyManifestPolicy": {
+      "const": "DEFER_TO_ENTERPRISE_PROFILE_AND_PRESERVATION_CONTRACT"
+    },
+    "retrievalReferencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locatorRequirement",
+        "embeddedCredentials",
+        "mutableLocationEstablishesIdentity"
+      ],
+      "properties": {
+        "locatorRequirement": {
+          "const": "DEFER_TO_ENTERPRISE_PROFILE_AND_PRESERVATION_CONTRACT"
+        },
+        "embeddedCredentials": {
+          "const": "FORBIDDEN"
+        },
+        "mutableLocationEstablishesIdentity": {
+          "const": false
+        }
+      }
+    },
+    "extensionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "permitted",
+        "extensions"
+      ],
+      "properties": {
+        "permitted": {
+          "const": false
+        },
+        "extensions": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    },
+    "verificationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historicalProfileDigestRequired",
+        "schemaValidationRequired",
+        "independentRecomputationRequired",
+        "silentRepair"
+      ],
+      "properties": {
+        "historicalProfileDigestRequired": {
+          "const": true
+        },
+        "schemaValidationRequired": {
+          "const": true
+        },
+        "independentRecomputationRequired": {
+          "const": true
+        },
+        "silentRepair": {
+          "const": "FORBIDDEN"
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substantiveTruth",
+        "evidenceCompleteness",
+        "lawfulCollection",
+        "provenanceCorrectness",
+        "signerIdentity",
+        "signerAuthority",
+        "independentTime",
+        "networkFinality",
+        "continuingAvailability",
+        "legalValidity",
+        "regulatoryCompliance"
+      ],
+      "properties": {
+        "substantiveTruth": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "evidenceCompleteness": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "lawfulCollection": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "provenanceCorrectness": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "signerIdentity": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "signerAuthority": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "independentTime": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "networkFinality": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "continuingAvailability": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "legalValidity": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "regulatoryCompliance": {
+          "const": "NOT_ESTABLISHED"
+        }
+      }
+    },
+    "errorCodes": {
+      "const": [
+        "EVIDENCE_COMMITTED_ARRAY_ORDER_INVALID",
+        "EVIDENCE_COMMITTED_REFERENCE_DUPLICATE",
+        "EVIDENCE_COMMITMENT_ENCODING_MISMATCH",
+        "EVIDENCE_COMMITMENT_PROFILE_MISMATCH",
+        "EVIDENCE_COUNT_POLICY_MISMATCH",
+        "EVIDENCE_DISCLOSURE_PROFILE_REQUIRED",
+        "EVIDENCE_ID_DUPLICATE",
+        "EVIDENCE_MANIFEST_EXTENSION_FORBIDDEN",
+        "EVIDENCE_MANIFEST_SCHEMA_MISMATCH",
+        "EVIDENCE_RAW_PUBLIC_COMMITMENT_UNSAFE",
+        "EVIDENCE_RELATIONSHIP_DUPLICATE",
+        "EVIDENCE_REPRESENTATION_UNSUPPORTED",
+        "EVIDENCE_RETRIEVAL_REFERENCE_DUPLICATE",
+        "EVIDENCE_SEMANTIC_SCOPE_INVALID"
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  }
+}

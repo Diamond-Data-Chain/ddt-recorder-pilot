@@ -1,0 +1,311 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/offline-verification-package/0.1.0-draft.1/schema.json",
+  "title": "DDT Offline Verification Package Manifest v0.1 Draft.1",
+  "description": "Non-circular manifest carrier for a deterministic DDT offline verification package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specification", "manifestCore", "manifestCoreHash", "manifestProofs"],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "manifestCore": { "$ref": "#/$defs/manifestCore" },
+    "manifestCoreHash": { "$ref": "#/$defs/digest" },
+    "manifestProofs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/artifactReference" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest", "immutableRef", "mediaType"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "digest": { "$ref": "#/$defs/digest" },
+        "immutableRef": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 255 }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-OFFLINE-VERIFICATION-PACKAGE" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetType", "targetId", "targetCommitment"],
+      "properties": {
+        "targetType": {
+          "enum": [
+            "DDT_RECORD",
+            "DDT_FAMILY",
+            "DDT_CHECKPOINT",
+            "DDT_COVERAGE_STATEMENT",
+            "DDT_VERIFICATION_RESULT",
+            "DDT_RENEWAL_EVENT"
+          ]
+        },
+        "targetId": { "$ref": "#/$defs/identifier" },
+        "targetCommitment": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "fileEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mediaType", "role", "byteLength", "digest", "requiredForPlan", "appliesTo"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*\\\\)[A-Za-z0-9][A-Za-z0-9._/-]*$"
+        },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "role": {
+          "enum": [
+            "DDT_RECORD",
+            "DDT_REGISTRATION_STATEMENT",
+            "EVIDENCE_MANIFEST",
+            "PRESERVATION_CONTRACT",
+            "ENTERPRISE_PROFILE",
+            "CONFORMANCE_RECEIPT",
+            "VERIFICATION_RESULT",
+            "SCHEMA",
+            "PROFILE",
+            "RULESET",
+            "SIGNATURE_PROOF",
+            "IDENTITY_AUTHORITY_EVIDENCE",
+            "TIME_CHECKPOINT_EVIDENCE",
+            "NETWORK_FINALITY_EVIDENCE",
+            "EVENT_COVERAGE_EVIDENCE",
+            "CRYPTO_RENEWAL_EVIDENCE",
+            "ORIGINAL_EVIDENCE_BYTES",
+            "VERIFIER_SOURCE",
+            "VERIFIER_BINARY",
+            "TEST_FIXTURE",
+            "TEST_EXPECTATION",
+            "DOCUMENTATION",
+            "OTHER"
+          ]
+        },
+        "byteLength": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "digest": { "$ref": "#/$defs/digest" },
+        "requiredForPlan": { "type": "boolean" },
+        "appliesTo": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    },
+    "externalDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependencyId",
+        "role",
+        "commitment",
+        "disclosureMode",
+        "availability",
+        "preservationObligationRefs",
+        "requiredForChecks",
+        "consequenceIfUnavailable"
+      ],
+      "properties": {
+        "dependencyId": { "$ref": "#/$defs/identifier" },
+        "role": { "$ref": "#/$defs/identifier" },
+        "commitment": { "$ref": "#/$defs/digest" },
+        "disclosureMode": {
+          "enum": ["PUBLIC_EXTERNAL", "ON_REQUEST", "AUTHORIZED_ONLY", "PROHIBITED", "UNAVAILABLE"]
+        },
+        "availability": {
+          "enum": ["AVAILABLE", "RESTRICTED", "UNAVAILABLE", "UNKNOWN", "NOT_EVALUATED"]
+        },
+        "preservationObligationRefs": {
+          "type": "array",
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "requiredForChecks": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/checkId" }
+        },
+        "consequenceIfUnavailable": {
+          "enum": ["FAIL", "UNAVAILABLE", "UNRESOLVED", "PARTIAL", "NO_EFFECT"]
+        }
+      }
+    },
+    "checkId": {
+      "enum": [
+        "PACKAGE_STRUCTURE",
+        "MANIFEST_INTEGRITY",
+        "FILE_INTEGRITY",
+        "MANIFEST_PROOF",
+        "TARGET_BINDING",
+        "DEPENDENCY_CLOSURE",
+        "SCHEMA_VALIDATION",
+        "HISTORICAL_CONFORMANCE",
+        "RECORD_INTEGRITY",
+        "EVIDENCE_INTEGRITY",
+        "SIGNATURE_VALIDITY",
+        "HISTORICAL_IDENTITY",
+        "HISTORICAL_AUTHORITY",
+        "TIME_CHECKPOINT",
+        "NETWORK_FINALITY",
+        "RELATIONSHIPS",
+        "EVENT_COVERAGE",
+        "RENEWAL_LINEAGE",
+        "HISTORICAL_SEMANTIC_RESOLUTION"
+      ]
+    },
+    "verificationPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["planId", "checks", "networkAccess", "missingArtifactPolicy", "resultProfile", "deterministicResultRequired"],
+      "properties": {
+        "planId": { "$ref": "#/$defs/identifier" },
+        "checks": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 19,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/checkId" },
+          "allOf": [
+            { "contains": { "const": "PACKAGE_STRUCTURE" } },
+            { "contains": { "const": "MANIFEST_INTEGRITY" } },
+            { "contains": { "const": "FILE_INTEGRITY" } },
+            { "contains": { "const": "MANIFEST_PROOF" } },
+            { "contains": { "const": "TARGET_BINDING" } },
+            { "contains": { "const": "DEPENDENCY_CLOSURE" } }
+          ]
+        },
+        "networkAccess": { "const": "DENY" },
+        "missingArtifactPolicy": { "const": "PRESERVE_UNAVAILABLE_OR_UNRESOLVED" },
+        "resultProfile": { "$ref": "#/$defs/artifactReference" },
+        "deterministicResultRequired": { "const": true }
+      }
+    },
+    "resourceLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxEntries", "maxFileBytes", "maxTotalBytes", "maxPathLength", "maxPathDepth", "maxCompressionRatio", "maxJsonDepth"],
+      "properties": {
+        "maxEntries": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "maxFileBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxTotalBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "maxPathLength": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "maxPathDepth": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "maxCompressionRatio": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "maxJsonDepth": { "type": "integer", "minimum": 1, "maximum": 10000 }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packageIntegrityImpliesSubstantiveTruth",
+        "packageIntegrityImpliesSignerAuthority",
+        "packageIntegrityImpliesIndependentTime",
+        "packageIntegrityImpliesNetworkFinality",
+        "packageIntegrityImpliesEventCompleteness",
+        "packageIntegrityImpliesHistoricalConformance"
+      ],
+      "properties": {
+        "packageIntegrityImpliesSubstantiveTruth": { "const": false },
+        "packageIntegrityImpliesSignerAuthority": { "const": false },
+        "packageIntegrityImpliesIndependentTime": { "const": false },
+        "packageIntegrityImpliesNetworkFinality": { "const": false },
+        "packageIntegrityImpliesEventCompleteness": { "const": false },
+        "packageIntegrityImpliesHistoricalConformance": { "const": false }
+      }
+    },
+    "manifestCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "packageId",
+        "packageVersion",
+        "createdAtClaim",
+        "packageSpecification",
+        "target",
+        "rootArtifacts",
+        "files",
+        "externalDependencies",
+        "dependencyClosure",
+        "verificationPlan",
+        "resourceLimits",
+        "predecessorPackages",
+        "claimBoundary"
+      ],
+      "properties": {
+        "domain": { "const": "DDT_OFFLINE_VERIFICATION_PACKAGE_MANIFEST_V1" },
+        "packageId": { "$ref": "#/$defs/identifier" },
+        "packageVersion": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "createdAtClaim": { "type": "string", "format": "date-time" },
+        "packageSpecification": { "$ref": "#/$defs/artifactReference" },
+        "target": { "$ref": "#/$defs/target" },
+        "rootArtifacts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/artifactReference" }
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1000000,
+          "items": { "$ref": "#/$defs/fileEntry" }
+        },
+        "externalDependencies": {
+          "type": "array",
+          "maxItems": 100000,
+          "items": { "$ref": "#/$defs/externalDependency" }
+        },
+        "dependencyClosure": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": { "$ref": "#/$defs/artifactReference" }
+        },
+        "verificationPlan": { "$ref": "#/$defs/verificationPlan" },
+        "resourceLimits": { "$ref": "#/$defs/resourceLimits" },
+        "predecessorPackages": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/artifactReference" }
+        },
+        "claimBoundary": { "$ref": "#/$defs/claimBoundary" }
+      }
+    }
+  }
+}

@@ -1,0 +1,501 @@
+{
+  "specification": {
+    "standard": "DDT-ENTERPRISE-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.enterprise.ai-decision",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycle": {
+    "status": "DRAFT",
+    "issuedAtClaim": "2026-09-07T07:00:00Z",
+    "governanceEvidenceRefs": []
+  },
+  "domain": {
+    "namespace": "urn:ddt:enterprise:ai-decision",
+    "name": "AI Decision Accountability",
+    "description": "Concrete TEST_ONLY enterprise specialization used for executable DDT profile fixtures. Passing this profile does not prove substantive truth or regulatory compliance.",
+    "recordTypes": [
+      "AI_DECISION_EVENT"
+    ],
+    "subjectNamespaces": [
+      "urn:ddt:subject:ai-system"
+    ]
+  },
+  "compatibility": {
+    "envelopeSpecifications": [
+      {
+        "artifactId": "DDT-ENVELOPE-0.3-DRAFT.5",
+        "version": "0.3.0-draft.5",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "42083e9b8c538fa10cd1c494d83863ef831b8ae1873fcfb6168ddff50857f5a6"
+        },
+        "mediaType": "text/markdown"
+      }
+    ],
+    "preservationContractSpecifications": [
+      {
+        "artifactId": "DDT-PRESERVATION-CONTRACT-0.3-DRAFT.1",
+        "version": "0.3.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "8abb79f6f5fa0e7945dac7c4faa7d376eb600fa5b3597f36c5e37b16259caac8"
+        },
+        "mediaType": "text/markdown"
+      }
+    ],
+    "evidenceManifestProfiles": [
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "0c2462f09211f777a740b48b18e9ba8dfa20973e446bb22daff32a6200d359a6"
+        },
+        "mediaType": "text/markdown"
+      }
+    ],
+    "validationRuleSets": [
+      {
+        "artifactId": "DDT-AI-VALIDATION-RULESET-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "6b536fdf11455b62a187d87fde7b6defa213d08bfc203fb0da7d6fd626b3eec6"
+        },
+        "immutableRef": "profiles/enterprise/rules/ddt-ai-validation-rules-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "materializationMode": "FULLY_MATERIALIZED",
+    "requiredArtifacts": [
+      {
+        "artifactId": "DDT-SIGNATURE-PROOF-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "2eb02946082be635eb73df2f19951b5e067d7cbe2815fbd87ea734888a9b92cb"
+        },
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"
+        },
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+        },
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-TIME-CHECKPOINT-PROFILE-ARTIFACT-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "2842a31a66376fc78a3f5111a858728284ce8b7fc3d4761a64277f1c01c53ad7"
+        },
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-BASE-RELATIONSHIP-VOCABULARY-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "87a50bd36dc0739389609e2bed1b885396d950d719307fedde2092b15d3dd56e"
+        },
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-RESULT-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "04608e0af8ec44abcf91a1b1ac8f44615719888c731e1aac130ec9a508c34b40"
+        },
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-CLOSED-EVENT-COVERAGE-PROFILE-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "1fcadcf7042d6b5bce80bdc24a1e795ef3d081ce9e172a7939361e848faae692"
+        },
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+        },
+        "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "payload": {
+    "payloadSchemas": [
+      {
+        "artifactId": "DDT-AI-PAYLOAD-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "ed87a973ae4af65e5d049a96bf87cdc01467fe6cdb984f880cf82bac7c1af0e0"
+        },
+        "immutableRef": "schemas/enterprise/ddt-ai-payload-v0.1.schema.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "mediaTypes": [
+      "application/json"
+    ],
+    "unknownFieldPolicy": "REJECT",
+    "detachedPayloadPermitted": false
+  },
+  "requirements": {
+    "fieldRules": [
+      {
+        "ruleId": "AI.FIELD.DECISIONID",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/decisionId",
+        "constraintRefs": [
+          "payload-schema#/decisionId"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.SYSTEMID",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/systemId",
+        "constraintRefs": [
+          "payload-schema#/systemId"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.MODELID",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/modelId",
+        "constraintRefs": [
+          "payload-schema#/modelId"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.MODELVERSION",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/modelVersion",
+        "constraintRefs": [
+          "payload-schema#/modelVersion"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.DECISIONTYPE",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/decisionType",
+        "constraintRefs": [
+          "payload-schema#/decisionType"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.RISKLEVEL",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/riskLevel",
+        "constraintRefs": [
+          "payload-schema#/riskLevel"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.INPUTEVIDENCEREFS",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/inputEvidenceRefs",
+        "constraintRefs": [
+          "payload-schema#/inputEvidenceRefs"
+        ]
+      },
+      {
+        "ruleId": "AI.FIELD.OUTPUTSUMMARY",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_FIELD_REQUIRED",
+        "targetPath": "/payload/outputSummary",
+        "constraintRefs": [
+          "payload-schema#/outputSummary"
+        ]
+      }
+    ],
+    "evidenceRules": [
+      {
+        "ruleId": "AI.EVIDENCE.AI_INPUT_SNAPSHOT",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_EVIDENCE_REQUIRED",
+        "evidenceClass": "AI_INPUT_SNAPSHOT",
+        "presentationAtRegistration": "PERMITTED",
+        "commitmentRequired": true,
+        "commitmentProfiles": [
+          {
+            "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+            "version": "0.1.0-draft.1",
+            "digest": {
+              "algorithm": "SHA-256",
+              "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+            },
+            "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+            "mediaType": "application/json"
+          }
+        ],
+        "availability": {
+          "mode": "ON_REQUEST"
+        },
+        "confidentialityClass": "CONFIDENTIAL",
+        "unavailableResult": "FAIL"
+      },
+      {
+        "ruleId": "AI.EVIDENCE.HUMAN_AUTHORIZATION",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_EVIDENCE_REQUIRED",
+        "evidenceClass": "HUMAN_AUTHORIZATION",
+        "presentationAtRegistration": "PERMITTED",
+        "commitmentRequired": true,
+        "commitmentProfiles": [
+          {
+            "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+            "version": "0.1.0-draft.1",
+            "digest": {
+              "algorithm": "SHA-256",
+              "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+            },
+            "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+            "mediaType": "application/json"
+          }
+        ],
+        "availability": {
+          "mode": "ON_REQUEST"
+        },
+        "confidentialityClass": "CONFIDENTIAL",
+        "unavailableResult": "FAIL"
+      },
+      {
+        "ruleId": "AI.EVIDENCE.MODEL_RELEASE_DESCRIPTOR",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_EVIDENCE_REQUIRED",
+        "evidenceClass": "MODEL_RELEASE_DESCRIPTOR",
+        "presentationAtRegistration": "PERMITTED",
+        "commitmentRequired": true,
+        "commitmentProfiles": [
+          {
+            "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+            "version": "0.1.0-draft.1",
+            "digest": {
+              "algorithm": "SHA-256",
+              "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+            },
+            "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+            "mediaType": "application/json"
+          }
+        ],
+        "availability": {
+          "mode": "ON_REQUEST"
+        },
+        "confidentialityClass": "CONFIDENTIAL",
+        "unavailableResult": "FAIL"
+      }
+    ],
+    "relationshipRules": [
+      {
+        "ruleId": "AI.RELATION.DERIVED_FROM",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_RELATIONSHIP_REQUIRED",
+        "relationshipTypes": [
+          "DERIVED_FROM"
+        ],
+        "permittedTargetRecordTypes": [
+          "AI_MODEL_RELEASE_RECORD"
+        ],
+        "targetRecordHashRequired": true,
+        "assertionAuthorityRequired": true,
+        "evidenceRefsRequired": true
+      }
+    ],
+    "proofRules": [
+      {
+        "ruleId": "AI.PROOF.REGISTRATION",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_REGISTRATION_PROOF_REQUIRED",
+        "proofPurpose": "DDT_REGISTRATION",
+        "proofProfiles": [
+          {
+            "artifactId": "DDT-SIGNATURE-PROOF-0.2-DRAFT.1",
+            "version": "0.2.0-draft.1",
+            "digest": {
+              "algorithm": "SHA-256",
+              "value": "2eb02946082be635eb73df2f19951b5e067d7cbe2815fbd87ea734888a9b92cb"
+            },
+            "mediaType": "text/markdown"
+          }
+        ],
+        "targetTypes": [
+          "REGISTRATION_STATEMENT_HASH"
+        ],
+        "identityResolutionRequired": true,
+        "authorityResolutionRequired": true,
+        "independentTimeRequired": true
+      }
+    ],
+    "semanticDependencyRules": [
+      {
+        "ruleId": "AI.SEMANTIC.01",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_SEMANTIC_DEPENDENCY_UNAVAILABLE",
+        "dependencyClass": "MODEL_RELEASE_CONTEXT",
+        "sourceRefs": [
+          "MODEL_RELEASE_DESCRIPTOR"
+        ],
+        "versionBindingRequired": true,
+        "availabilityRequired": true,
+        "unresolvedResult": "UNAVAILABLE"
+      },
+      {
+        "ruleId": "AI.SEMANTIC.02",
+        "requirement": "REQUIRED",
+        "failureCode": "AI_SEMANTIC_DEPENDENCY_UNAVAILABLE",
+        "dependencyClass": "DECISION_POLICY_CONTEXT",
+        "sourceRefs": [
+          "AI_DECISION_POLICY"
+        ],
+        "versionBindingRequired": true,
+        "availabilityRequired": true,
+        "unresolvedResult": "UNAVAILABLE"
+      }
+    ]
+  },
+  "governance": {
+    "permittedApplicabilityBases": [
+      "CONTRACT_SIGNATURE",
+      "SIGNED_ASSIGNMENT"
+    ],
+    "authorityProfiles": [
+      {
+        "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+        },
+        "mediaType": "application/json"
+      }
+    ],
+    "registrantAssertionPermitted": false,
+    "assignmentEvidenceClasses": [
+      "PROFILE_ASSIGNMENT",
+      "REGISTRANT_AUTHORITY_GRANT"
+    ],
+    "historicalStateRuleRefs": [
+      "AI.HISTORICAL.AUTHORITY.STATE"
+    ]
+  },
+  "registration": {
+    "mechanismProfiles": [
+      {
+        "artifactId": "DDT-ENVELOPE-0.3-DRAFT.5",
+        "version": "0.3.0-draft.5",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "42083e9b8c538fa10cd1c494d83863ef831b8ae1873fcfb6168ddff50857f5a6"
+        },
+        "mediaType": "text/markdown"
+      }
+    ],
+    "failedAttemptPolicy": "REJECT_NO_DDT",
+    "registrationTimeClaimRequired": true,
+    "independentTimeProofRequired": true,
+    "registrantIdentityResolutionRequired": true,
+    "registrantAuthorityResolutionRequired": true
+  },
+  "privacy": {
+    "prohibitedPublicDataClasses": [
+      "CREDENTIAL",
+      "PRIVATE_KEY",
+      "SECRET_ACCESS_TOKEN",
+      "SENSITIVE_LOW_ENTROPY_EVIDENCE"
+    ],
+    "permittedConfidentialityClasses": [
+      "CONFIDENTIAL",
+      "INTERNAL",
+      "PUBLIC",
+      "RESTRICTED"
+    ],
+    "publicRawDigestPolicy": "FORBIDDEN_FOR_SENSITIVE_LOW_ENTROPY",
+    "saferCommitmentProfiles": [
+      {
+        "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+        },
+        "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "obligationTemplates": [
+    {
+      "templateId": "AI.OBL.INPUT",
+      "category": "EVIDENCE_AVAILABILITY",
+      "requirement": "REQUIRED",
+      "targetSelector": {
+        "targetRefs": [
+          "AI_INPUT_SNAPSHOT"
+        ]
+      },
+      "temporalScope": {
+        "mode": "INDEFINITE"
+      },
+      "failureCode": "AI_INPUT_UNAVAILABLE"
+    },
+    {
+      "templateId": "AI.OBL.AUTH",
+      "category": "AUTHORITY_EVIDENCE",
+      "requirement": "REQUIRED",
+      "targetSelector": {
+        "targetRefs": [
+          "HUMAN_AUTHORIZATION"
+        ]
+      },
+      "temporalScope": {
+        "mode": "AT_REGISTRATION"
+      },
+      "failureCode": "AI_HUMAN_AUTHORITY_UNRESOLVED"
+    },
+    {
+      "templateId": "AI.OBL.TIME",
+      "category": "TIME_PROOF_REQUIREMENT",
+      "requirement": "REQUIRED",
+      "targetSelector": {
+        "targetRefs": [
+          "registrationTime"
+        ]
+      },
+      "temporalScope": {
+        "mode": "AT_REGISTRATION"
+      },
+      "failureCode": "AI_TIME_UNVERIFIED"
+    }
+  ],
+  "extensions": []
+}

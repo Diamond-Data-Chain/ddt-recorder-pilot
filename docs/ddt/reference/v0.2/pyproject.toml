@@ -1,0 +1,13 @@
+[project]
+name = "ddt-reference-implementation"
+version = "0.2.0.dev1"
+description = "Reference producer, validator, signature-carrier verifier and offline verifier for DDT integration drafts"
+requires-python = ">=3.11"
+dependencies = [
+  "jsonschema>=4.20,<5",
+  "referencing>=0.35,<1",
+  "cryptography>=42,<47",
+]
+
+[project.scripts]
+ddt-ref = "ddt_ref.cli:main"

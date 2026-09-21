@@ -1,0 +1,127 @@
+{
+  "specification": {
+    "standard": "DDT-STRUCTURAL-COMMITMENT-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.structural.sha256-jcs-envelope-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "envelopeTarget": "DDT-ENVELOPE-0.3-DRAFT.5",
+  "canonicalizationProfile": {
+    "artifactId": "DDT-CANONICALIZATION-PROFILE-ARTIFACT-0.1-DRAFT.1",
+    "version": "0.1.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "988a4b770177ebfb595de9c2e286a76cd4b4f108e8cffdd0844656d03d2f443e"
+    },
+    "immutableRef": "../profiles/ddt-canonicalization-profile-v0.1.json",
+    "mediaType": "application/json"
+  },
+  "digestPolicy": {
+    "algorithm": "SHA-256",
+    "inputEncoding": "UTF-8",
+    "digestEncoding": "HEX",
+    "hexCase": "LOWERCASE",
+    "prefix": "NONE",
+    "length": 64
+  },
+  "commitmentRules": {
+    "registeredUpstreamCommitment": {
+      "algorithm": "SHA-256",
+      "canonicalization": "RFC8785-JCS",
+      "inputEncoding": "UTF-8",
+      "input": "envelope.upstream"
+    },
+    "evidenceManifestCommitment": {
+      "algorithm": "SHA-256",
+      "canonicalization": "RFC8785-JCS",
+      "inputEncoding": "UTF-8",
+      "input": "envelope.evidenceManifest"
+    },
+    "preservationContractCommitment": {
+      "algorithm": "SHA-256",
+      "canonicalization": "RFC8785-JCS",
+      "inputEncoding": "UTF-8",
+      "input": "envelope.preservationContract"
+    },
+    "recordHash": {
+      "algorithm": "SHA-256",
+      "canonicalization": "RFC8785-JCS",
+      "inputEncoding": "UTF-8",
+      "input": "canonicalRecordHashInput"
+    },
+    "registrationStatementHash": {
+      "algorithm": "SHA-256",
+      "canonicalization": "RFC8785-JCS",
+      "inputEncoding": "UTF-8",
+      "input": "envelope.registration.statement"
+    }
+  },
+  "recordHashInput": {
+    "memberOrderSignificant": false,
+    "members": [
+      "specification",
+      "identity",
+      "registeredUpstreamCommitment",
+      "evidenceManifestCommitment",
+      "preservationContractCommitment",
+      "relationships"
+    ]
+  },
+  "recordHashExclusions": [
+    "commitments",
+    "commitments.recordHash",
+    "registration",
+    "conformanceReceiptBytes",
+    "signatureProofBytes",
+    "timeProofBytes",
+    "laterCheckpointArtifacts",
+    "laterEventCoverageArtifacts",
+    "laterNetworkFinalityArtifacts",
+    "laterVerificationResults",
+    "laterRenewalEvents"
+  ],
+  "constructionOrder": [
+    "registeredUpstreamCommitment",
+    "evidenceManifestCommitment",
+    "preservationContractCommitment",
+    "recordHash",
+    "conformanceReceipt",
+    "conformanceReceiptCommitment",
+    "registrationStatement",
+    "registrationStatementHash",
+    "registrationProofsAndTimeProofs"
+  ],
+  "verificationPolicy": {
+    "independentRecomputationRequired": true,
+    "historicalCanonicalizationProfileDigestRequired": true,
+    "registeredValueRepair": "FORBIDDEN",
+    "statementRecordHashMustMatch": true,
+    "statementPreservationContractCommitmentMustMatch": true,
+    "statementConformanceReceiptCommitmentMustBeIndependentlyVerified": true
+  },
+  "claimBoundary": {
+    "structuralIntegrity": "ESTABLISHED_WHEN_ALL_REQUIRED_CHECKS_PASS",
+    "substantiveTruth": "NOT_ESTABLISHED",
+    "evidenceProvenance": "NOT_ESTABLISHED",
+    "signerIdentity": "NOT_ESTABLISHED",
+    "signerAuthority": "NOT_ESTABLISHED",
+    "independentTime": "NOT_ESTABLISHED",
+    "networkFinality": "NOT_ESTABLISHED",
+    "eventHistoryCompleteness": "NOT_ESTABLISHED",
+    "legalValidity": "NOT_ESTABLISHED"
+  },
+  "errorCodes": [
+    "CANONICALIZATION_PROFILE_MISMATCH",
+    "DIGEST_REPRESENTATION_INVALID",
+    "EVIDENCE_MANIFEST_COMMITMENT_MISMATCH",
+    "PRESERVATION_CONTRACT_COMMITMENT_MISMATCH",
+    "RECORD_HASH_INPUT_INVALID",
+    "RECORD_HASH_MISMATCH",
+    "REGISTERED_UPSTREAM_COMMITMENT_MISMATCH",
+    "REGISTRATION_STATEMENT_CONTRACT_BINDING_MISMATCH",
+    "REGISTRATION_STATEMENT_HASH_MISMATCH",
+    "REGISTRATION_STATEMENT_RECEIPT_BINDING_MISMATCH",
+    "REGISTRATION_STATEMENT_RECORD_BINDING_MISMATCH"
+  ],
+  "extensions": []
+}

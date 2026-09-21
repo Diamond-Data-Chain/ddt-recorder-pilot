@@ -1,0 +1,453 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/evidence.schema.json",
+  "title": "DDT Historical Identity and Authority Evidence v0.1 Draft.1",
+  "description": "Common evidence objects for verification-method description, key lifecycle, identity binding and scoped authority lifecycle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId",
+    "evidenceType",
+    "evidenceVersion",
+    "issuer",
+    "effectiveOrder",
+    "body"
+  ],
+  "properties": {
+    "evidenceId": { "$ref": "#/$defs/identifier" },
+    "evidenceType": {
+      "enum": [
+        "VERIFICATION_METHOD_DESCRIPTOR",
+        "KEY_LIFECYCLE_EVENT",
+        "IDENTITY_BINDING",
+        "IDENTITY_BINDING_STATUS_EVENT",
+        "AUTHORITY_GRANT",
+        "AUTHORITY_STATUS_EVENT"
+      ]
+    },
+    "evidenceVersion": { "const": "0.1.0-draft.1" },
+    "issuer": { "$ref": "#/$defs/issuer" },
+    "issuedAtClaim": { "$ref": "#/$defs/dateTime" },
+    "effectiveOrder": { "$ref": "#/$defs/effectiveOrder" },
+    "body": {}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "VERIFICATION_METHOD_DESCRIPTOR" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/verificationMethodDescriptor" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "KEY_LIFECYCLE_EVENT" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/keyLifecycleEvent" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "IDENTITY_BINDING" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/identityBinding" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "IDENTITY_BINDING_STATUS_EVENT" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/identityBindingStatusEvent" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "AUTHORITY_GRANT" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/authorityGrant" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "AUTHORITY_STATUS_EVENT" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/authorityStatusEvent" } } }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 255 }
+      }
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identityRef", "verificationMethod", "proofRef", "authorityEvidenceRefs"],
+      "properties": {
+        "identityRef": { "$ref": "#/$defs/identifier" },
+        "verificationMethod": { "$ref": "#/$defs/identifier" },
+        "proofRef": { "$ref": "#/$defs/identifier" },
+        "authorityEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "effectiveOrder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis", "evidenceRefs"],
+      "properties": {
+        "basis": {
+          "enum": [
+            "INDEPENDENT_TIME_PROOF",
+            "DDT_NETWORK_ORDER",
+            "AUTHORITATIVE_SEQUENCE",
+            "ISSUER_TIME_CLAIM_ONLY"
+          ]
+        },
+        "effectiveFromClaim": { "$ref": "#/$defs/dateTime" },
+        "effectiveUntilClaim": { "$ref": "#/$defs/dateTime" },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "evidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "basis": { "const": "AUTHORITATIVE_SEQUENCE" } },
+            "required": ["basis"]
+          },
+          "then": { "required": ["sequence"] }
+        },
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "enum": ["INDEPENDENT_TIME_PROOF", "DDT_NETWORK_ORDER"]
+              }
+            },
+            "required": ["basis"]
+          },
+          "then": { "properties": { "evidenceRefs": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "lineageLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceId", "digest"],
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/identifier" },
+        "digest": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "publicKeyMaterial": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["representation", "encoding", "value", "fingerprint"],
+          "properties": {
+            "representation": { "const": "INLINE" },
+            "encoding": {
+              "enum": ["MULTIBASE", "JWK", "BASE64URL", "DER"]
+            },
+            "value": { "type": ["string", "object"] },
+            "fingerprint": { "$ref": "#/$defs/structuralDigest" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["representation", "artifact", "fingerprint"],
+          "properties": {
+            "representation": { "const": "EXTERNAL_ARTIFACT" },
+            "artifact": { "$ref": "#/$defs/artifactReference" },
+            "fingerprint": { "$ref": "#/$defs/structuralDigest" }
+          }
+        }
+      ]
+    },
+    "verificationMethodDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verificationMethodId",
+        "controllerRef",
+        "algorithm",
+        "publicKey",
+        "permittedPurposes"
+      ],
+      "properties": {
+        "verificationMethodId": { "$ref": "#/$defs/identifier" },
+        "controllerRef": { "$ref": "#/$defs/identifier" },
+        "algorithm": { "$ref": "#/$defs/identifier" },
+        "publicKey": { "$ref": "#/$defs/publicKeyMaterial" },
+        "permittedPurposes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "DDT_REGISTRATION",
+              "CONFORMANCE_ATTESTATION",
+              "VERIFICATION_RESULT_ATTESTATION",
+              "IDENTITY_EVIDENCE_ISSUANCE",
+              "AUTHORITY_EVIDENCE_ISSUANCE",
+              "LIFECYCLE_EVIDENCE_ISSUANCE"
+            ]
+          }
+        }
+      }
+    },
+    "keyLifecycleEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verificationMethodId",
+        "eventType",
+        "sequence",
+        "reasonCode",
+        "supportingEvidenceRefs"
+      ],
+      "properties": {
+        "verificationMethodId": { "$ref": "#/$defs/identifier" },
+        "eventType": {
+          "enum": [
+            "ACTIVATE",
+            "SUSPEND",
+            "RESUME",
+            "ROTATE_OUT",
+            "REVOKE",
+            "EXPIRE",
+            "COMPROMISE_DECLARED"
+          ]
+        },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "previousEvent": { "$ref": "#/$defs/lineageLink" },
+        "replacementVerificationMethodId": { "$ref": "#/$defs/identifier" },
+        "effect": {
+          "enum": ["PROSPECTIVE", "RETROACTIVE_CLAIM"]
+        },
+        "reasonCode": { "$ref": "#/$defs/identifier" },
+        "supportingEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "sequence": { "const": 0 } }, "required": ["sequence"] },
+          "then": { "not": { "required": ["previousEvent"] } },
+          "else": { "required": ["previousEvent"] }
+        },
+        {
+          "if": {
+            "properties": { "eventType": { "const": "ROTATE_OUT" } },
+            "required": ["eventType"]
+          },
+          "then": { "required": ["replacementVerificationMethodId"] }
+        }
+      ]
+    },
+    "identityBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bindingId",
+        "cryptographicControllerRef",
+        "boundIdentityRef",
+        "identityNamespace",
+        "bindingScopes",
+        "assuranceProfile",
+        "supportingEvidenceRefs"
+      ],
+      "properties": {
+        "bindingId": { "$ref": "#/$defs/identifier" },
+        "cryptographicControllerRef": { "$ref": "#/$defs/identifier" },
+        "boundIdentityRef": { "$ref": "#/$defs/identifier" },
+        "identityNamespace": { "$ref": "#/$defs/identifier" },
+        "bindingScopes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "KEY_CONTROLLER",
+              "DDT_REGISTRANT",
+              "VALIDATOR",
+              "VERIFIER",
+              "WITNESS",
+              "AUTHORITY_ISSUER"
+            ]
+          }
+        },
+        "assuranceProfile": { "$ref": "#/$defs/artifactReference" },
+        "supportingEvidenceRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" }
+      }
+    },
+    "identityBindingStatusEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bindingId", "eventType", "sequence", "reasonCode", "supportingEvidenceRefs"],
+      "properties": {
+        "bindingId": { "$ref": "#/$defs/identifier" },
+        "eventType": {
+          "enum": ["ACTIVATE", "SUSPEND", "RESUME", "REVOKE", "EXPIRE", "SUPERSEDE"]
+        },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "previousEvent": { "$ref": "#/$defs/lineageLink" },
+        "successorBindingId": { "$ref": "#/$defs/identifier" },
+        "effect": { "enum": ["PROSPECTIVE", "RETROACTIVE_CLAIM"] },
+        "reasonCode": { "$ref": "#/$defs/identifier" },
+        "supportingEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "sequence": { "const": 0 } }, "required": ["sequence"] },
+          "then": { "not": { "required": ["previousEvent"] } },
+          "else": { "required": ["previousEvent"] }
+        },
+        {
+          "if": {
+            "properties": { "eventType": { "const": "SUPERSEDE" } },
+            "required": ["eventType"]
+          },
+          "then": { "required": ["successorBindingId"] }
+        }
+      ]
+    },
+    "authorityScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proofPurposes",
+        "actions",
+        "recordTypes",
+        "subjectNamespaces",
+        "organizationScopes",
+        "domainScopes"
+      ],
+      "properties": {
+        "proofPurposes": { "$ref": "#/$defs/identifierArray" },
+        "actions": { "$ref": "#/$defs/nonEmptyIdentifierArray" },
+        "recordTypes": { "$ref": "#/$defs/identifierArray" },
+        "subjectNamespaces": { "$ref": "#/$defs/identifierArray" },
+        "organizationScopes": { "$ref": "#/$defs/identifierArray" },
+        "domainScopes": { "$ref": "#/$defs/identifierArray" },
+        "constraints": {
+          "type": "object",
+          "maxProperties": 1000,
+          "additionalProperties": true
+        }
+      }
+    },
+    "delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["permitted", "remainingDepth", "scopeAmplificationForbidden"],
+      "properties": {
+        "permitted": { "type": "boolean" },
+        "remainingDepth": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "scopeAmplificationForbidden": { "const": true }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "permitted": { "const": false } }, "required": ["permitted"] },
+          "then": { "properties": { "remainingDepth": { "const": 0 } } }
+        }
+      ]
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grantId",
+        "grantorIdentityRef",
+        "granteeIdentityRef",
+        "role",
+        "scope",
+        "delegation",
+        "parentGrantRefs",
+        "supportingEvidenceRefs"
+      ],
+      "properties": {
+        "grantId": { "$ref": "#/$defs/identifier" },
+        "grantorIdentityRef": { "$ref": "#/$defs/identifier" },
+        "granteeIdentityRef": { "$ref": "#/$defs/identifier" },
+        "role": { "$ref": "#/$defs/identifier" },
+        "scope": { "$ref": "#/$defs/authorityScope" },
+        "delegation": { "$ref": "#/$defs/delegation" },
+        "parentGrantRefs": { "$ref": "#/$defs/identifierArray" },
+        "supportingEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "authorityStatusEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grantId", "eventType", "sequence", "reasonCode", "supportingEvidenceRefs"],
+      "properties": {
+        "grantId": { "$ref": "#/$defs/identifier" },
+        "eventType": {
+          "enum": ["ACTIVATE", "SUSPEND", "RESUME", "REVOKE", "TERMINATE", "SUPERSEDE"]
+        },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "previousEvent": { "$ref": "#/$defs/lineageLink" },
+        "successorGrantId": { "$ref": "#/$defs/identifier" },
+        "effect": { "enum": ["PROSPECTIVE", "RETROACTIVE_CLAIM"] },
+        "reasonCode": { "$ref": "#/$defs/identifier" },
+        "supportingEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "sequence": { "const": 0 } }, "required": ["sequence"] },
+          "then": { "not": { "required": ["previousEvent"] } },
+          "else": { "required": ["previousEvent"] }
+        },
+        {
+          "if": {
+            "properties": { "eventType": { "const": "SUPERSEDE" } },
+            "required": ["eventType"]
+          },
+          "then": { "required": ["successorGrantId"] }
+        }
+      ]
+    }
+  }
+}

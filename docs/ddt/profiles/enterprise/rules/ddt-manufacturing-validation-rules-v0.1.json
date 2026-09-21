@@ -1,0 +1,25 @@
+{
+  "specification": {
+    "standard": "DDT-ENTERPRISE-VALIDATION-RULESET",
+    "version": "0.1.0-draft.1"
+  },
+  "ruleSetId": "ddt.enterprise.manufacturing-controlled-process.rules",
+  "ruleSetVersion": "0.1.0-draft.1",
+  "profileId": "ddt.enterprise.manufacturing-controlled-process",
+  "sufficiencyPolicy": {
+    "requiredEvidenceClasses": [
+      "MACHINE_CALIBRATION_STATE",
+      "MACHINE_TELEMETRY",
+      "QMS_INSPECTION_RESULT"
+    ],
+    "distinctSourcePairs": [
+      {
+        "leftClass": "MACHINE_TELEMETRY",
+        "rightClass": "QMS_INSPECTION_RESULT"
+      }
+    ],
+    "rejectOnConflict": true,
+    "successResult": "SUFFICIENT_WITHIN_PROFILE_SCOPE"
+  },
+  "claimBoundary": "Passing sufficiency rules means only that the exact profile evidence rules were satisfied; it does not establish substantive truth."
+}

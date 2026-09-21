@@ -1,0 +1,89 @@
+{
+  "specification": {
+    "standard": "DDT-IDENTIFIER-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.identifier.rfc9562-uuid-v4",
+  "profileVersion": "0.1.0-draft.1",
+  "normativeReference": {
+    "standardId": "RFC9562",
+    "immutableRef": "https://www.rfc-editor.org/rfc/rfc9562.html",
+    "uuidVersion": 4,
+    "variant": "RFC9562"
+  },
+  "identifierForms": {
+    "record": {
+      "prefix": "urn:uuid:",
+      "uuidVersion": 4,
+      "variant": "RFC9562",
+      "textCase": "LOWERCASE",
+      "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "family": {
+      "prefix": "urn:uuid:",
+      "uuidVersion": 4,
+      "variant": "RFC9562",
+      "textCase": "LOWERCASE",
+      "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "subjectNamespace": {
+      "prefix": "urn:uuid:",
+      "uuidVersion": 4,
+      "variant": "RFC9562",
+      "textCase": "LOWERCASE",
+      "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "generation": {
+    "randomSource": "CSPRNG",
+    "generationStage": "BEFORE_RECORD_COMMITMENT",
+    "timeSemantic": "NONE",
+    "contentDerived": false
+  },
+  "subjectReferencePolicy": {
+    "encoding": "UTF-8",
+    "normalization": "NFC_ALREADY_NORMALIZED",
+    "maxUtf8Bytes": 512,
+    "rejectControlCharacters": true,
+    "rejectUnpairedSurrogates": true,
+    "rejectLeadingTrailingWhitespace": true,
+    "comparison": "EXACT_CODE_POINT_AFTER_VALIDATION"
+  },
+  "collisionPolicy": {
+    "registrarOperation": "ATOMIC_CREATE_IF_ABSENT",
+    "permanentNonReuse": true,
+    "globalIdentifierIndex": "RECORD_FAMILY_SUBJECT_NAMESPACE",
+    "crossRoleReuse": "REJECT",
+    "exactReplay": "RETURN_EXISTING_NO_NEW_POSITION",
+    "conflictingReuse": "REJECT"
+  },
+  "displayIdPolicy": {
+    "globallyUniqueRequired": false,
+    "cryptographicIdentity": false,
+    "relationshipTarget": false,
+    "familyContinuityKey": false
+  },
+  "errorCodes": [
+    "DDT_RECORD_ID_COLLISION_OR_REUSE",
+    "DISPLAY_ID_USED_AS_CRYPTOGRAPHIC_IDENTITY",
+    "EXACT_REPLAY_DETECTED",
+    "FAMILY_ID_COLLISION_OR_REUSE",
+    "FAMILY_ID_MISMATCH",
+    "FAMILY_PREDECESSOR_FORBIDDEN_FOR_GENESIS",
+    "FAMILY_PREDECESSOR_REQUIRED",
+    "IDENTIFIER_SYNTAX_INVALID",
+    "SUBJECT_NAMESPACE_ASSIGNMENT_UNRESOLVED",
+    "SUBJECT_NAMESPACE_SYNTAX_INVALID",
+    "SUBJECT_REFERENCE_CONTROL_CHARACTER",
+    "SUBJECT_REFERENCE_NOT_NFC",
+    "SUBJECT_REFERENCE_TOO_LONG",
+    "SUBJECT_REFERENCE_UNPAIRED_SURROGATE",
+    "SUBJECT_REFERENCE_WHITESPACE_AMBIGUOUS",
+    "UUID_CANONICAL_CASE_INVALID",
+    "UUID_NIL_OR_MAX_FORBIDDEN",
+    "UUID_ROLE_REUSE",
+    "UUID_VARIANT_INVALID",
+    "UUID_VERSION_INVALID"
+  ],
+  "extensions": []
+}

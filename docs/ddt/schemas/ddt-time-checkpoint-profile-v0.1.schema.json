@@ -1,0 +1,349 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/time-checkpoint/0.1.0-draft.1/profile.schema.json",
+  "title": "DDT Time and Checkpoint Profile v0.1 Draft.1",
+  "description": "Machine-readable rules for historical time claims, external time proof, deterministic DDT checkpoints, inclusion and limited completeness claims.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "evidenceStructure",
+    "timeLayers",
+    "claimSemantics",
+    "merkleTree",
+    "checkpoints",
+    "rfc3161",
+    "networkInclusion",
+    "coverage",
+    "resultModel",
+    "preservation",
+    "claimBoundary",
+    "normativeReferences",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-TIME-CHECKPOINT-PROFILE" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "profileId": { "const": "ddt.time-checkpoint.sha256-jcs-v1" },
+    "profileVersion": { "const": "0.1.0-draft.1" },
+    "evidenceStructure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "acceptedEvidenceTypes", "evidenceBytesMustBeDigestBound"],
+      "properties": {
+        "schema": {
+          "allOf": [
+            { "$ref": "#/$defs/artifactReference" },
+            {
+              "properties": {
+                "artifactId": { "const": "DDT-TIME-CHECKPOINT-EVIDENCE-SCHEMA-0.1-DRAFT.1" },
+                "version": { "const": "0.1.0-draft.1" },
+                "digest": {
+                  "properties": {
+                    "algorithm": { "const": "SHA-256" },
+                    "value": { "const": "92041ecdb19dcc63663bdfba310f3013c767ed970f23e838ac06382684908171" }
+                  }
+                },
+                "immutableRef": { "const": "https://diamonddatachain.org/specifications/ddt/time-checkpoint/0.1.0-draft.1/evidence.schema.json" },
+                "mediaType": { "const": "application/schema+json" }
+              },
+              "required": ["immutableRef", "mediaType"]
+            }
+          ]
+        },
+        "acceptedEvidenceTypes": {
+          "const": [
+            "DDT_CHECKPOINT_INCLUSION_PROOF",
+            "DDT_SIGNED_CHECKPOINT",
+            "NETWORK_INCLUSION_PROOF",
+            "RFC3161_TIMESTAMP_TOKEN"
+          ]
+        },
+        "evidenceBytesMustBeDigestBound": { "const": true }
+      }
+    },
+    "timeLayers": {
+      "const": [
+        "DDC_REGISTRATION_TIME_CLAIM",
+        "EXTERNAL_TIME_EVIDENCE",
+        "NETWORK_INCLUSION_ORDER",
+        "SOURCE_SIGNING_TIME_CLAIM",
+        "SUBMISSION_RECEIPT_TIME_CLAIM",
+        "UPSTREAM_EVENT_TIME_CLAIM"
+      ]
+    },
+    "claimSemantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "localClaimMaximumStatus",
+        "validSignatureProvesCreatedTime",
+        "networkBlockTimeIsExternalTimeByDefault",
+        "externalTimestampMinimumClaim",
+        "accuracyAppliedToUpperBound",
+        "timeProofImpliesEventOccurredAtProvenTime"
+      ],
+      "properties": {
+        "localClaimMaximumStatus": { "const": "ASSERTED" },
+        "validSignatureProvesCreatedTime": { "const": false },
+        "networkBlockTimeIsExternalTimeByDefault": { "const": false },
+        "externalTimestampMinimumClaim": { "const": "TARGET_EXISTED_NO_LATER_THAN_PROVEN_UPPER_BOUND" },
+        "accuracyAppliedToUpperBound": { "const": true },
+        "timeProofImpliesEventOccurredAtProvenTime": { "const": false }
+      }
+    },
+    "merkleTree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hashAlgorithm",
+        "leafDomain",
+        "leafCanonicalization",
+        "leafEncoding",
+        "leafPrefixHex",
+        "nodePrefixHex",
+        "nodeChildrenEncoding",
+        "splitRule",
+        "leafOrdering",
+        "padding",
+        "duplicateLastNode",
+        "emptyTreePermitted"
+      ],
+      "properties": {
+        "hashAlgorithm": { "const": "SHA-256" },
+        "leafDomain": { "const": "DDT_CHECKPOINT_LEAF_V1" },
+        "leafCanonicalization": { "const": "RFC8785-JCS" },
+        "leafEncoding": { "const": "UTF-8" },
+        "leafPrefixHex": { "const": "00" },
+        "nodePrefixHex": { "const": "01" },
+        "nodeChildrenEncoding": { "const": "LEFT_32_BYTES_THEN_RIGHT_32_BYTES" },
+        "splitRule": { "const": "LARGEST_POWER_OF_TWO_LESS_THAN_N" },
+        "leafOrdering": { "const": "ASCENDING_SEQUENCE_NO_REORDER" },
+        "padding": { "const": "NONE" },
+        "duplicateLastNode": { "const": false },
+        "emptyTreePermitted": { "const": false }
+      }
+    },
+    "checkpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpointCoreCanonicalization",
+        "checkpointCoreEncoding",
+        "signatureRequired",
+        "previousCheckpointRequiredAfterGenesis",
+        "treeSizeMustEqualCoverageLeafCount",
+        "contiguousRangeCountRule",
+        "independentAnchorRequiredForExternalTime",
+        "unanchoredCheckpointTimeStatus"
+      ],
+      "properties": {
+        "checkpointCoreCanonicalization": { "const": "RFC8785-JCS" },
+        "checkpointCoreEncoding": { "const": "UTF-8" },
+        "signatureRequired": { "const": true },
+        "previousCheckpointRequiredAfterGenesis": { "const": true },
+        "treeSizeMustEqualCoverageLeafCount": { "const": true },
+        "contiguousRangeCountRule": { "const": "LEAF_COUNT_EQUALS_LAST_MINUS_FIRST_PLUS_ONE" },
+        "independentAnchorRequiredForExternalTime": { "const": true },
+        "unanchoredCheckpointTimeStatus": { "const": "ASSERTED" }
+      }
+    },
+    "rfc3161": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tokenEncoding",
+        "messageImprintAlgorithm",
+        "messageImprintAlgorithmOid",
+        "messageImprintExactMatchRequired",
+        "hashAlgorithmOidRequired",
+        "tsaSignatureRequired",
+        "tsaCertificatePathRequired",
+        "timestampingEkuRequired",
+        "policyOidRequired",
+        "historicalCertificateStatusRequired",
+        "accuracyRequiredFromTokenOrPolicy",
+        "nonceCheckedWhenPresent",
+        "unknownCriticalExtensionsRejected"
+      ],
+      "properties": {
+        "tokenEncoding": { "const": "DER" },
+        "messageImprintAlgorithm": { "const": "SHA-256" },
+        "messageImprintAlgorithmOid": { "const": "2.16.840.1.101.3.4.2.1" },
+        "messageImprintExactMatchRequired": { "const": true },
+        "hashAlgorithmOidRequired": { "const": true },
+        "tsaSignatureRequired": { "const": true },
+        "tsaCertificatePathRequired": { "const": true },
+        "timestampingEkuRequired": { "const": true },
+        "policyOidRequired": { "const": true },
+        "historicalCertificateStatusRequired": { "const": true },
+        "accuracyRequiredFromTokenOrPolicy": { "const": true },
+        "nonceCheckedWhenPresent": { "const": true },
+        "unknownCriticalExtensionsRejected": { "const": true }
+      }
+    },
+    "networkInclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exactNetworkProfileRequired",
+        "transactionInclusionRequired",
+        "blockIdentityRequired",
+        "finalityEvidenceRequired",
+        "forkHandlingRequired",
+        "networkOrderSeparateFromExternalUtcTime",
+        "networkProfileMayQualifyAsExternalTime"
+      ],
+      "properties": {
+        "exactNetworkProfileRequired": { "const": true },
+        "transactionInclusionRequired": { "const": true },
+        "blockIdentityRequired": { "const": true },
+        "finalityEvidenceRequired": { "const": true },
+        "forkHandlingRequired": { "const": true },
+        "networkOrderSeparateFromExternalUtcTime": { "const": true },
+        "networkProfileMayQualifyAsExternalTime": { "const": "ONLY_IF_EXPLICITLY_BOUND_AND_INDEPENDENT_TIME_REQUIREMENTS_PASS" }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registeredSequenceContinuityProvesGlobalCompleteness",
+        "closedCoverageContractRequiredForCompleteness",
+        "deterministicSourceSequenceRequired",
+        "sourceStateCommitmentRequired",
+        "independentSourceWitnessRequired",
+        "gapOrCountMismatchResult",
+        "unwitnessedSourceOmissionResult"
+      ],
+      "properties": {
+        "registeredSequenceContinuityProvesGlobalCompleteness": { "const": false },
+        "closedCoverageContractRequiredForCompleteness": { "const": true },
+        "deterministicSourceSequenceRequired": { "const": true },
+        "sourceStateCommitmentRequired": { "const": true },
+        "independentSourceWitnessRequired": { "const": true },
+        "gapOrCountMismatchResult": { "const": "FAIL" },
+        "unwitnessedSourceOmissionResult": { "const": "UNRESOLVED" }
+      }
+    },
+    "resultModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseAxes", "eventHistoryCompletenessAxisRequiredInNextRegistryRevision", "noCrossAxisInference"],
+      "properties": {
+        "baseAxes": {
+          "const": [
+            { "axisId": "EVIDENCE_TIME", "statusClass": "TIME" },
+            { "axisId": "INDEPENDENT_PROVENANCE", "statusClass": "RESOLUTION" },
+            { "axisId": "REGISTRATION_TIME_CLAIM", "statusClass": "TIME" },
+            { "axisId": "REGISTRATION_TIME_PROOF", "statusClass": "TIME" }
+          ]
+        },
+        "eventHistoryCompletenessAxisRequiredInNextRegistryRevision": { "const": true },
+        "noCrossAxisInference": { "const": true }
+      }
+    },
+    "preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "originalEvidenceBytesRequired",
+        "validationDependenciesRequired",
+        "tsaAndNetworkTrustStateRequired",
+        "renewalBeforeSecurityExpiryRequired",
+        "renewalRewritesOriginal"
+      ],
+      "properties": {
+        "originalEvidenceBytesRequired": { "const": true },
+        "validationDependenciesRequired": { "const": true },
+        "tsaAndNetworkTrustStateRequired": { "const": true },
+        "renewalBeforeSecurityExpiryRequired": { "const": true },
+        "renewalRewritesOriginal": { "const": false }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provenTimeDoesNotEstablish", "checkpointInclusionDoesNotEstablish"],
+      "properties": {
+        "provenTimeDoesNotEstablish": {
+          "const": [
+            "EVENT_OCCURRED_AT_TIMESTAMP",
+            "EVENT_HISTORY_COMPLETENESS",
+            "SIGNER_AUTHORITY",
+            "SUBSTANTIVE_TRUTH"
+          ]
+        },
+        "checkpointInclusionDoesNotEstablish": {
+          "const": [
+            "EXTERNAL_UTC_TIME_WITHOUT_ANCHOR",
+            "GLOBAL_EVENT_COMPLETENESS",
+            "RECORD_SUBSTANTIVE_TRUTH"
+          ]
+        }
+      }
+    },
+    "normativeReferences": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["standardId", "immutableRef", "use"],
+        "properties": {
+          "standardId": { "$ref": "#/$defs/identifier" },
+          "immutableRef": { "$ref": "#/$defs/identifier" },
+          "use": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    },
+    "errorCodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/errorCode" }
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/artifactReference" }
+    }
+  },
+  "$defs": {
+    "identifier": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 255 }
+      }
+    },
+    "errorCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,127}$" }
+  }
+}

@@ -1,0 +1,402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/profile.schema.json",
+  "title": "DDT Historical Identity and Authority Profile v0.1 Draft.1",
+  "description": "Schema for a machine-readable DDT profile that resolves historical verification-method, key-lifecycle, signer-identity and authority states as separate axes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "evidenceStructure",
+    "trustModel",
+    "relevantMoment",
+    "keyResolution",
+    "keyLifecycle",
+    "identityResolution",
+    "authorityResolution",
+    "conflictResolution",
+    "resultModel",
+    "privacy",
+    "claimBoundary",
+    "normativeReferences",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-IDENTITY-AUTHORITY-PROFILE" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "profileId": { "const": "ddt.identity-authority.historical-v1" },
+    "profileVersion": { "const": "0.1.0-draft.1" },
+    "evidenceStructure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "acceptedEvidenceTypes", "evidenceBytesMustBeDigestBound"],
+      "properties": {
+        "schema": {
+          "allOf": [
+            { "$ref": "#/$defs/artifactReference" },
+            {
+              "properties": {
+                "artifactId": { "const": "DDT-IDENTITY-AUTHORITY-EVIDENCE-SCHEMA-0.1-DRAFT.1" },
+                "version": { "const": "0.1.0-draft.1" },
+                "digest": {
+                  "properties": {
+                    "algorithm": { "const": "SHA-256" },
+                    "value": { "const": "bd90fc81efa66fb406fefb5d08aaecce04e11f009e13502e0e71464630384e38" }
+                  }
+                },
+                "immutableRef": { "const": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/evidence.schema.json" },
+                "mediaType": { "const": "application/schema+json" }
+              },
+              "required": ["immutableRef", "mediaType"]
+            }
+          ]
+        },
+        "acceptedEvidenceTypes": {
+          "const": [
+            "AUTHORITY_GRANT",
+            "AUTHORITY_STATUS_EVENT",
+            "IDENTITY_BINDING",
+            "IDENTITY_BINDING_STATUS_EVENT",
+            "KEY_LIFECYCLE_EVENT",
+            "VERIFICATION_METHOD_DESCRIPTOR"
+          ]
+        },
+        "evidenceBytesMustBeDigestBound": { "const": true }
+      }
+    },
+    "trustModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ddcIsUniversalIdentityAuthority",
+        "ddcIsUniversalAuthorityIssuer",
+        "trustRootsSource",
+        "exactTrustArtifactsRequired",
+        "unboundCurrentResolverPermitted",
+        "missingTrustConfigurationResult"
+      ],
+      "properties": {
+        "ddcIsUniversalIdentityAuthority": { "const": false },
+        "ddcIsUniversalAuthorityIssuer": { "const": false },
+        "trustRootsSource": { "const": "ENTERPRISE_PROFILE_OR_PRESERVATION_CONTRACT" },
+        "exactTrustArtifactsRequired": { "const": true },
+        "unboundCurrentResolverPermitted": { "const": false },
+        "missingTrustConfigurationResult": { "const": "UNRESOLVED" },
+        "acceptedExternalEvidenceProfiles": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/artifactReference" }
+        }
+      }
+    },
+    "relevantMoment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selectionRequired",
+        "acceptedOrderBases",
+        "createdAtClaimAloneSufficient",
+        "currentStateMaySubstituteHistoricalState",
+        "unprovenMomentResult"
+      ],
+      "properties": {
+        "selectionRequired": { "const": true },
+        "acceptedOrderBases": {
+          "const": [
+            "AUTHORITATIVE_SEQUENCE",
+            "DDT_NETWORK_ORDER",
+            "INDEPENDENT_TIME_PROOF"
+          ]
+        },
+        "createdAtClaimAloneSufficient": { "const": false },
+        "currentStateMaySubstituteHistoricalState": { "const": false },
+        "unprovenMomentResult": { "const": "UNRESOLVED" }
+      }
+    },
+    "keyResolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exactVerificationMethodIdRequired",
+        "historicalDescriptorRequired",
+        "descriptorDigestBindingRequired",
+        "publicKeyFingerprintRequired",
+        "algorithmMatchRequired",
+        "proofPurposeAssociationRequired",
+        "controllerIsSignerIdentity",
+        "keyPossessionIsAuthority",
+        "missingDescriptorResult"
+      ],
+      "properties": {
+        "exactVerificationMethodIdRequired": { "const": true },
+        "historicalDescriptorRequired": { "const": true },
+        "descriptorDigestBindingRequired": { "const": true },
+        "publicKeyFingerprintRequired": { "const": true },
+        "algorithmMatchRequired": { "const": true },
+        "proofPurposeAssociationRequired": { "const": true },
+        "controllerIsSignerIdentity": { "const": false },
+        "keyPossessionIsAuthority": { "const": false },
+        "missingDescriptorResult": { "const": "UNRESOLVED" }
+      }
+    },
+    "keyLifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recognizedEvents",
+        "eventLineageRequired",
+        "continuousSequenceRequired",
+        "closedCoverageRequiredForActive",
+        "absenceOfRevocationProvesActive",
+        "laterRevocationAutomaticallyInvalidatesEarlierUse",
+        "retroactiveClaimsRewriteHistory",
+        "conflictPolicy",
+        "states"
+      ],
+      "properties": {
+        "recognizedEvents": {
+          "const": [
+            "ACTIVATE",
+            "COMPROMISE_DECLARED",
+            "EXPIRE",
+            "RESUME",
+            "REVOKE",
+            "ROTATE_OUT",
+            "SUSPEND"
+          ]
+        },
+        "eventLineageRequired": { "const": true },
+        "continuousSequenceRequired": { "const": true },
+        "closedCoverageRequiredForActive": { "const": true },
+        "absenceOfRevocationProvesActive": { "const": false },
+        "laterRevocationAutomaticallyInvalidatesEarlierUse": { "const": false },
+        "retroactiveClaimsRewriteHistory": { "const": false },
+        "conflictPolicy": { "const": "AMBIGUOUS_UNLESS_BOUND_PRECEDENCE_RULE_RESOLVES" },
+        "states": {
+          "const": [
+            "ACTIVE",
+            "COMPROMISE_EFFECT_UNRESOLVED",
+            "EXPIRED",
+            "REVOKED",
+            "ROTATED_OUT",
+            "SUSPENDED",
+            "UNRESOLVED"
+          ]
+        }
+      }
+    },
+    "identityResolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bindingEvidenceRequired",
+        "issuerTrustRequired",
+        "historicalBindingStatusRequired",
+        "keyControlAloneEstablishesIdentity",
+        "selfAssertionMaximumStatus",
+        "unavailableRequiredEvidenceResult",
+        "statuses"
+      ],
+      "properties": {
+        "bindingEvidenceRequired": { "const": true },
+        "issuerTrustRequired": { "const": true },
+        "historicalBindingStatusRequired": { "const": true },
+        "keyControlAloneEstablishesIdentity": { "const": false },
+        "selfAssertionMaximumStatus": { "const": "ASSERTED" },
+        "unavailableRequiredEvidenceResult": { "const": "UNRESOLVED" },
+        "statuses": {
+          "const": ["ASSERTED", "VERIFIED", "AMBIGUOUS", "UNRESOLVED", "FAIL"]
+        }
+      }
+    },
+    "authorityResolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grantEvidenceRequired",
+        "grantorAuthorityRequired",
+        "fullDelegationChainRequired",
+        "scopeDimensions",
+        "scopeAmplificationForbidden",
+        "delegationDepthEnforced",
+        "historicalGrantStatusRequired",
+        "validSignatureAloneEstablishesAuthority",
+        "roleLabelAloneEstablishesAuthority",
+        "scopeMismatchResult",
+        "incompleteChainResult",
+        "statuses"
+      ],
+      "properties": {
+        "grantEvidenceRequired": { "const": true },
+        "grantorAuthorityRequired": { "const": true },
+        "fullDelegationChainRequired": { "const": true },
+        "scopeDimensions": {
+          "const": [
+            "ACTION",
+            "DOMAIN",
+            "ORGANIZATION",
+            "PROOF_PURPOSE",
+            "RECORD_TYPE",
+            "SUBJECT_NAMESPACE"
+          ]
+        },
+        "scopeAmplificationForbidden": { "const": true },
+        "delegationDepthEnforced": { "const": true },
+        "historicalGrantStatusRequired": { "const": true },
+        "validSignatureAloneEstablishesAuthority": { "const": false },
+        "roleLabelAloneEstablishesAuthority": { "const": false },
+        "scopeMismatchResult": { "const": "FAIL" },
+        "incompleteChainResult": { "const": "UNRESOLVED" },
+        "statuses": {
+          "const": ["ASSERTED", "VERIFIED", "AMBIGUOUS", "UNRESOLVED", "FAIL"]
+        }
+      }
+    },
+    "conflictResolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "silentLastWriteWins",
+        "currentArtifactOverridesHistoricalArtifact",
+        "cryptographicallyValidConflictResult",
+        "missingEventGapResult",
+        "laterEvidenceCreatesNewVerificationResult"
+      ],
+      "properties": {
+        "silentLastWriteWins": { "const": false },
+        "currentArtifactOverridesHistoricalArtifact": { "const": false },
+        "cryptographicallyValidConflictResult": { "const": "AMBIGUOUS" },
+        "missingEventGapResult": { "const": "UNRESOLVED" },
+        "laterEvidenceCreatesNewVerificationResult": { "const": true }
+      }
+    },
+    "resultModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["axes", "noCrossAxisInference"],
+      "properties": {
+        "axes": {
+          "const": [
+            { "axisId": "SIGNING_KEY_IDENTITY", "statusClass": "RESOLUTION" },
+            { "axisId": "SIGNING_KEY_LIFECYCLE", "statusClass": "LIFECYCLE" },
+            { "axisId": "REGISTRANT_IDENTITY", "statusClass": "RESOLUTION" },
+            { "axisId": "REGISTRANT_AUTHORITY", "statusClass": "RESOLUTION" }
+          ]
+        },
+        "noCrossAxisInference": { "const": true }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "privateKeysForbidden",
+        "secretCredentialsForbidden",
+        "dataMinimizationRequired",
+        "publicCivilIdentityDataRequired",
+        "offChainEvidencePermitted",
+        "offChainEvidenceCommitmentRequired"
+      ],
+      "properties": {
+        "privateKeysForbidden": { "const": true },
+        "secretCredentialsForbidden": { "const": true },
+        "dataMinimizationRequired": { "const": true },
+        "publicCivilIdentityDataRequired": { "const": false },
+        "offChainEvidencePermitted": { "const": true },
+        "offChainEvidenceCommitmentRequired": { "const": true }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verifiedIdentityDoesNotEstablish", "verifiedAuthorityDoesNotEstablish"],
+      "properties": {
+        "verifiedIdentityDoesNotEstablish": {
+          "const": [
+            "AUTHORITY",
+            "CONTENT_CORRECTNESS",
+            "EVENT_HISTORY_COMPLETENESS",
+            "SUBSTANTIVE_TRUTH"
+          ]
+        },
+        "verifiedAuthorityDoesNotEstablish": {
+          "const": [
+            "DECISION_QUALITY",
+            "EVENT_HISTORY_COMPLETENESS",
+            "LEGAL_VALIDITY_OUTSIDE_BOUND_PROFILE",
+            "SUBSTANTIVE_TRUTH"
+          ]
+        }
+      }
+    },
+    "normativeReferences": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["standardId", "immutableRef", "use"],
+        "properties": {
+          "standardId": { "$ref": "#/$defs/identifier" },
+          "immutableRef": { "$ref": "#/$defs/identifier" },
+          "use": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    },
+    "errorCodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/errorCode" }
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/artifactReference" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 255 }
+      }
+    },
+    "errorCode": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{2,127}$"
+    }
+  }
+}

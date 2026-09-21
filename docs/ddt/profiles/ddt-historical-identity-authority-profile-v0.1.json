@@ -1,0 +1,224 @@
+{
+  "specification": {
+    "standard": "DDT-IDENTITY-AUTHORITY-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.identity-authority.historical-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "evidenceStructure": {
+    "schema": {
+      "artifactId": "DDT-IDENTITY-AUTHORITY-EVIDENCE-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "bd90fc81efa66fb406fefb5d08aaecce04e11f009e13502e0e71464630384e38"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/evidence.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    "acceptedEvidenceTypes": [
+      "AUTHORITY_GRANT",
+      "AUTHORITY_STATUS_EVENT",
+      "IDENTITY_BINDING",
+      "IDENTITY_BINDING_STATUS_EVENT",
+      "KEY_LIFECYCLE_EVENT",
+      "VERIFICATION_METHOD_DESCRIPTOR"
+    ],
+    "evidenceBytesMustBeDigestBound": true
+  },
+  "trustModel": {
+    "ddcIsUniversalIdentityAuthority": false,
+    "ddcIsUniversalAuthorityIssuer": false,
+    "trustRootsSource": "ENTERPRISE_PROFILE_OR_PRESERVATION_CONTRACT",
+    "exactTrustArtifactsRequired": true,
+    "unboundCurrentResolverPermitted": false,
+    "missingTrustConfigurationResult": "UNRESOLVED",
+    "acceptedExternalEvidenceProfiles": []
+  },
+  "relevantMoment": {
+    "selectionRequired": true,
+    "acceptedOrderBases": [
+      "AUTHORITATIVE_SEQUENCE",
+      "DDT_NETWORK_ORDER",
+      "INDEPENDENT_TIME_PROOF"
+    ],
+    "createdAtClaimAloneSufficient": false,
+    "currentStateMaySubstituteHistoricalState": false,
+    "unprovenMomentResult": "UNRESOLVED"
+  },
+  "keyResolution": {
+    "exactVerificationMethodIdRequired": true,
+    "historicalDescriptorRequired": true,
+    "descriptorDigestBindingRequired": true,
+    "publicKeyFingerprintRequired": true,
+    "algorithmMatchRequired": true,
+    "proofPurposeAssociationRequired": true,
+    "controllerIsSignerIdentity": false,
+    "keyPossessionIsAuthority": false,
+    "missingDescriptorResult": "UNRESOLVED"
+  },
+  "keyLifecycle": {
+    "recognizedEvents": [
+      "ACTIVATE",
+      "COMPROMISE_DECLARED",
+      "EXPIRE",
+      "RESUME",
+      "REVOKE",
+      "ROTATE_OUT",
+      "SUSPEND"
+    ],
+    "eventLineageRequired": true,
+    "continuousSequenceRequired": true,
+    "closedCoverageRequiredForActive": true,
+    "absenceOfRevocationProvesActive": false,
+    "laterRevocationAutomaticallyInvalidatesEarlierUse": false,
+    "retroactiveClaimsRewriteHistory": false,
+    "conflictPolicy": "AMBIGUOUS_UNLESS_BOUND_PRECEDENCE_RULE_RESOLVES",
+    "states": [
+      "ACTIVE",
+      "COMPROMISE_EFFECT_UNRESOLVED",
+      "EXPIRED",
+      "REVOKED",
+      "ROTATED_OUT",
+      "SUSPENDED",
+      "UNRESOLVED"
+    ]
+  },
+  "identityResolution": {
+    "bindingEvidenceRequired": true,
+    "issuerTrustRequired": true,
+    "historicalBindingStatusRequired": true,
+    "keyControlAloneEstablishesIdentity": false,
+    "selfAssertionMaximumStatus": "ASSERTED",
+    "unavailableRequiredEvidenceResult": "UNRESOLVED",
+    "statuses": [
+      "ASSERTED",
+      "VERIFIED",
+      "AMBIGUOUS",
+      "UNRESOLVED",
+      "FAIL"
+    ]
+  },
+  "authorityResolution": {
+    "grantEvidenceRequired": true,
+    "grantorAuthorityRequired": true,
+    "fullDelegationChainRequired": true,
+    "scopeDimensions": [
+      "ACTION",
+      "DOMAIN",
+      "ORGANIZATION",
+      "PROOF_PURPOSE",
+      "RECORD_TYPE",
+      "SUBJECT_NAMESPACE"
+    ],
+    "scopeAmplificationForbidden": true,
+    "delegationDepthEnforced": true,
+    "historicalGrantStatusRequired": true,
+    "validSignatureAloneEstablishesAuthority": false,
+    "roleLabelAloneEstablishesAuthority": false,
+    "scopeMismatchResult": "FAIL",
+    "incompleteChainResult": "UNRESOLVED",
+    "statuses": [
+      "ASSERTED",
+      "VERIFIED",
+      "AMBIGUOUS",
+      "UNRESOLVED",
+      "FAIL"
+    ]
+  },
+  "conflictResolution": {
+    "silentLastWriteWins": false,
+    "currentArtifactOverridesHistoricalArtifact": false,
+    "cryptographicallyValidConflictResult": "AMBIGUOUS",
+    "missingEventGapResult": "UNRESOLVED",
+    "laterEvidenceCreatesNewVerificationResult": true
+  },
+  "resultModel": {
+    "axes": [
+      {
+        "axisId": "SIGNING_KEY_IDENTITY",
+        "statusClass": "RESOLUTION"
+      },
+      {
+        "axisId": "SIGNING_KEY_LIFECYCLE",
+        "statusClass": "LIFECYCLE"
+      },
+      {
+        "axisId": "REGISTRANT_IDENTITY",
+        "statusClass": "RESOLUTION"
+      },
+      {
+        "axisId": "REGISTRANT_AUTHORITY",
+        "statusClass": "RESOLUTION"
+      }
+    ],
+    "noCrossAxisInference": true
+  },
+  "privacy": {
+    "privateKeysForbidden": true,
+    "secretCredentialsForbidden": true,
+    "dataMinimizationRequired": true,
+    "publicCivilIdentityDataRequired": false,
+    "offChainEvidencePermitted": true,
+    "offChainEvidenceCommitmentRequired": true
+  },
+  "claimBoundary": {
+    "verifiedIdentityDoesNotEstablish": [
+      "AUTHORITY",
+      "CONTENT_CORRECTNESS",
+      "EVENT_HISTORY_COMPLETENESS",
+      "SUBSTANTIVE_TRUTH"
+    ],
+    "verifiedAuthorityDoesNotEstablish": [
+      "DECISION_QUALITY",
+      "EVENT_HISTORY_COMPLETENESS",
+      "LEGAL_VALIDITY_OUTSIDE_BOUND_PROFILE",
+      "SUBSTANTIVE_TRUTH"
+    ]
+  },
+  "normativeReferences": [
+    {
+      "standardId": "W3C-DID-CORE-1.0",
+      "immutableRef": "https://www.w3.org/TR/2022/REC-did-core-20220719/",
+      "use": "EXTERNAL_VERIFICATION_METHOD_AND_CONTROLLER_INTEROPERABILITY"
+    },
+    {
+      "standardId": "W3C-VC-DATA-MODEL-2.0",
+      "immutableRef": "https://www.w3.org/TR/2025/REC-vc-data-model-2.0-20250515/",
+      "use": "EXTERNAL_IDENTITY_AUTHORITY_CREDENTIAL_INTEROPERABILITY"
+    },
+    {
+      "standardId": "RFC5280",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc5280.html",
+      "use": "EXTERNAL_PKI_CERTIFICATE_AND_REVOCATION_INTEROPERABILITY"
+    }
+  ],
+  "errorCodes": [
+    "AUTHORITY_EVIDENCE_UNAVAILABLE",
+    "AUTHORITY_GRANT_CHAIN_INCOMPLETE",
+    "AUTHORITY_GRANT_INVALID",
+    "AUTHORITY_SCOPE_MISMATCH",
+    "AUTHORITY_STATE_AMBIGUOUS",
+    "AUTHORITY_STATUS_UNRESOLVED",
+    "CURRENT_STATE_SUBSTITUTION_FORBIDDEN",
+    "EVIDENCE_DIGEST_MISMATCH",
+    "EVIDENCE_ISSUER_AUTHORITY_UNRESOLVED",
+    "HISTORICAL_MOMENT_UNRESOLVED",
+    "IDENTITY_BINDING_AMBIGUOUS",
+    "IDENTITY_BINDING_INVALID",
+    "IDENTITY_BINDING_UNAVAILABLE",
+    "IDENTITY_BINDING_UNRESOLVED",
+    "KEY_ALGORITHM_MISMATCH",
+    "KEY_CONTROLLER_UNRESOLVED",
+    "KEY_DESCRIPTOR_UNAVAILABLE",
+    "KEY_LIFECYCLE_CONFLICT",
+    "KEY_LIFECYCLE_GAP",
+    "KEY_LIFECYCLE_UNRESOLVED",
+    "KEY_PURPOSE_MISMATCH",
+    "PUBLIC_KEY_FINGERPRINT_MISMATCH",
+    "RETROACTIVE_EFFECT_UNRESOLVED",
+    "TRUST_CONFIGURATION_UNAVAILABLE",
+    "VERIFICATION_METHOD_MISMATCH"
+  ],
+  "extensions": []
+}

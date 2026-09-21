@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/registration-result/0.1.0-draft.1/schema.json",
+  "title": "DDT Registration Result v0.1 Draft.1",
+  "description": "Immutable post-registration result binding one successfully registered DDT Record to its permanent DDT Number, registered sequence position and Registrar mechanism.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "resultId",
+    "sequenceDomain",
+    "registrationSequence",
+    "ddtNumber",
+    "ddtRecordId",
+    "recordHash",
+    "registrationStatementHash",
+    "registrar",
+    "registrationTimeClaim",
+    "mechanismEvidenceRefs"
+  ],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "resultId": { "$ref": "#/$defs/uuidUrn" },
+    "sequenceDomain": { "$ref": "#/$defs/uuidUrn" },
+    "registrationSequence": { "$ref": "#/$defs/registrationSequence" },
+    "ddtNumber": { "$ref": "#/$defs/ddtNumber" },
+    "ddtRecordId": { "$ref": "#/$defs/uuidUrn" },
+    "recordHash": { "$ref": "#/$defs/structuralDigest" },
+    "registrationStatementHash": { "$ref": "#/$defs/structuralDigest" },
+    "registrar": { "$ref": "#/$defs/registrar" },
+    "registrationTimeClaim": { "$ref": "#/$defs/dateTime" },
+    "mechanismEvidenceRefs": { "$ref": "#/$defs/mechanismEvidenceRefs" }
+  },
+  "$defs": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-REGISTRATION-RESULT" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "uuidUrn": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "registrationSequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "ddtNumber": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 64,
+      "pattern": "^DDT-[0-9]+$"
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "registrar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registrarId", "mechanism"],
+      "properties": {
+        "registrarId": { "$ref": "#/$defs/uuidUrn" },
+        "mechanism": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Z][A-Z0-9_]{2,127}$"
+        }
+      }
+    },
+    "mechanismEvidenceRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "mechanismEvidenceRefs": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/mechanismEvidenceRef" }
+    }
+  }
+}

@@ -1,0 +1,490 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/network-finality/0.2.0-draft.1/evidence.schema.json",
+  "title": "DDT Deterministic Test Network Finality Evidence v0.2 Draft.1",
+  "description": "Test-only evidence carrier preserving v0.1 network/finality semantics while using direct common Signature Proof v0.2 finality attestations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "evidenceId",
+    "networkProfile",
+    "requestedTarget",
+    "transaction",
+    "inclusion",
+    "block",
+    "finalityCertificate",
+    "ancestryEvidenceRefs",
+    "conflictObservation",
+    "externalTimeEvidenceRefs"
+  ],
+  "properties": {
+    "specification": {
+      "$ref": "#/$defs/specification"
+    },
+    "evidenceId": {
+      "$ref": "#/$defs/identifier"
+    },
+    "networkProfile": {
+      "$ref": "#/$defs/artifactReference"
+    },
+    "requestedTarget": {
+      "$ref": "#/$defs/target"
+    },
+    "transaction": {
+      "$ref": "#/$defs/transactionCarrier"
+    },
+    "inclusion": {
+      "$ref": "#/$defs/inclusionProof"
+    },
+    "block": {
+      "$ref": "#/$defs/blockCarrier"
+    },
+    "finalityCertificate": {
+      "$ref": "#/$defs/finalityCertificateCarrier"
+    },
+    "ancestryEvidenceRefs": {
+      "$ref": "#/$defs/nonEmptyIdentifierArray"
+    },
+    "conflictObservation": {
+      "$ref": "#/$defs/conflictObservation"
+    },
+    "externalTimeEvidenceRefs": {
+      "$ref": "#/$defs/identifierArray"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "safeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-NETWORK-FINALITY-EVIDENCE"
+        },
+        "version": {
+          "const": "0.2.0-draft.1"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetType",
+        "targetDigest"
+      ],
+      "properties": {
+        "targetType": {
+          "enum": [
+            "DDT_RECORD_HASH",
+            "DDT_REGISTRATION_STATEMENT_HASH",
+            "DDT_CHECKPOINT_CORE_HASH",
+            "DDT_COVERAGE_STATEMENT_CORE_HASH"
+          ]
+        },
+        "targetDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "transactionCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "networkId",
+        "nonce",
+        "target",
+        "submitterRef",
+        "submittedAtClaim"
+      ],
+      "properties": {
+        "domain": {
+          "const": "DDT_TEST_TRANSACTION_V1"
+        },
+        "networkId": {
+          "const": "ddt-test-ledger-v1"
+        },
+        "nonce": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "target": {
+          "$ref": "#/$defs/target"
+        },
+        "submitterRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "submittedAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadataCommitment": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "transactionCarrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transactionCore",
+        "transactionId",
+        "transactionBytesCommitment",
+        "extractedTarget"
+      ],
+      "properties": {
+        "transactionCore": {
+          "$ref": "#/$defs/transactionCore"
+        },
+        "transactionId": {
+          "$ref": "#/$defs/digest"
+        },
+        "transactionBytesCommitment": {
+          "$ref": "#/$defs/digest"
+        },
+        "extractedTarget": {
+          "$ref": "#/$defs/target"
+        }
+      }
+    },
+    "transactionLeaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "transactionId",
+        "transactionCommitment",
+        "transactionIndex"
+      ],
+      "properties": {
+        "domain": {
+          "const": "DDT_NETWORK_TRANSACTION_LEAF_V1"
+        },
+        "transactionId": {
+          "$ref": "#/$defs/digest"
+        },
+        "transactionCommitment": {
+          "$ref": "#/$defs/digest"
+        },
+        "transactionIndex": {
+          "$ref": "#/$defs/safeInteger"
+        }
+      }
+    },
+    "inclusionProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transactionLeaf",
+        "leafHash",
+        "transactionIndex",
+        "treeSize",
+        "auditPath",
+        "expectedTransactionRoot",
+        "blockId",
+        "blockHeight"
+      ],
+      "properties": {
+        "transactionLeaf": {
+          "$ref": "#/$defs/transactionLeaf"
+        },
+        "leafHash": {
+          "$ref": "#/$defs/digest"
+        },
+        "transactionIndex": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "treeSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "auditPath": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "expectedTransactionRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "blockId": {
+          "$ref": "#/$defs/digest"
+        },
+        "blockHeight": {
+          "$ref": "#/$defs/safeInteger"
+        }
+      }
+    },
+    "blockHeaderCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "networkId",
+        "genesisCommitment",
+        "height",
+        "parentBlockId",
+        "transactionCount",
+        "transactionRoot",
+        "stateRoot",
+        "validatorSetId",
+        "proposedAtClaim"
+      ],
+      "properties": {
+        "domain": {
+          "const": "DDT_TEST_BLOCK_HEADER_V1"
+        },
+        "networkId": {
+          "const": "ddt-test-ledger-v1"
+        },
+        "genesisCommitment": {
+          "$ref": "#/$defs/digest"
+        },
+        "height": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "parentBlockId": {
+          "$ref": "#/$defs/digest"
+        },
+        "transactionCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "transactionRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "stateRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "validatorSetId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "proposedAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "blockCarrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blockHeaderCore",
+        "blockId"
+      ],
+      "properties": {
+        "blockHeaderCore": {
+          "$ref": "#/$defs/blockHeaderCore"
+        },
+        "blockId": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "finalityCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "networkId",
+        "blockId",
+        "blockHeight",
+        "round",
+        "validatorSet",
+        "finalityModel"
+      ],
+      "properties": {
+        "domain": {
+          "const": "DDT_TEST_FINALITY_CERTIFICATE_V1"
+        },
+        "networkId": {
+          "const": "ddt-test-ledger-v1"
+        },
+        "blockId": {
+          "$ref": "#/$defs/digest"
+        },
+        "blockHeight": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "round": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "validatorSet": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "finalityModel": {
+          "const": "DETERMINISTIC_CERTIFICATE"
+        }
+      }
+    },
+    "finalityCertificateCarrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finalityCore",
+        "finalityCoreHash",
+        "finalityProofs",
+        "historicalTrustEvidenceRefs"
+      ],
+      "properties": {
+        "finalityCore": {
+          "$ref": "#/$defs/finalityCore"
+        },
+        "finalityCoreHash": {
+          "$ref": "#/$defs/digest"
+        },
+        "finalityProofs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/finalityProof"
+          }
+        },
+        "historicalTrustEvidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdentifierArray"
+        }
+      }
+    },
+    "conflictObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "procedureProfile",
+        "observedFromHeight",
+        "observedThroughHeight",
+        "observationSourceRefs",
+        "incompatibleFinalityEvidenceRefs"
+      ],
+      "properties": {
+        "procedureProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "observedFromHeight": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "observedThroughHeight": {
+          "$ref": "#/$defs/safeInteger"
+        },
+        "observationSourceRefs": {
+          "$ref": "#/$defs/nonEmptyIdentifierArray"
+        },
+        "incompatibleFinalityEvidenceRefs": {
+          "$ref": "#/$defs/identifierArray"
+        },
+        "observedAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "finalityProof": {
+      "allOf": [
+        {
+          "$ref": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json"
+        },
+        {
+          "properties": {
+            "proofPurpose": {
+              "const": "NETWORK_FINALITY_ATTESTATION"
+            },
+            "signedObject": {
+              "properties": {
+                "type": {
+                  "const": "FINALITY_CORE_HASH"
+                }
+              },
+              "required": [
+                "type",
+                "digest"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

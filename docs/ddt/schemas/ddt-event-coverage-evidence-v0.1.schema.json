@@ -1,0 +1,456 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.1.0-draft.1/evidence.schema.json",
+  "title": "DDT Event Coverage Evidence v0.1 Draft.1",
+  "description": "Evidence objects for source positions, coverage leaves, tombstones, closed coverage statements and independent witness attestations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specification", "evidenceId", "evidenceType", "body"],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "evidenceId": { "$ref": "#/$defs/identifier" },
+    "evidenceType": {
+      "enum": [
+        "SOURCE_EVENT_POSITION",
+        "COVERAGE_LEAF",
+        "COVERAGE_TOMBSTONE",
+        "SOURCE_COVERAGE_STATEMENT",
+        "SOURCE_WITNESS_ATTESTATION"
+      ]
+    },
+    "body": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "SOURCE_EVENT_POSITION" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/sourceEventPosition" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "COVERAGE_LEAF" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/coverageLeaf" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "COVERAGE_TOMBSTONE" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/coverageTombstone" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "SOURCE_COVERAGE_STATEMENT" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/sourceCoverageStatement" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "SOURCE_WITNESS_ATTESTATION" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/sourceWitnessAttestation" } } }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "safeSequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/digest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "artifactLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-EVENT-COVERAGE-EVIDENCE" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "sourceCoordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractId",
+        "contractVersion",
+        "sourceId",
+        "sourceNamespace",
+        "sequenceDomain",
+        "sourceSequence"
+      ],
+      "properties": {
+        "contractId": { "$ref": "#/$defs/identifier" },
+        "contractVersion": { "$ref": "#/$defs/version" },
+        "sourceId": { "$ref": "#/$defs/identifier" },
+        "sourceNamespace": { "$ref": "#/$defs/identifier" },
+        "sequenceDomain": { "$ref": "#/$defs/identifier" },
+        "sourceSequence": { "$ref": "#/$defs/safeSequence" }
+      }
+    },
+    "sourceEventPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coverageContract",
+        "coordinates",
+        "sourceEventId",
+        "eventType",
+        "sourceEventCommitment",
+        "durableCommitProofRefs"
+      ],
+      "properties": {
+        "coverageContract": { "$ref": "#/$defs/artifactReference" },
+        "coordinates": { "$ref": "#/$defs/sourceCoordinates" },
+        "sourceEventId": { "$ref": "#/$defs/identifier" },
+        "eventType": { "$ref": "#/$defs/identifier" },
+        "sourceEventCommitment": { "$ref": "#/$defs/digest" },
+        "durableCommitProofRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" },
+        "emittedAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "disposition": {
+      "enum": [
+        "REGISTERED",
+        "PENDING_WITHIN_ALLOWED_DELAY",
+        "FAILED_REGISTRATION",
+        "EXCLUDED_BY_CONTRACT",
+        "VOIDED_SOURCE_POSITION"
+      ]
+    },
+    "coverageLeaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "contractId",
+        "contractVersion",
+        "sourceId",
+        "sequenceDomain",
+        "sourceSequence",
+        "disposition"
+      ],
+      "properties": {
+        "domain": { "const": "DDT_EVENT_COVERAGE_LEAF_V1" },
+        "contractId": { "$ref": "#/$defs/identifier" },
+        "contractVersion": { "$ref": "#/$defs/version" },
+        "sourceId": { "$ref": "#/$defs/identifier" },
+        "sequenceDomain": { "$ref": "#/$defs/identifier" },
+        "sourceSequence": { "$ref": "#/$defs/safeSequence" },
+        "sourceEventId": { "$ref": "#/$defs/identifier" },
+        "sourceEventCommitment": { "$ref": "#/$defs/digest" },
+        "disposition": { "$ref": "#/$defs/disposition" },
+        "ddtRecordId": { "$ref": "#/$defs/identifier" },
+        "ddtRecordHash": { "$ref": "#/$defs/digest" },
+        "tombstoneCommitment": { "$ref": "#/$defs/digest" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "disposition": { "const": "REGISTERED" } },
+            "required": ["disposition"]
+          },
+          "then": {
+            "required": [
+              "sourceEventId",
+              "sourceEventCommitment",
+              "ddtRecordId",
+              "ddtRecordHash"
+            ],
+            "not": { "required": ["tombstoneCommitment"] }
+          },
+          "else": {
+            "required": ["tombstoneCommitment"],
+            "not": {
+              "anyOf": [
+                { "required": ["ddtRecordId"] },
+                { "required": ["ddtRecordHash"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "disposition": { "not": { "const": "VOIDED_SOURCE_POSITION" } }
+            },
+            "required": ["disposition"]
+          },
+          "then": {
+            "required": ["sourceEventId", "sourceEventCommitment"]
+          }
+        }
+      ]
+    },
+    "coverageTombstone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tombstoneCore",
+        "tombstoneCoreHash",
+        "proofRefs"
+      ],
+      "properties": {
+        "tombstoneCore": { "$ref": "#/$defs/coverageTombstoneCore" },
+        "tombstoneCoreHash": { "$ref": "#/$defs/digest" },
+        "proofRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" }
+      }
+    },
+    "coverageTombstoneCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "tombstoneId",
+        "coverageContract",
+        "coordinates",
+        "disposition",
+        "reasonCode",
+        "selectionEvidenceRefs"
+      ],
+      "properties": {
+        "domain": { "const": "DDT_EVENT_COVERAGE_TOMBSTONE_V1" },
+        "tombstoneId": { "$ref": "#/$defs/identifier" },
+        "coverageContract": { "$ref": "#/$defs/artifactReference" },
+        "coordinates": { "$ref": "#/$defs/sourceCoordinates" },
+        "sourceEventId": { "$ref": "#/$defs/identifier" },
+        "sourceEventCommitment": { "$ref": "#/$defs/digest" },
+        "disposition": {
+          "enum": [
+            "FAILED_REGISTRATION",
+            "EXCLUDED_BY_CONTRACT",
+            "VOIDED_SOURCE_POSITION"
+          ]
+        },
+        "reasonCode": { "$ref": "#/$defs/identifier" },
+        "selectionEvidenceRefs": { "$ref": "#/$defs/identifierArray" },
+        "retryOrSuccessorRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "disposition": { "not": { "const": "VOIDED_SOURCE_POSITION" } }
+            },
+            "required": ["disposition"]
+          },
+          "then": {
+            "required": ["sourceEventId", "sourceEventCommitment"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "disposition": { "const": "EXCLUDED_BY_CONTRACT" } },
+            "required": ["disposition"]
+          },
+          "then": {
+            "properties": { "selectionEvidenceRefs": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "dispositionCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "REGISTERED",
+        "PENDING_WITHIN_ALLOWED_DELAY",
+        "FAILED_REGISTRATION",
+        "EXCLUDED_BY_CONTRACT",
+        "VOIDED_SOURCE_POSITION"
+      ],
+      "properties": {
+        "REGISTERED": { "$ref": "#/$defs/safeSequence" },
+        "PENDING_WITHIN_ALLOWED_DELAY": { "$ref": "#/$defs/safeSequence" },
+        "FAILED_REGISTRATION": { "$ref": "#/$defs/safeSequence" },
+        "EXCLUDED_BY_CONTRACT": { "$ref": "#/$defs/safeSequence" },
+        "VOIDED_SOURCE_POSITION": { "$ref": "#/$defs/safeSequence" }
+      }
+    },
+    "sourceCoverageStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "statementCore",
+        "statementCoreHash",
+        "proofRefs"
+      ],
+      "properties": {
+        "statementCore": { "$ref": "#/$defs/sourceCoverageStatementCore" },
+        "statementCoreHash": { "$ref": "#/$defs/digest" },
+        "proofRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" }
+      }
+    },
+    "sourceCoverageStatementCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "statementId",
+        "coverageContract",
+        "sourceId",
+        "sequenceDomain",
+        "firstSequence",
+        "endSequenceExclusive",
+        "positionCount",
+        "dispositionCounts",
+        "eventSetRoot",
+        "sourceStateCommitment",
+        "closedAtClaim",
+        "signerIdentityRef"
+      ],
+      "properties": {
+        "domain": { "const": "DDT_SOURCE_COVERAGE_STATEMENT_V1" },
+        "statementId": { "$ref": "#/$defs/identifier" },
+        "coverageContract": { "$ref": "#/$defs/artifactReference" },
+        "sourceId": { "$ref": "#/$defs/identifier" },
+        "sequenceDomain": { "$ref": "#/$defs/identifier" },
+        "firstSequence": { "$ref": "#/$defs/safeSequence" },
+        "endSequenceExclusive": { "$ref": "#/$defs/safeSequence" },
+        "positionCount": { "$ref": "#/$defs/safeSequence" },
+        "dispositionCounts": { "$ref": "#/$defs/dispositionCounts" },
+        "eventSetRoot": { "$ref": "#/$defs/digest" },
+        "sourceStateCommitment": { "$ref": "#/$defs/digest" },
+        "previousStatement": { "$ref": "#/$defs/artifactLink" },
+        "closedAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signerIdentityRef": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "sourceWitnessAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attestationCore",
+        "attestationCoreHash",
+        "proofRefs",
+        "timeEvidenceRefs"
+      ],
+      "properties": {
+        "attestationCore": { "$ref": "#/$defs/sourceWitnessAttestationCore" },
+        "attestationCoreHash": { "$ref": "#/$defs/digest" },
+        "proofRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" },
+        "timeEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "sourceWitnessAttestationCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "attestationId",
+        "coverageContract",
+        "coverageStatement",
+        "witnessIdentityRef",
+        "observationScopes",
+        "observedEventSetRoot",
+        "observedSourceStateCommitment",
+        "independenceEvidenceRefs"
+      ],
+      "properties": {
+        "domain": { "const": "DDT_SOURCE_WITNESS_ATTESTATION_V1" },
+        "attestationId": { "$ref": "#/$defs/identifier" },
+        "coverageContract": { "$ref": "#/$defs/artifactReference" },
+        "coverageStatement": { "$ref": "#/$defs/artifactLink" },
+        "witnessIdentityRef": { "$ref": "#/$defs/identifier" },
+        "observationScopes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "SOURCE_STATE",
+              "ALLOCATION_BOUNDARY",
+              "EVENT_SET_ROOT",
+              "DDT_BINDINGS",
+              "TOMBSTONES",
+              "SELECTION_REPRODUCTION",
+              "GAP_DETECTION"
+            ]
+          }
+        },
+        "observedEventSetRoot": { "$ref": "#/$defs/digest" },
+        "observedSourceStateCommitment": { "$ref": "#/$defs/digest" },
+        "independenceEvidenceRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" },
+        "witnessedAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

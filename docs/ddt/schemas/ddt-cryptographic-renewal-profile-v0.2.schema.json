@@ -1,0 +1,353 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/cryptographic-renewal/0.2.0-draft.1/profile.schema.json",
+  "title": "DDT Baseline Cryptographic Renewal Profile v0.2 Draft.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "lifecycleStatus",
+    "deploymentStatus",
+    "requiredArtifacts",
+    "construction",
+    "eligibility",
+    "proofPolicy",
+    "timePolicy",
+    "resultModel",
+    "claimBoundary",
+    "errorCodes"
+  ],
+  "properties": {
+    "specification": {
+      "$ref": "#/$defs/specification"
+    },
+    "profileId": {
+      "const": "ddt.cryptographic-renewal.baseline-test-v2"
+    },
+    "profileVersion": {
+      "const": "0.2.0-draft.1"
+    },
+    "lifecycleStatus": {
+      "const": "DRAFT"
+    },
+    "deploymentStatus": {
+      "const": "TEST_ONLY"
+    },
+    "requiredArtifacts": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/artifactReference"
+      }
+    },
+    "construction": {
+      "$ref": "#/$defs/construction"
+    },
+    "eligibility": {
+      "$ref": "#/$defs/eligibility"
+    },
+    "proofPolicy": {
+      "$ref": "#/$defs/proofPolicy"
+    },
+    "timePolicy": {
+      "$ref": "#/$defs/timePolicy"
+    },
+    "resultModel": {
+      "$ref": "#/$defs/resultModel"
+    },
+    "claimBoundary": {
+      "$ref": "#/$defs/claimBoundary"
+    },
+    "errorCodes": {
+      "type": "array",
+      "minItems": 31,
+      "maxItems": 31,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^RENEWAL_[A-Z0-9_]+$"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-CRYPTOGRAPHIC-RENEWAL-PROFILE"
+        },
+        "version": {
+          "const": "0.2.0-draft.1"
+        }
+      }
+    },
+    "construction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "canonicalization",
+        "encoding",
+        "coreHashAlgorithm",
+        "coreHashInput",
+        "proofsExcludedFromCore",
+        "timeEvidenceExcludedFromCore"
+      ],
+      "properties": {
+        "domain": {
+          "const": "DDT_CRYPTOGRAPHIC_RENEWAL_CORE_V1"
+        },
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "encoding": {
+          "const": "UTF-8"
+        },
+        "coreHashAlgorithm": {
+          "const": "SHA-256"
+        },
+        "coreHashInput": {
+          "const": "UTF8(RFC8785-JCS(renewalCore))"
+        },
+        "proofsExcludedFromCore": {
+          "const": true
+        },
+        "timeEvidenceExcludedFromCore": {
+          "const": true
+        }
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredOriginalProofStatus",
+        "eligibleAlgorithmPolicyStatuses",
+        "ineligibleAlgorithmPolicyStatuses",
+        "lateRenewalProducesContinuity",
+        "failedAttemptMustBePreservable"
+      ],
+      "properties": {
+        "requiredOriginalProofStatus": {
+          "const": "VALID"
+        },
+        "eligibleAlgorithmPolicyStatuses": {
+          "const": [
+            "ACCEPTABLE",
+            "DEPRECATED_BUT_ACCEPTABLE_FOR_RENEWAL"
+          ]
+        },
+        "ineligibleAlgorithmPolicyStatuses": {
+          "const": [
+            "PROHIBITED",
+            "COMPROMISED",
+            "UNKNOWN",
+            "NOT_EVALUATED"
+          ]
+        },
+        "lateRenewalProducesContinuity": {
+          "const": false
+        },
+        "failedAttemptMustBePreservable": {
+          "const": true
+        }
+      }
+    },
+    "proofPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "newSignatureProfile",
+        "requiredProofPurpose",
+        "requiredSignedObjectType",
+        "witnessIdentityRequired",
+        "witnessAuthorityRequired"
+      ],
+      "properties": {
+        "newSignatureProfile": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/artifactReference"
+            },
+            {
+              "properties": {
+                "artifactId": {
+                  "const": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1"
+                },
+                "version": {
+                  "const": "0.2.0-draft.1"
+                }
+              }
+            }
+          ]
+        },
+        "requiredProofPurpose": {
+          "const": "CRYPTOGRAPHIC_RENEWAL_ATTESTATION"
+        },
+        "requiredSignedObjectType": {
+          "const": "RENEWAL_CORE_HASH"
+        },
+        "witnessIdentityRequired": {
+          "const": true
+        },
+        "witnessAuthorityRequired": {
+          "const": true
+        }
+      }
+    },
+    "timePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verifiedAtClaimStatus",
+        "boundClaimIsIndependentTime",
+        "independentTimeRequiresSeparateEvidence",
+        "missingIndependentTimeMayPassWithLimitations"
+      ],
+      "properties": {
+        "verifiedAtClaimStatus": {
+          "const": "ASSERTED"
+        },
+        "boundClaimIsIndependentTime": {
+          "const": false
+        },
+        "independentTimeRequiresSeparateEvidence": {
+          "const": true
+        },
+        "missingIndependentTimeMayPassWithLimitations": {
+          "const": true
+        }
+      }
+    },
+    "resultModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredAxes",
+        "continuityStatuses"
+      ],
+      "properties": {
+        "requiredAxes": {
+          "type": "array",
+          "minItems": 14,
+          "maxItems": 14,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ORIGINAL_BYTES_INTEGRITY",
+              "ORIGINAL_PROOF_INDEPENDENTLY_VERIFIABLE",
+              "ORIGINAL_PROOF_SCOPE_PRESERVED",
+              "ORIGINAL_ALGORITHM_POLICY",
+              "RENEWAL_TARGET_BINDING",
+              "RENEWAL_VERIFICATION_ASSERTION_BOUND",
+              "RENEWAL_RECORD_INTEGRITY",
+              "RENEWAL_SIGNATURE",
+              "RENEWING_WITNESS_IDENTITY",
+              "RENEWING_WITNESS_AUTHORITY",
+              "RENEWAL_TIME_CLAIM",
+              "RENEWAL_TIME_PROOF",
+              "CRYPTOGRAPHIC_CONTINUITY",
+              "SUBSTANTIVE_TRUTH"
+            ]
+          }
+        },
+        "continuityStatuses": {
+          "const": [
+            "PRESERVED",
+            "NOT_PRESERVED",
+            "UNAVAILABLE",
+            "UNRESOLVED",
+            "NOT_APPLICABLE",
+            "NOT_EVALUATED"
+          ]
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "renewalImpliesSubstantiveTruth",
+        "renewalImpliesIndependentTime",
+        "renewalRestoresLostProof",
+        "testProfileImpliesProductionReadiness"
+      ],
+      "properties": {
+        "renewalImpliesSubstantiveTruth": {
+          "const": false
+        },
+        "renewalImpliesIndependentTime": {
+          "const": false
+        },
+        "renewalRestoresLostProof": {
+          "const": false
+        },
+        "testProfileImpliesProductionReadiness": {
+          "const": false
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/relationship-vocabulary/0.1.0-draft.1/schema.json",
+  "title": "DDT Base Relationship Vocabulary v0.1 Draft.1",
+  "description": "Machine-readable schema for the closed DDT base relationship vocabulary used by DDT Envelope v0.3 Draft.2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "vocabularyId",
+    "vocabularyVersion",
+    "lifecycleStatus",
+    "directionModel",
+    "closurePolicy",
+    "inferencePolicy",
+    "targetBindingPolicy",
+    "types",
+    "errorCodes"
+  ],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "vocabularyId": {
+      "const": "https://diamonddatachain.org/vocabularies/ddt-relationships/base"
+    },
+    "vocabularyVersion": { "const": "0.1.0-draft.1" },
+    "lifecycleStatus": { "const": "DRAFT" },
+    "directionModel": { "const": "SOURCE_TO_TARGET" },
+    "closurePolicy": { "const": "CLOSED" },
+    "inferencePolicy": { "$ref": "#/$defs/inferencePolicy" },
+    "targetBindingPolicy": { "$ref": "#/$defs/targetBindingPolicy" },
+    "types": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": { "$ref": "#/$defs/typeDefinition" }
+    },
+    "errorCodes": {
+      "type": "array",
+      "minItems": 15,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/errorCode" }
+    }
+  },
+  "$defs": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-RELATIONSHIP-VOCABULARY" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "inferencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implicitInverseEdges",
+        "implicitTransitiveEdges",
+        "implicitSymmetricEdges",
+        "derivedEdgesMustBeLabeled"
+      ],
+      "properties": {
+        "implicitInverseEdges": { "const": false },
+        "implicitTransitiveEdges": { "const": false },
+        "implicitSymmetricEdges": { "const": false },
+        "derivedEdgesMustBeLabeled": { "const": true }
+      }
+    },
+    "targetBindingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordIdRequired",
+        "recordHashRequired",
+        "registrationTimeResolutionRequired",
+        "selfReferencePermitted",
+        "displayIdPermittedAsTarget"
+      ],
+      "properties": {
+        "recordIdRequired": { "const": true },
+        "recordHashRequired": { "const": true },
+        "registrationTimeResolutionRequired": { "const": true },
+        "selfReferencePermitted": { "const": false },
+        "displayIdPermittedAsTarget": { "const": false }
+      }
+    },
+    "relationshipCode": {
+      "enum": [
+        "REFERENCES",
+        "RESPONDS_TO",
+        "DISPUTES",
+        "CORRECTS",
+        "REMEDIES",
+        "SUPERSEDES",
+        "REVERSES",
+        "REPLACES",
+        "DERIVED_FROM",
+        "CONFIRMS_ASSERTION",
+        "CONTRADICTS_ASSERTION"
+      ]
+    },
+    "typeDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "category",
+        "direction",
+        "definition",
+        "assertedByRequirement",
+        "asserterIdentityRefRequirement",
+        "evidenceRequirement",
+        "semanticScopeRequirement",
+        "authorityRequirement",
+        "effectiveBoundaryRequirement",
+        "targetEffect",
+        "transitive",
+        "symmetric",
+        "impliesTargetInvalidity",
+        "impliesSubstantiveTruth"
+      ],
+      "properties": {
+        "code": { "$ref": "#/$defs/relationshipCode" },
+        "category": {
+          "enum": [
+            "REFERENCE",
+            "DIALOGUE",
+            "SUCCESSION",
+            "REMEDIATION",
+            "PROVENANCE",
+            "ASSERTION_EVALUATION"
+          ]
+        },
+        "direction": { "const": "SOURCE_TO_TARGET" },
+        "definition": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "assertedByRequirement": { "enum": ["OPTIONAL", "REQUIRED"] },
+        "asserterIdentityRefRequirement": { "enum": ["OPTIONAL", "REQUIRED"] },
+        "evidenceRequirement": { "enum": ["OPTIONAL", "AT_LEAST_ONE"] },
+        "semanticScopeRequirement": { "enum": ["NOT_REQUIRED", "PROFILE_DEFINED", "REQUIRED"] },
+        "authorityRequirement": { "enum": ["NOT_REQUIRED", "PROFILE_DEFINED"] },
+        "effectiveBoundaryRequirement": { "enum": ["NOT_REQUIRED", "PROFILE_DEFINED"] },
+        "targetEffect": {
+          "enum": [
+            "NONE",
+            "RESPONSE_ASSERTED",
+            "DISPUTE_ASSERTED",
+            "CORRECTION_ASSERTED",
+            "REMEDY_ASSERTED",
+            "PRECEDENCE_ASSERTED",
+            "REVERSAL_ASSERTED",
+            "SUBSTITUTION_ASSERTED",
+            "DERIVATION_ASSERTED",
+            "CONFIRMATION_ASSERTED",
+            "CONTRADICTION_ASSERTED"
+          ]
+        },
+        "transitive": { "const": false },
+        "symmetric": { "const": false },
+        "impliesTargetInvalidity": { "const": false },
+        "impliesSubstantiveTruth": { "const": false }
+      }
+    },
+    "errorCode": {
+      "enum": [
+        "RELATIONSHIP_TYPE_UNKNOWN",
+        "RELATIONSHIP_EXTENSION_UNBOUND",
+        "RELATIONSHIP_TARGET_SELF",
+        "RELATIONSHIP_TARGET_UNRESOLVED",
+        "RELATIONSHIP_TARGET_AMBIGUOUS",
+        "RELATIONSHIP_TARGET_HASH_MISMATCH",
+        "RELATIONSHIP_DUPLICATE",
+        "RELATIONSHIP_ORDER_INVALID",
+        "RELATIONSHIP_ASSERTED_BY_REQUIRED",
+        "RELATIONSHIP_EVIDENCE_REQUIRED",
+        "RELATIONSHIP_EVIDENCE_UNRESOLVED",
+        "RELATIONSHIP_SCOPE_UNRESOLVED",
+        "RELATIONSHIP_AUTHORITY_UNRESOLVED",
+        "RELATIONSHIP_EFFECTIVE_BOUNDARY_UNRESOLVED",
+        "RELATIONSHIP_CONFLICT_UNRESOLVED"
+      ]
+    }
+  }
+}

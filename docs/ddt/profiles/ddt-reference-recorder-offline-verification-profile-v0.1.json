@@ -1,0 +1,82 @@
+{
+  "specification": {
+    "standard": "DDT-REFERENCE-RECORDER-OFFLINE-VERIFICATION-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.offline.reference-recorder-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "status": "TEST_ONLY",
+  "roles": [
+    "OFFLINE_VERIFICATION_CAPABILITY_PROFILE",
+    "OFFLINE_RESULT_SCOPE_PROFILE"
+  ],
+  "packageSpecification": {
+    "artifactId": "DDT-OFFLINE-VERIFICATION-PACKAGE-0.2-DRAFT.1",
+    "version": "0.2.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "be401fdb1eef4fda3454636a1908010903cb3d3e0e1d112525d4d144be5bea55"},
+    "immutableRef": "specs/DDT_OFFLINE_VERIFICATION_PACKAGE_V0.2_DRAFT.md",
+    "mediaType": "text/markdown"
+  },
+  "packageSchema": {
+    "artifactId": "DDT-OFFLINE-VERIFICATION-PACKAGE-SCHEMA-0.2-DRAFT.1",
+    "version": "0.2.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "945265907ea05ac8c4e0b68eccb68cd6b1cad2c5b3a21e71d2fd70e8c0bd272a"},
+    "immutableRef": "schemas/ddt-offline-verification-package-v0.2.schema.json",
+    "mediaType": "application/schema+json"
+  },
+  "verificationResultModel": {
+    "artifactId": "DDT-VERIFICATION-RESULT-0.2-DRAFT.1",
+    "version": "0.2.0-draft.1",
+    "digest": {"algorithm": "SHA-256", "value": "04608e0af8ec44abcf91a1b1ac8f44615719888c731e1aac130ec9a508c34b40"},
+    "immutableRef": "specs/DDT_VERIFICATION_RESULT_V0.2_DRAFT.md",
+    "mediaType": "text/markdown"
+  },
+  "requiredChecks": [
+    "PACKAGE_STRUCTURE",
+    "MANIFEST_INTEGRITY",
+    "FILE_INTEGRITY",
+    "MANIFEST_PROOF",
+    "TARGET_BINDING",
+    "DEPENDENCY_CLOSURE",
+    "SCHEMA_VALIDATION",
+    "HISTORICAL_CONFORMANCE",
+    "RECORD_INTEGRITY",
+    "EVIDENCE_INTEGRITY",
+    "SIGNATURE_VALIDITY",
+    "RELATIONSHIPS"
+  ],
+  "requiredAxes": [
+    "OFFLINE_EXECUTION_NETWORK_ISOLATION",
+    "OFFLINE_EXTERNAL_DEPENDENCY_AVAILABILITY",
+    "OFFLINE_PACKAGE_DEPENDENCY_CLOSURE",
+    "OFFLINE_PACKAGE_EXTRACTION_SAFETY",
+    "OFFLINE_PACKAGE_FILE_INTEGRITY",
+    "OFFLINE_PACKAGE_MANIFEST_INTEGRITY",
+    "OFFLINE_PACKAGE_SIGNATURE",
+    "OFFLINE_PACKAGE_TARGET_BINDING",
+    "OFFLINE_VERIFICATION_REPRODUCIBILITY"
+  ],
+  "verificationPlanPolicy": {
+    "networkAccess": "DENY",
+    "missingArtifactPolicy": "PRESERVE_UNAVAILABLE_OR_UNRESOLVED",
+    "deterministicResultRequired": true
+  },
+  "resourceLimits": {
+    "maxEntries": 256,
+    "maxFileBytes": 10485760,
+    "maxTotalBytes": 67108864,
+    "maxPathLength": 512,
+    "maxPathDepth": 16,
+    "maxCompressionRatio": 100,
+    "maxJsonDepth": 128
+  },
+  "claimBoundary": {
+    "substantiveTruth": "NOT_ESTABLISHED",
+    "legalValidity": "NOT_ESTABLISHED",
+    "registrantAuthority": "NOT_ESTABLISHED",
+    "independentTime": "NOT_ESTABLISHED",
+    "networkFinality": "NOT_ESTABLISHED",
+    "eventHistoryCompleteness": "NOT_ESTABLISHED"
+  },
+  "extensions": []
+}

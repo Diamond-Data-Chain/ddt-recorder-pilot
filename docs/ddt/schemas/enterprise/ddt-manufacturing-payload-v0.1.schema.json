@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/enterprise/examples/manufacturing-process-payload/0.1/schema.json",
+  "title": "DDT Controlled Manufacturing Process Payload v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "processEventId",
+    "siteId",
+    "lineId",
+    "assetId",
+    "workOrderId",
+    "batchOrSerialId",
+    "eventType",
+    "occurredAt"
+  ],
+  "properties": {
+    "processEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "siteId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lineId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workOrderId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "batchOrSerialId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventType": {
+      "enum": [
+        "START",
+        "STEP_COMPLETE",
+        "QUALITY_CHECK",
+        "DEVIATION",
+        "REWORK",
+        "RELEASE"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operatorRef": {
+      "type": "string"
+    },
+    "parameterSnapshotRef": {
+      "type": "string"
+    },
+    "qualityDisposition": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "HOLD",
+        "NOT_APPLICABLE"
+      ]
+    }
+  }
+}

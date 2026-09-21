@@ -1,0 +1,1030 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/0.3.0-draft.1/ddt-record-envelope.schema.json",
+  "title": "DDT Record Envelope v0.3 Draft.1",
+  "description": "Machine-readable draft schema for one immutable DDT Record Envelope. This is a development artifact and not a final production conformance schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "identity",
+    "upstream",
+    "evidenceManifest",
+    "preservationContract",
+    "relationships",
+    "commitments",
+    "registration"
+  ],
+  "properties": {
+    "specification": {
+      "$ref": "#/$defs/specification"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity"
+    },
+    "upstream": {
+      "$ref": "#/$defs/upstream"
+    },
+    "evidenceManifest": {
+      "$ref": "#/$defs/evidenceManifest"
+    },
+    "preservationContract": {
+      "$ref": "#/$defs/preservationContract"
+    },
+    "relationships": {
+      "$ref": "#/$defs/relationships"
+    },
+    "commitments": {
+      "$ref": "#/$defs/commitments"
+    },
+    "registration": {
+      "$ref": "#/$defs/registration"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "evidenceDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]+$",
+          "minLength": 32,
+          "maxLength": 256
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "algorithm": {
+                "const": "SHA-256"
+              }
+            },
+            "required": [
+              "algorithm"
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-RECORD-ENVELOPE"
+        },
+        "version": {
+          "const": "0.3.0-draft.1"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ddtRecordId",
+        "ddtFamilyId",
+        "subject",
+        "recordType"
+      ],
+      "properties": {
+        "ddtRecordId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "ddtFamilyId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "subject": {
+          "$ref": "#/$defs/subject"
+        },
+        "recordType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "displayId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "reference"
+      ],
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "event",
+        "payload"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "event": {
+          "$ref": "#/$defs/event"
+        },
+        "payload": {
+          "$ref": "#/$defs/payload"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "sourceType"
+      ],
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "sourceType": {
+          "enum": [
+            "HUMAN",
+            "SYSTEM",
+            "DEVICE",
+            "SENSOR",
+            "MODEL",
+            "BLOCKCHAIN_NATIVE",
+            "VERIFIED_EXTERNAL",
+            "ORACLE",
+            "OTHER"
+          ]
+        },
+        "sourceVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eventType"
+      ],
+      "properties": {
+        "eventType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "eventTime": {
+          "$ref": "#/$defs/eventTime"
+        },
+        "actor": {
+          "$ref": "#/$defs/upstreamActor"
+        },
+        "semanticContextRefs": {
+          "$ref": "#/$defs/identifierArray"
+        }
+      }
+    },
+    "eventTime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "basis"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "basis": {
+          "const": "SOURCE_ASSERTED"
+        },
+        "sourceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "upstreamActor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "authorityEvidenceRefs": {
+          "$ref": "#/$defs/identifierArray"
+        }
+      },
+      "minProperties": 1
+    },
+    "payload": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/embeddedPayload"
+        },
+        {
+          "$ref": "#/$defs/externalPayload"
+        }
+      ]
+    },
+    "embeddedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "mediaType",
+        "content"
+      ],
+      "properties": {
+        "mode": {
+          "const": "EMBEDDED_JSON"
+        },
+        "mediaType": {
+          "const": "application/json"
+        },
+        "content": true
+      }
+    },
+    "externalPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "mediaType",
+        "evidenceRef"
+      ],
+      "properties": {
+        "mode": {
+          "const": "EXTERNAL_EVIDENCE"
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "identifierArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifier"
+      },
+      "uniqueItems": true,
+      "maxItems": 1000
+    },
+    "evidenceManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifestId",
+        "entries"
+      ],
+      "properties": {
+        "manifestId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceEntry"
+          },
+          "maxItems": 10000
+        }
+      }
+    },
+    "evidenceEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceId",
+        "role",
+        "mediaType",
+        "representation",
+        "digest",
+        "confidentiality"
+      ],
+      "properties": {
+        "evidenceId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "role": {
+          "enum": [
+            "SOURCE_PAYLOAD",
+            "SUPPORTING_EVIDENCE",
+            "SEMANTIC_DEPENDENCY",
+            "POLICY_OR_RULEBOOK",
+            "FRAMEWORK_OR_DEFINITION",
+            "AUTHORITY_EVIDENCE",
+            "IDENTITY_OR_KEY_EVIDENCE",
+            "PROVENANCE_EVIDENCE",
+            "TIME_OR_ORDERING_EVIDENCE",
+            "VALIDATION_ARTIFACT",
+            "OTHER"
+          ]
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "representation": {
+          "$ref": "#/$defs/evidenceRepresentation"
+        },
+        "digest": {
+          "$ref": "#/$defs/evidenceDigest"
+        },
+        "reference": {
+          "$ref": "#/$defs/evidenceReference"
+        },
+        "requirementId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "confidentiality": {
+          "enum": [
+            "PUBLIC",
+            "RESTRICTED",
+            "CONFIDENTIAL",
+            "SECRET",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "evidenceRepresentation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "RAW_BYTES",
+                "RFC8785_JCS"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "profile"
+          ],
+          "properties": {
+            "mode": {
+              "const": "PROFILE_DEFINED"
+            },
+            "profile": {
+              "$ref": "#/$defs/artifactReference"
+            }
+          }
+        }
+      ]
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "referenceType",
+        "value"
+      ],
+      "properties": {
+        "referenceType": {
+          "enum": [
+            "IMMUTABLE_URI",
+            "CONTENT_ADDRESS",
+            "OWNER_CONTROLLED_REFERENCE",
+            "PUBLICATION_REFERENCE",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      }
+    },
+    "preservationContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractId",
+        "contractVersion",
+        "artifacts",
+        "validator",
+        "obligationRefs"
+      ],
+      "properties": {
+        "contractId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "contractVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "artifacts": {
+          "$ref": "#/$defs/contractArtifacts"
+        },
+        "validator": {
+          "$ref": "#/$defs/validatorArtifact"
+        },
+        "obligationRefs": {
+          "$ref": "#/$defs/identifierArray"
+        }
+      }
+    },
+    "contractArtifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelopeSchema",
+        "enterpriseProfile",
+        "validationRuleSet",
+        "canonicalizationProfile",
+        "cryptographicProfile",
+        "evidenceManifestProfile",
+        "relationshipVocabulary"
+      ],
+      "properties": {
+        "envelopeSchema": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "enterpriseProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "validationRuleSet": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "canonicalizationProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "cryptographicProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "evidenceManifestProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "relationshipVocabulary": {
+          "$ref": "#/$defs/artifactReference"
+        }
+      }
+    },
+    "validatorArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validatorId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "validatorId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relatedRecords"
+      ],
+      "properties": {
+        "previousRecordInFamily": {
+          "$ref": "#/$defs/previousRecord"
+        },
+        "relatedRecords": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relatedRecord"
+          },
+          "maxItems": 10000
+        }
+      }
+    },
+    "previousRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ddtRecordId",
+        "recordHash"
+      ],
+      "properties": {
+        "ddtRecordId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "recordHash": {
+          "$ref": "#/$defs/structuralDigest"
+        }
+      }
+    },
+    "relatedRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetRecordId",
+        "targetRecordHash",
+        "relationshipType"
+      ],
+      "properties": {
+        "targetRecordId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "targetRecordHash": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "relationshipType": {
+          "enum": [
+            "REFERENCES",
+            "RESPONDS_TO",
+            "DISPUTES",
+            "CORRECTS",
+            "REMEDIES",
+            "SUPERSEDES",
+            "REVERSES",
+            "REPLACES",
+            "DERIVED_FROM",
+            "CONFIRMS_ASSERTION",
+            "CONTRADICTS_ASSERTION"
+          ]
+        },
+        "assertedBy": {
+          "$ref": "#/$defs/relationshipAsserter"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/identifierArray"
+        }
+      }
+    },
+    "relationshipAsserter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layer"
+      ],
+      "properties": {
+        "layer": {
+          "enum": [
+            "UPSTREAM",
+            "REGISTRANT"
+          ]
+        },
+        "identityRef": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "commitments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registeredUpstreamCommitment",
+        "evidenceManifestCommitment",
+        "preservationContractCommitment",
+        "recordHash"
+      ],
+      "properties": {
+        "registeredUpstreamCommitment": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "evidenceManifestCommitment": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "preservationContractCommitment": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "recordHash": {
+          "$ref": "#/$defs/structuralDigest"
+        }
+      }
+    },
+    "registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "statement",
+        "registrationStatementHash",
+        "signatureProofs",
+        "timeProofs"
+      ],
+      "properties": {
+        "statement": {
+          "$ref": "#/$defs/registrationStatement"
+        },
+        "registrationStatementHash": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "signatureProofs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/signatureProof"
+          },
+          "maxItems": 100
+        },
+        "timeProofs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/timeProof"
+          },
+          "maxItems": 100
+        }
+      }
+    },
+    "registrationStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordHash",
+        "preservationContractCommitment",
+        "conformanceReceiptCommitment",
+        "registrant",
+        "registrationMechanism"
+      ],
+      "properties": {
+        "recordHash": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "preservationContractCommitment": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "conformanceReceiptCommitment": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "registrant": {
+          "$ref": "#/$defs/registrant"
+        },
+        "registrationTimeClaim": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "registrationMechanism": {
+          "$ref": "#/$defs/registrationMechanism"
+        }
+      }
+    },
+    "registrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identityRef",
+        "identityType"
+      ],
+      "properties": {
+        "identityRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "identityType": {
+          "enum": [
+            "PERSON",
+            "ORGANIZATION",
+            "ORGANIZATION_SERVICE",
+            "DEVICE",
+            "SYSTEM",
+            "OTHER"
+          ]
+        },
+        "authorityEvidenceRefs": {
+          "$ref": "#/$defs/identifierArray"
+        }
+      }
+    },
+    "registrationMechanism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile"
+      ],
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "network": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "transactionRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "blockRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      }
+    },
+    "signatureProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proofId",
+        "proofPurpose",
+        "proofProfile",
+        "algorithm",
+        "verificationMethod",
+        "signedObject",
+        "signatureEncoding",
+        "signature"
+      ],
+      "properties": {
+        "proofId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "proofPurpose": {
+          "const": "DDT_REGISTRATION"
+        },
+        "proofProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "algorithm": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "verificationMethod": {
+          "$ref": "#/$defs/identifier"
+        },
+        "signedObject": {
+          "$ref": "#/$defs/signedRegistrationObject"
+        },
+        "signatureEncoding": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "signature": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "createdAtClaim": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "signedRegistrationObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "digest"
+      ],
+      "properties": {
+        "type": {
+          "const": "REGISTRATION_STATEMENT_HASH"
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        }
+      }
+    },
+    "timeProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proofId",
+        "proofType",
+        "proofProfile",
+        "target"
+      ],
+      "properties": {
+        "proofId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "proofType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "proofProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "target": {
+          "$ref": "#/$defs/timeProofTarget"
+        },
+        "proofRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "proof": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "assertedTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "proofRef"
+          ]
+        },
+        {
+          "required": [
+            "proof"
+          ]
+        }
+      ]
+    },
+    "timeProofTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "digest"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "REGISTRATION_STATEMENT_HASH",
+            "RECORD_HASH",
+            "AGGREGATE_COMMITMENT"
+          ]
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "inclusionProofRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "AGGREGATE_COMMITMENT"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "inclusionProofRef"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

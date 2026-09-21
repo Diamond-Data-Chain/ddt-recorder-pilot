@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/enterprise/examples/transport-custody-payload/0.1/schema.json",
+  "title": "DDT Transport Custody Payload v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventId",
+    "shipmentId",
+    "packageOrContainerId",
+    "eventType",
+    "actorOrgRef",
+    "locationRef",
+    "occurredAt"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shipmentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "packageOrContainerId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventType": {
+      "enum": [
+        "PICKUP",
+        "DEPARTURE",
+        "ARRIVAL",
+        "CUSTODY_TRANSFER",
+        "SEAL_APPLIED",
+        "SEAL_BROKEN",
+        "DELIVERY"
+      ]
+    },
+    "actorOrgRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "locationRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "custodyFrom": {
+      "type": "string",
+      "minLength": 1
+    },
+    "custodyTo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "temperatureC": {
+      "type": "number"
+    },
+    "sealId": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CUSTODY_TRANSFER"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "required": [
+          "custodyFrom",
+          "custodyTo"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.1.0-draft.1/schema.json",
+  "title": "DDT Signature Proof v0.1 Draft.1",
+  "description": "Common DDT signature-proof object for the baseline Ed25519/JCS profile.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proofId",
+    "proofType",
+    "proofPurpose",
+    "proofProfile",
+    "algorithm",
+    "verificationMethod",
+    "signedObject",
+    "signatureEncoding",
+    "proofValue"
+  ],
+  "properties": {
+    "proofId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,254}$"
+    },
+    "proofType": {
+      "const": "DDT_SIGNATURE"
+    },
+    "proofPurpose": {
+      "enum": [
+        "DDT_REGISTRATION",
+        "CONFORMANCE_ATTESTATION",
+        "VERIFICATION_RESULT_ATTESTATION"
+      ]
+    },
+    "proofProfile": {
+      "allOf": [
+        {"$ref": "#/$defs/artifactReference"},
+        {
+          "properties": {
+            "artifactId": {"const": "ddt.signature.ed25519-jcs-v1"},
+            "version": {"const": "0.1.0-draft.1"}
+          }
+        }
+      ]
+    },
+    "algorithm": {
+      "const": "Ed25519"
+    },
+    "verificationMethod": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "signedObject": {
+      "$ref": "#/$defs/signedObject"
+    },
+    "signatureEncoding": {
+      "const": "base64url"
+    },
+    "proofValue": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{85}[AQgw]$"
+    },
+    "createdAtClaim": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "proofPurpose": {"const": "DDT_REGISTRATION"},
+        "signedObject": {
+          "properties": {
+            "type": {"const": "REGISTRATION_STATEMENT_HASH"}
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "CONFORMANCE_ATTESTATION"},
+        "signedObject": {
+          "properties": {
+            "type": {"const": "RECEIPT_CORE_HASH"}
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "proofPurpose": {"const": "VERIFICATION_RESULT_ATTESTATION"},
+        "signedObject": {
+          "properties": {
+            "type": {"const": "VERIFICATION_RESULT_CORE_HASH"}
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"const": "SHA-256"},
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {"$ref": "#/$defs/structuralDigest"},
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "signedObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "digest"],
+      "properties": {
+        "type": {
+          "enum": [
+            "REGISTRATION_STATEMENT_HASH",
+            "RECEIPT_CORE_HASH",
+            "VERIFICATION_RESULT_CORE_HASH"
+          ]
+        },
+        "digest": {"$ref": "#/$defs/structuralDigest"}
+      }
+    }
+  }
+}

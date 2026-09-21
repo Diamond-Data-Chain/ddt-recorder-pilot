@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/time-checkpoint/0.1.0-draft.1/evidence.schema.json",
+  "title": "DDT Time and Checkpoint Evidence v0.1 Draft.1",
+  "description": "Evidence structures for RFC 3161 timestamps, signed DDT checkpoints, Merkle inclusion and external network inclusion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidenceId", "evidenceType", "evidenceVersion", "target", "producer", "body"],
+  "properties": {
+    "evidenceId": { "$ref": "#/$defs/identifier" },
+    "evidenceType": {
+      "enum": [
+        "RFC3161_TIMESTAMP_TOKEN",
+        "DDT_SIGNED_CHECKPOINT",
+        "DDT_CHECKPOINT_INCLUSION_PROOF",
+        "NETWORK_INCLUSION_PROOF"
+      ]
+    },
+    "evidenceVersion": { "const": "0.1.0-draft.1" },
+    "target": { "$ref": "#/$defs/target" },
+    "producer": { "$ref": "#/$defs/producer" },
+    "body": {}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "RFC3161_TIMESTAMP_TOKEN" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/rfc3161Timestamp" } } }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "DDT_SIGNED_CHECKPOINT" } },
+        "required": ["evidenceType"]
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "properties": { "type": { "const": "CHECKPOINT_ROOT" } }
+          },
+          "producer": {
+            "properties": { "proofRefs": { "minItems": 1 } }
+          },
+          "body": { "$ref": "#/$defs/signedCheckpoint" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "DDT_CHECKPOINT_INCLUSION_PROOF" } },
+        "required": ["evidenceType"]
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "properties": { "type": { "const": "DDT_RECORD_HASH" } }
+          },
+          "body": { "$ref": "#/$defs/checkpointInclusionProof" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "evidenceType": { "const": "NETWORK_INCLUSION_PROOF" } },
+        "required": ["evidenceType"]
+      },
+      "then": { "properties": { "body": { "$ref": "#/$defs/networkInclusionProof" } } }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 255 }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "digest"],
+      "properties": {
+        "type": {
+          "enum": [
+            "DDT_RECORD_HASH",
+            "DDT_REGISTRATION_STATEMENT_HASH",
+            "CHECKPOINT_ROOT",
+            "ARTIFACT_DIGEST"
+          ]
+        },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "objectRef": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identityRef", "proofRefs", "authorityEvidenceRefs"],
+      "properties": {
+        "identityRef": { "$ref": "#/$defs/identifier" },
+        "proofRefs": { "$ref": "#/$defs/identifierArray" },
+        "authorityEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "rfc3161Timestamp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "token",
+        "messageImprintAlgorithmOid",
+        "messageImprint",
+        "tsaPolicyOid",
+        "tsaIdentityRef",
+        "tsaCertificatePathRef",
+        "genTimeClaim",
+        "ordering",
+        "validationDependencyRefs"
+      ],
+      "properties": {
+        "token": { "$ref": "#/$defs/artifactReference" },
+        "messageImprintAlgorithmOid": {
+          "type": "string",
+          "pattern": "^[0-2](\\.[0-9]+)+$",
+          "maxLength": 255
+        },
+        "messageImprint": { "$ref": "#/$defs/structuralDigest" },
+        "tsaPolicyOid": {
+          "type": "string",
+          "pattern": "^[0-2](\\.[0-9]+)+$",
+          "maxLength": 255
+        },
+        "tsaIdentityRef": { "$ref": "#/$defs/identifier" },
+        "tsaCertificatePathRef": { "$ref": "#/$defs/identifier" },
+        "genTimeClaim": { "$ref": "#/$defs/dateTime" },
+        "accuracy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["seconds", "millis", "micros"],
+          "properties": {
+            "seconds": { "type": "integer", "minimum": 0 },
+            "millis": { "type": "integer", "minimum": 0, "maximum": 999 },
+            "micros": { "type": "integer", "minimum": 0, "maximum": 999 }
+          }
+        },
+        "ordering": { "type": "boolean" },
+        "nonce": { "type": "string", "pattern": "^[0-9]+$", "maxLength": 1000 },
+        "validationDependencyRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" }
+      }
+    },
+    "checkpointCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "sequenceDomain", "firstSequence", "lastSequence", "leafCount", "sourceWitnessEvidenceRefs"],
+      "properties": {
+        "mode": {
+          "enum": ["REGISTERED_RECORD_SEQUENCE", "CLOSED_EVENT_COVERAGE"]
+        },
+        "sequenceDomain": { "$ref": "#/$defs/identifier" },
+        "firstSequence": { "type": "integer", "minimum": 0 },
+        "lastSequence": { "type": "integer", "minimum": 0 },
+        "leafCount": { "type": "integer", "minimum": 1 },
+        "coverageContract": { "$ref": "#/$defs/artifactReference" },
+        "sourceStateCommitment": { "$ref": "#/$defs/structuralDigest" },
+        "sourceWitnessEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "mode": { "const": "CLOSED_EVENT_COVERAGE" } },
+            "required": ["mode"]
+          },
+          "then": {
+            "required": ["coverageContract", "sourceStateCommitment"],
+            "properties": { "sourceWitnessEvidenceRefs": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "checkpointLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpointId", "digest"],
+      "properties": {
+        "checkpointId": { "$ref": "#/$defs/identifier" },
+        "digest": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "signedCheckpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpointId",
+        "checkpointSequence",
+        "treeProfile",
+        "treeSize",
+        "rootHash",
+        "coverage",
+        "closedAtClaim",
+        "anchorEvidenceRefs"
+      ],
+      "properties": {
+        "checkpointId": { "$ref": "#/$defs/identifier" },
+        "checkpointSequence": { "type": "integer", "minimum": 0 },
+        "previousCheckpoint": { "$ref": "#/$defs/checkpointLink" },
+        "treeProfile": { "$ref": "#/$defs/artifactReference" },
+        "treeSize": { "type": "integer", "minimum": 1 },
+        "rootHash": { "$ref": "#/$defs/structuralDigest" },
+        "coverage": { "$ref": "#/$defs/checkpointCoverage" },
+        "closedAtClaim": { "$ref": "#/$defs/dateTime" },
+        "anchorEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "checkpointSequence": { "const": 0 } },
+            "required": ["checkpointSequence"]
+          },
+          "then": { "not": { "required": ["previousCheckpoint"] } },
+          "else": { "required": ["previousCheckpoint"] }
+        }
+      ]
+    },
+    "checkpointInclusionProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpoint",
+        "treeProfile",
+        "leafSequence",
+        "leafIndex",
+        "treeSize",
+        "leafHash",
+        "auditPath",
+        "expectedRootHash"
+      ],
+      "properties": {
+        "checkpoint": { "$ref": "#/$defs/artifactReference" },
+        "treeProfile": { "$ref": "#/$defs/artifactReference" },
+        "leafSequence": { "type": "integer", "minimum": 0 },
+        "leafIndex": { "type": "integer", "minimum": 0 },
+        "treeSize": { "type": "integer", "minimum": 1 },
+        "leafHash": { "$ref": "#/$defs/structuralDigest" },
+        "auditPath": {
+          "type": "array",
+          "maxItems": 256,
+          "items": { "$ref": "#/$defs/structuralDigest" }
+        },
+        "expectedRootHash": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "networkInclusionProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "networkProfile",
+        "networkId",
+        "transactionId",
+        "blockId",
+        "blockHeight",
+        "inclusionProof",
+        "finalityEvidenceRefs",
+        "blockTimeClaim"
+      ],
+      "properties": {
+        "networkProfile": { "$ref": "#/$defs/artifactReference" },
+        "networkId": { "$ref": "#/$defs/identifier" },
+        "transactionId": { "$ref": "#/$defs/identifier" },
+        "blockId": { "$ref": "#/$defs/identifier" },
+        "blockHeight": { "type": "integer", "minimum": 0 },
+        "inclusionProof": { "$ref": "#/$defs/artifactReference" },
+        "finalityEvidenceRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" },
+        "blockTimeClaim": { "$ref": "#/$defs/dateTime" }
+      }
+    }
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.1.0-draft.1/profile.schema.json",
+  "title": "DDT Closed Event Coverage Profile v0.1 Draft.1",
+  "description": "Machine-readable baseline policy for source-side event coverage, omission detection and independently witnessed scoped completeness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "lifecycleStatus",
+    "requiredArtifacts",
+    "sourcePosition",
+    "coverageLeaf",
+    "eventSetTree",
+    "closure",
+    "witness",
+    "resultModel",
+    "claimBoundary",
+    "errorCodes"
+  ],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "profileId": { "const": "ddt.event-coverage.closed-source-sequence-v1" },
+    "profileVersion": { "const": "0.1.0-draft.1" },
+    "lifecycleStatus": { "const": "DRAFT" },
+    "requiredArtifacts": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/artifactReference" }
+    },
+    "sourcePosition": { "$ref": "#/$defs/sourcePosition" },
+    "coverageLeaf": { "$ref": "#/$defs/coverageLeaf" },
+    "eventSetTree": { "$ref": "#/$defs/eventSetTree" },
+    "closure": { "$ref": "#/$defs/closure" },
+    "witness": { "$ref": "#/$defs/witness" },
+    "resultModel": { "$ref": "#/$defs/resultModel" },
+    "claimBoundary": { "$ref": "#/$defs/claimBoundary" },
+    "errorCodes": {
+      "type": "array",
+      "minItems": 26,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^COVERAGE_[A-Z0-9_]+$"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": { "$ref": "#/$defs/digest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-EVENT-COVERAGE-PROFILE" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "sourcePosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allocationMode",
+        "safeIntegerMaximum",
+        "strictlyIncreasing",
+        "contiguousAtClosure",
+        "nonReuse",
+        "allocatedPositionsMayDisappear",
+        "unregisteredPositionPolicy"
+      ],
+      "properties": {
+        "allocationMode": { "const": "ATOMIC_WITH_DURABLE_SOURCE_EVENT_COMMIT" },
+        "safeIntegerMaximum": { "const": 9007199254740991 },
+        "strictlyIncreasing": { "const": true },
+        "contiguousAtClosure": { "const": true },
+        "nonReuse": { "const": true },
+        "allocatedPositionsMayDisappear": { "const": false },
+        "unregisteredPositionPolicy": { "const": "COMMITTED_TOMBSTONE_REQUIRED" }
+      }
+    },
+    "coverageLeaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "canonicalization",
+        "encoding",
+        "digestAlgorithm",
+        "leafPrefixHex",
+        "registeredDdtBindingRequired",
+        "nonRegisteredTombstoneRequired"
+      ],
+      "properties": {
+        "domain": { "const": "DDT_EVENT_COVERAGE_LEAF_V1" },
+        "canonicalization": { "const": "RFC8785-JCS" },
+        "encoding": { "const": "UTF-8" },
+        "digestAlgorithm": { "const": "SHA-256" },
+        "leafPrefixHex": { "const": "00" },
+        "registeredDdtBindingRequired": { "const": true },
+        "nonRegisteredTombstoneRequired": { "const": true }
+      }
+    },
+    "eventSetTree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "leafOrder",
+        "internalNodePrefixHex",
+        "splitRule",
+        "padding",
+        "duplicateLastNode",
+        "emptyTreePermitted"
+      ],
+      "properties": {
+        "leafOrder": { "const": "ASCENDING_SOURCE_SEQUENCE" },
+        "internalNodePrefixHex": { "const": "01" },
+        "splitRule": { "const": "LARGEST_POWER_OF_TWO_LESS_THAN_N" },
+        "padding": { "const": "NONE" },
+        "duplicateLastNode": { "const": false },
+        "emptyTreePermitted": { "const": false }
+      }
+    },
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pendingPermittedAtClosure",
+        "rangeCountEqualityRequired",
+        "dispositionCountEqualityRequired",
+        "sourceStateCommitmentRequired",
+        "ddtCheckpointReconciliationRequired"
+      ],
+      "properties": {
+        "pendingPermittedAtClosure": { "const": false },
+        "rangeCountEqualityRequired": { "const": true },
+        "dispositionCountEqualityRequired": { "const": true },
+        "sourceStateCommitmentRequired": { "const": true },
+        "ddtCheckpointReconciliationRequired": { "const": true }
+      }
+    },
+    "witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumIndependentWitnesses",
+        "independenceEvidenceRequired",
+        "observationScopeRequired",
+        "signatureRequired",
+        "historicalIdentityAuthorityRequired",
+        "createdTimeClaimIsIndependentTimeProof"
+      ],
+      "properties": {
+        "minimumIndependentWitnesses": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "independenceEvidenceRequired": { "const": true },
+        "observationScopeRequired": { "const": true },
+        "signatureRequired": { "const": true },
+        "historicalIdentityAuthorityRequired": { "const": true },
+        "createdTimeClaimIsIndependentTimeProof": { "const": false }
+      }
+    },
+    "resultModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axisId",
+        "statusClass",
+        "permittedStatuses",
+        "resultAlwaysScoped",
+        "recordIntegrityIndependent",
+        "substantiveTruthIndependent"
+      ],
+      "properties": {
+        "axisId": { "const": "EVENT_HISTORY_COMPLETENESS" },
+        "statusClass": { "const": "COMPLETENESS" },
+        "permittedStatuses": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "COMPLETE",
+              "PARTIAL",
+              "INCOMPLETE",
+              "UNAVAILABLE",
+              "UNRESOLVED",
+              "CONFLICTING",
+              "NOT_APPLICABLE",
+              "NOT_EVALUATED"
+            ]
+          }
+        },
+        "resultAlwaysScoped": { "const": true },
+        "recordIntegrityIndependent": { "const": true },
+        "substantiveTruthIndependent": { "const": true }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ddtSequenceProvesGlobalCompleteness",
+        "sourceSequenceAloneProvesDdtCoverage",
+        "ddcSelfAssertionIsIndependentWitness",
+        "completeImpliesSubstantiveTruth"
+      ],
+      "properties": {
+        "ddtSequenceProvesGlobalCompleteness": { "const": false },
+        "sourceSequenceAloneProvesDdtCoverage": { "const": false },
+        "ddcSelfAssertionIsIndependentWitness": { "const": false },
+        "completeImpliesSubstantiveTruth": { "const": false }
+      }
+    }
+  }
+}

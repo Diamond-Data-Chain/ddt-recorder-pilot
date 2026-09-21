@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env
+.env.*
+!.env.example
+.vercel/
+.ddc-state/
+*.log
+*.pyc
+__pycache__/
+docs/ddt/reference/.venv/
+
+tsconfig.tsbuildinfo

@@ -1,0 +1,125 @@
+{
+  "specification": {
+    "standard": "DDT-REGISTRATION-MECHANISM-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.registration.reference-registrar-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "status": "DRAFT",
+  "mechanism": {
+    "mechanismId": "REFERENCE_REGISTRAR",
+    "environment": "TEST_ONLY"
+  },
+  "registrar": {
+    "registrarId": "urn:uuid:62e49885-2d51-4a19-bf0f-8025c741f110",
+    "sequenceDomain": "urn:uuid:7bb23862-0f3a-4c77-9d8c-9f2873338591"
+  },
+  "sequencePolicy": {
+    "firstSequence": 1,
+    "allocationRule": "MAX_EXISTING_PLUS_ONE",
+    "allocationScope": "SEQUENCE_DOMAIN",
+    "failedAttemptConsumesPosition": false,
+    "parallelCounterPermitted": false,
+    "duplicateSequencePolicy": "REJECT",
+    "concurrencyPolicy": "EXCLUSIVE_LOCAL_LOCK"
+  },
+  "ddtNumberPolicy": {
+    "derivation": "REGISTRATION_SEQUENCE",
+    "prefix": "DDT-",
+    "decimalPaddingWidth": 8,
+    "minimumSequence": 1,
+    "productionSyntaxClaim": "NOT_ESTABLISHED"
+  },
+  "registrationPolicy": {
+    "requiredVerificationDisposition": "PASS",
+    "rejectedDispositions": [
+      "FAIL",
+      "REVIEW",
+      "UNRESOLVED"
+    ],
+    "failedAttemptPolicy": "REJECT_NO_DDT"
+  },
+  "replayPolicy": {
+    "exactReplayFields": [
+      "ddtRecordId",
+      "recordHash",
+      "registrationStatementHash"
+    ],
+    "exactReplayBehavior": "RETURN_EXISTING_REGISTRATION_RESULT",
+    "newSequenceOnExactReplay": false
+  },
+  "conflictPolicy": {
+    "recordIdReuseWithDifferentCommitments": "REJECT",
+    "duplicateDDTNumber": "REJECT",
+    "duplicateSequence": "REJECT"
+  },
+  "lookupPolicy": {
+    "byDDTNumber": true,
+    "byRecordId": true,
+    "byRegisteredSequence": true,
+    "crossLookupConsistencyRequired": true
+  },
+  "persistencePolicy": {
+    "implementationClass": "LOCAL_JSON_FILE_STORE",
+    "writeStrategy": "TEMP_FILE_THEN_RENAME",
+    "normalProcessAtomicity": "CLAIMED_WITHIN_LOCAL_LOCK_SCOPE",
+    "powerLossDurabilityClaim": "NOT_ESTABLISHED",
+    "staleLockRecoveryClaim": "NOT_ESTABLISHED",
+    "distributedConsensusClaim": "NOT_ESTABLISHED",
+    "networkFinalityClaim": "NOT_ESTABLISHED"
+  },
+  "registrationResult": {
+    "specification": {
+      "artifactId": "DDT-REGISTRATION-RESULT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "9b9be27679b36d31bc280088a093ab4c224b1ab898ce540ca8078d5c7e330457"
+      },
+      "immutableRef": "../specs/DDT_REGISTRATION_RESULT_V0.1_DRAFT.md",
+      "mediaType": "text/markdown"
+    },
+    "schema": {
+      "artifactId": "DDT-REGISTRATION-RESULT-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "e4d3a79933b333835e4b0f763cab6c4af6f337ff495950ae867d55ee930ddcfe"
+      },
+      "immutableRef": "../schemas/ddt-registration-result-v0.1.schema.json",
+      "mediaType": "application/schema+json"
+    }
+  },
+  "verificationPolicy": {
+    "historicalProfileDigestRequired": true,
+    "registrationResultSchemaValidationRequired": true,
+    "registrationResultSemanticValidationRequired": true,
+    "sequenceNumberBindingRequired": true,
+    "registrarIdentityBindingRequired": true,
+    "mechanismIdentityBindingRequired": true,
+    "silentRepair": "FORBIDDEN"
+  },
+  "claimBoundary": {
+    "successfulRegistrationBinding": "ESTABLISHED_WHEN_ALL_REQUIRED_CHECKS_PASS",
+    "substantiveTruth": "NOT_ESTABLISHED",
+    "registrantAuthority": "NOT_ESTABLISHED",
+    "independentTime": "NOT_ESTABLISHED",
+    "blockchainInclusion": "NOT_ESTABLISHED",
+    "networkFinality": "NOT_ESTABLISHED",
+    "powerLossDurability": "NOT_ESTABLISHED",
+    "productionReadiness": "NOT_ESTABLISHED"
+  },
+  "errorCodes": [
+    "REFERENCE_REGISTRAR_VERIFICATION_NOT_PASS",
+    "REFERENCE_REGISTRAR_RECORD_ID_CONFLICT",
+    "REFERENCE_REGISTRAR_DDT_NUMBER_DUPLICATE",
+    "REFERENCE_REGISTRAR_SEQUENCE_DUPLICATE",
+    "REFERENCE_REGISTRAR_SEQUENCE_DOMAIN_MISMATCH",
+    "REFERENCE_REGISTRAR_SEQUENCE_ALLOCATION_MISMATCH",
+    "REFERENCE_REGISTRAR_LOOKUP_BINDING_MISMATCH",
+    "REFERENCE_REGISTRAR_RESULT_SCHEMA_INVALID",
+    "REFERENCE_REGISTRAR_RESULT_SEMANTICS_INVALID",
+    "REFERENCE_REGISTRAR_PROFILE_MISMATCH"
+  ],
+  "extensions": []
+}

@@ -1,0 +1,173 @@
+{
+  "specification": {
+    "standard": "DDT-EVENT-COVERAGE-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.event-coverage.closed-source-sequence-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "requiredArtifacts": [
+    {
+      "artifactId": "DDT-EVENT-COVERAGE-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "556248273f24c28b909acb01eb33fb227aa385ac116b9dd63dc4d24571d1e1fa"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.1.0-draft.1/specification.md",
+      "mediaType": "text/markdown"
+    },
+    {
+      "artifactId": "DDT-EVENT-COVERAGE-CONTRACT-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "37783c53a0d0f1b3953db0cb4bf277e6306ad212bdb223b648a0f7596c54b9a4"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.1.0-draft.1/contract.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-EVENT-COVERAGE-EVIDENCE-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "650f2e19aceec8c52f374bcbaf8e77c707e9b4b476a1cfbf858ef967114c019a"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.1.0-draft.1/evidence.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-EVENT-COVERAGE-PROFILE-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "ece897ffa988b896e731880e32f0fdc0a6464926b381ab75b5c031a68c25b55c"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.1.0-draft.1/profile.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-TIME-CHECKPOINT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "16ca0b5b7b60c317a42b2c47d0cd5529935b529d10fbc256a97adcb0f9c8c349"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/time-checkpoint/0.1.0-draft.1/profile.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/profile.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "087fbf8a6b07acff64c5e4bfbe2d5b168c9826228b27bcb8d0fbd650bf12c12d"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature/0.1.0-draft.1/ed25519-profile.json",
+      "mediaType": "application/json"
+    }
+  ],
+  "sourcePosition": {
+    "allocationMode": "ATOMIC_WITH_DURABLE_SOURCE_EVENT_COMMIT",
+    "safeIntegerMaximum": 9007199254740991,
+    "strictlyIncreasing": true,
+    "contiguousAtClosure": true,
+    "nonReuse": true,
+    "allocatedPositionsMayDisappear": false,
+    "unregisteredPositionPolicy": "COMMITTED_TOMBSTONE_REQUIRED"
+  },
+  "coverageLeaf": {
+    "domain": "DDT_EVENT_COVERAGE_LEAF_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "digestAlgorithm": "SHA-256",
+    "leafPrefixHex": "00",
+    "registeredDdtBindingRequired": true,
+    "nonRegisteredTombstoneRequired": true
+  },
+  "eventSetTree": {
+    "leafOrder": "ASCENDING_SOURCE_SEQUENCE",
+    "internalNodePrefixHex": "01",
+    "splitRule": "LARGEST_POWER_OF_TWO_LESS_THAN_N",
+    "padding": "NONE",
+    "duplicateLastNode": false,
+    "emptyTreePermitted": false
+  },
+  "closure": {
+    "pendingPermittedAtClosure": false,
+    "rangeCountEqualityRequired": true,
+    "dispositionCountEqualityRequired": true,
+    "sourceStateCommitmentRequired": true,
+    "ddtCheckpointReconciliationRequired": true
+  },
+  "witness": {
+    "minimumIndependentWitnesses": 1,
+    "independenceEvidenceRequired": true,
+    "observationScopeRequired": true,
+    "signatureRequired": true,
+    "historicalIdentityAuthorityRequired": true,
+    "createdTimeClaimIsIndependentTimeProof": false
+  },
+  "resultModel": {
+    "axisId": "EVENT_HISTORY_COMPLETENESS",
+    "statusClass": "COMPLETENESS",
+    "permittedStatuses": [
+      "COMPLETE",
+      "PARTIAL",
+      "INCOMPLETE",
+      "UNAVAILABLE",
+      "UNRESOLVED",
+      "CONFLICTING",
+      "NOT_APPLICABLE",
+      "NOT_EVALUATED"
+    ],
+    "resultAlwaysScoped": true,
+    "recordIntegrityIndependent": true,
+    "substantiveTruthIndependent": true
+  },
+  "claimBoundary": {
+    "ddtSequenceProvesGlobalCompleteness": false,
+    "sourceSequenceAloneProvesDdtCoverage": false,
+    "ddcSelfAssertionIsIndependentWitness": false,
+    "completeImpliesSubstantiveTruth": false
+  },
+  "errorCodes": [
+    "COVERAGE_CHECKPOINT_RECONCILIATION_FAILED",
+    "COVERAGE_CONFLICTING_EVIDENCE",
+    "COVERAGE_CONTRACT_APPLICABILITY_UNRESOLVED",
+    "COVERAGE_CONTRACT_INTEGRITY_FAILED",
+    "COVERAGE_CONTRACT_UNAVAILABLE",
+    "COVERAGE_DDT_BINDING_MISMATCH",
+    "COVERAGE_DDT_BINDING_MISSING",
+    "COVERAGE_EVENT_SET_ROOT_MISMATCH",
+    "COVERAGE_PENDING_AT_CLOSURE",
+    "COVERAGE_RANGE_COUNT_MISMATCH",
+    "COVERAGE_REQUEST_OUTSIDE_SCOPE",
+    "COVERAGE_SELECTION_REPRODUCTION_FAILED",
+    "COVERAGE_SELECTION_RULE_UNAVAILABLE",
+    "COVERAGE_SOURCE_EVENT_ID_REUSED",
+    "COVERAGE_SOURCE_POSITION_GAP",
+    "COVERAGE_SOURCE_POSITION_REUSED",
+    "COVERAGE_SOURCE_STATE_MISMATCH",
+    "COVERAGE_SOURCE_STATE_UNAVAILABLE",
+    "COVERAGE_STATEMENT_AUTHORITY_UNRESOLVED",
+    "COVERAGE_STATEMENT_SIGNATURE_INVALID",
+    "COVERAGE_TOMBSTONE_INVALID",
+    "COVERAGE_TOMBSTONE_MISSING",
+    "COVERAGE_WITNESS_EVIDENCE_UNAVAILABLE",
+    "COVERAGE_WITNESS_INDEPENDENCE_UNRESOLVED",
+    "COVERAGE_WITNESS_QUORUM_NOT_MET",
+    "COVERAGE_WITNESS_SCOPE_INSUFFICIENT"
+  ]
+}

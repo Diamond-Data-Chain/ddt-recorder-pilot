@@ -1,0 +1,55 @@
+{
+  "specification": {
+    "standard": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.evidence-commitment.sha256-raw-bytes-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "deploymentStatus": "TEST_ONLY",
+
+  "representation": {
+    "mode": "RAW_BYTES",
+    "input": "EXACT_EVIDENCE_BYTE_SEQUENCE",
+    "transformationsPermitted": false,
+    "byteLengthInDigestInput": false
+  },
+
+  "commitment": {
+    "commitmentType": "DIGEST",
+    "algorithm": "SHA-256",
+    "encoding": "LOWERCASE_HEX",
+    "inputFormation": "SHA256(EXACT_EVIDENCE_BYTE_SEQUENCE)",
+    "domainSeparation": "NONE",
+    "randomization": "NONE",
+    "secretKey": "NONE"
+  },
+
+  "verification": {
+    "historicalProfileDigestRequired": true,
+    "exactBytesRequired": true,
+    "transformationsForbidden": true,
+    "declaredByteLengthCheckedSeparately": true,
+    "digestMismatchIsFailure": true,
+    "currentProfileSubstitutionForbidden": true
+  },
+
+  "privacyBoundary": {
+    "rawDigestUniversallySafe": false,
+    "enterprisePolicyRequired": true,
+    "sensitiveLowEntropyEvidenceRequiresPolicyDecision": true
+  },
+
+  "claimBoundary": {
+    "successfulVerificationMeans": "PRESENTED_EXACT_BYTES_MATCH_HISTORICAL_SHA256_RAW_BYTE_COMMITMENT",
+    "doesNotProve": [
+      "TRUTH",
+      "COMPLETENESS",
+      "AUTHORITY",
+      "PROVENANCE",
+      "LAWFUL_ACQUISITION",
+      "HISTORICAL_AVAILABILITY",
+      "CONFIDENTIALITY_SAFETY"
+    ]
+  }
+}

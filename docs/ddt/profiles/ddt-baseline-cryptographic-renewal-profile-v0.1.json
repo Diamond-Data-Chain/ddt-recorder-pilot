@@ -1,0 +1,169 @@
+{
+  "specification": {
+    "standard": "DDT-CRYPTOGRAPHIC-RENEWAL-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.cryptographic-renewal.baseline-test-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "deploymentStatus": "TEST_ONLY",
+  "requiredArtifacts": [
+    {
+      "artifactId": "DDT-CRYPTOGRAPHIC-RENEWAL-EVENT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "2de4aa76d5fe0c319b8d5fb9bb25cdab6dca365e58d110d43c816fcbf82e189e" },
+      "immutableRef": "../specs/DDT_CRYPTOGRAPHIC_RENEWAL_EVENT_V0.1_DRAFT.md",
+      "mediaType": "text/markdown"
+    },
+    {
+      "artifactId": "DDT-CRYPTOGRAPHIC-RENEWAL-EVENT-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "a13e8e39bca2964ce98d7b06ceafb53d28f5a6f78dcdec0518c822bdb71aff29" },
+      "immutableRef": "../schemas/ddt-cryptographic-renewal-event-v0.1.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-CRYPTOGRAPHIC-RENEWAL-PROFILE-SCHEMA-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "608d6921ec6f51e266d6c078fda5f8df96eb69acaac63b4f998d600fc81dccc1" },
+      "immutableRef": "../schemas/ddt-cryptographic-renewal-profile-v0.1.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "087fbf8a6b07acff64c5e4bfbe2d5b168c9826228b27bcb8d0fbd650bf12c12d" },
+      "immutableRef": "ddt-ed25519-signature-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5" },
+      "immutableRef": "ddt-historical-identity-authority-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-TIME-CHECKPOINT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "16ca0b5b7b60c317a42b2c47d0cd5529935b529d10fbc256a97adcb0f9c8c349" },
+      "immutableRef": "ddt-time-checkpoint-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-OFFLINE-VERIFICATION-PACKAGE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "fdaba5595109aa32354a84c48bcb352f7be6fabb29a8747d2f861c14f0ef8229" },
+      "immutableRef": "../specs/DDT_OFFLINE_VERIFICATION_PACKAGE_V0.1_DRAFT.md",
+      "mediaType": "text/markdown"
+    }
+  ],
+  "construction": {
+    "domain": "DDT_CRYPTOGRAPHIC_RENEWAL_CORE_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "coreHashAlgorithm": "SHA-256",
+    "coreHashInput": "UTF8(RFC8785-JCS(renewalCore))",
+    "proofsExcludedFromCore": true,
+    "timeEvidenceExcludedFromCore": true
+  },
+  "eligibility": {
+    "requiredOriginalProofStatus": "VALID",
+    "eligibleAlgorithmPolicyStatuses": [
+      "ACCEPTABLE",
+      "DEPRECATED_BUT_ACCEPTABLE_FOR_RENEWAL"
+    ],
+    "ineligibleAlgorithmPolicyStatuses": [
+      "PROHIBITED",
+      "COMPROMISED",
+      "UNKNOWN",
+      "NOT_EVALUATED"
+    ],
+    "lateRenewalProducesContinuity": false,
+    "failedAttemptMustBePreservable": true
+  },
+  "proofPolicy": {
+    "newSignatureProfile": {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": { "algorithm": "SHA-256", "value": "087fbf8a6b07acff64c5e4bfbe2d5b168c9826228b27bcb8d0fbd650bf12c12d" },
+      "immutableRef": "ddt-ed25519-signature-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "requiredProofPurpose": "CRYPTOGRAPHIC_RENEWAL_ATTESTATION",
+    "requiredSignedObjectType": "RENEWAL_CORE_HASH",
+    "witnessIdentityRequired": true,
+    "witnessAuthorityRequired": true
+  },
+  "timePolicy": {
+    "verifiedAtClaimStatus": "ASSERTED",
+    "boundClaimIsIndependentTime": false,
+    "independentTimeRequiresSeparateEvidence": true,
+    "missingIndependentTimeMayPassWithLimitations": true
+  },
+  "resultModel": {
+    "requiredAxes": [
+      "ORIGINAL_BYTES_INTEGRITY",
+      "ORIGINAL_PROOF_INDEPENDENTLY_VERIFIABLE",
+      "ORIGINAL_PROOF_SCOPE_PRESERVED",
+      "ORIGINAL_ALGORITHM_POLICY",
+      "RENEWAL_TARGET_BINDING",
+      "RENEWAL_VERIFICATION_ASSERTION_BOUND",
+      "RENEWAL_RECORD_INTEGRITY",
+      "RENEWAL_SIGNATURE",
+      "RENEWING_WITNESS_IDENTITY",
+      "RENEWING_WITNESS_AUTHORITY",
+      "RENEWAL_TIME_CLAIM",
+      "RENEWAL_TIME_PROOF",
+      "CRYPTOGRAPHIC_CONTINUITY",
+      "SUBSTANTIVE_TRUTH"
+    ],
+    "continuityStatuses": [
+      "PRESERVED",
+      "NOT_PRESERVED",
+      "UNAVAILABLE",
+      "UNRESOLVED",
+      "NOT_APPLICABLE",
+      "NOT_EVALUATED"
+    ]
+  },
+  "claimBoundary": {
+    "renewalImpliesSubstantiveTruth": false,
+    "renewalImpliesIndependentTime": false,
+    "renewalRestoresLostProof": false,
+    "testProfileImpliesProductionReadiness": false
+  },
+  "errorCodes": [
+    "RENEWAL_ALREADY_UNVERIFIABLE",
+    "RENEWAL_CLAIM_SCOPE_EXPANDED",
+    "RENEWAL_CLASS_OVERSTATED",
+    "RENEWAL_CORE_HASH_MISMATCH",
+    "RENEWAL_HISTORICAL_TRUST_STATE_UNAVAILABLE",
+    "RENEWAL_LINEAGE_CONFLICT",
+    "RENEWAL_ORIGINAL_ALGORITHM_COMPROMISED",
+    "RENEWAL_ORIGINAL_ALGORITHM_PROHIBITED",
+    "RENEWAL_ORIGINAL_BYTES_INTEGRITY_FAILED",
+    "RENEWAL_ORIGINAL_BYTES_UNAVAILABLE",
+    "RENEWAL_ORIGINAL_EVIDENCE_MODIFICATION_ATTEMPTED",
+    "RENEWAL_ORIGINAL_PROFILE_UNAVAILABLE",
+    "RENEWAL_ORIGINAL_PROOF_INVALID",
+    "RENEWAL_ORIGINAL_PROOF_SCOPE_MISMATCH",
+    "RENEWAL_ORIGINAL_PROOF_UNAVAILABLE",
+    "RENEWAL_ORIGINAL_PROOF_UNSUPPORTED",
+    "RENEWAL_PROFILE_INTEGRITY_FAILED",
+    "RENEWAL_PROFILE_UNAVAILABLE",
+    "RENEWAL_SIGNATURE_INVALID",
+    "RENEWAL_SIGNATURE_UNAVAILABLE",
+    "RENEWAL_SUBSTANTIVE_TRUTH_OVERSTATED",
+    "RENEWAL_TARGET_BINDING_FAILED",
+    "RENEWAL_TARGET_UNAVAILABLE",
+    "RENEWAL_TIME_ASSERTED_ONLY",
+    "RENEWAL_TIME_PROOF_INVALID",
+    "RENEWAL_TIME_PROOF_UNAVAILABLE",
+    "RENEWAL_TRIGGER_POLICY_UNRESOLVED",
+    "RENEWAL_VERIFICATION_ASSERTION_MISMATCH",
+    "RENEWAL_VERIFICATION_RESULT_UNAVAILABLE",
+    "RENEWAL_WITNESS_AUTHORITY_UNRESOLVED",
+    "RENEWAL_WITNESS_IDENTITY_UNRESOLVED"
+  ]
+}

@@ -1,0 +1,310 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/signature-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Ed25519 Signature Profile v0.1 Draft.1",
+  "description": "Schema for the exact machine-readable DDT Ed25519/JCS signature profile artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "proofStructure",
+    "algorithm",
+    "canonicalization",
+    "signatureEncoding",
+    "signingInput",
+    "allowedBindings",
+    "verificationRequirements",
+    "claimBoundary",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": {"const": "DDT-SIGNATURE-PROFILE"},
+        "version": {"const": "0.1.0-draft.1"}
+      }
+    },
+    "profileId": {"const": "ddt.signature.ed25519-jcs-v1"},
+    "profileVersion": {"const": "0.1.0-draft.1"},
+    "proofStructure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema"],
+      "properties": {
+        "schema": {
+          "allOf": [
+            {"$ref": "#/$defs/artifactReference"},
+            {
+              "required": ["immutableRef", "mediaType"],
+              "properties": {
+                "artifactId": {"const": "DDT-SIGNATURE-PROOF-SCHEMA-0.1-DRAFT.1"},
+                "version": {"const": "0.1.0-draft.1"},
+                "digest": {
+                  "properties": {
+                    "algorithm": {"const": "SHA-256"},
+                    "value": {"const": "886eb99cf524fc88b01fe2881e8be9c2fa3f7e933d0fed5409bdba8bce3eacff"}
+                  }
+                },
+                "immutableRef": {"const": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.1.0-draft.1/schema.json"},
+                "mediaType": {"const": "application/schema+json"}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "algorithm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "variant",
+        "curve",
+        "internalHash",
+        "prehash",
+        "context",
+        "publicKeyBytes",
+        "signatureBytes",
+        "securityStrengthBits",
+        "normativeReference"
+      ],
+      "properties": {
+        "id": {"const": "Ed25519"},
+        "variant": {"const": "PURE_EDDSA"},
+        "curve": {"const": "edwards25519"},
+        "internalHash": {"const": "SHA-512"},
+        "prehash": {"const": "NONE"},
+        "context": {"const": "NONE"},
+        "publicKeyBytes": {"const": 32},
+        "signatureBytes": {"const": 64},
+        "securityStrengthBits": {"const": 128},
+        "normativeReference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["standardId", "immutableRef"],
+          "properties": {
+            "standardId": {"const": "RFC8032"},
+            "immutableRef": {"const": "https://www.rfc-editor.org/rfc/rfc8032.html"}
+          }
+        }
+      }
+    },
+    "canonicalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "inputModel",
+        "duplicateProperties",
+        "stringNormalization",
+        "textEncoding",
+        "normativeReference"
+      ],
+      "properties": {
+        "id": {"const": "RFC8785-JCS"},
+        "inputModel": {"const": "I-JSON"},
+        "duplicateProperties": {"const": "REJECT"},
+        "stringNormalization": {"const": "NONE_PRESERVE_AS_IS"},
+        "textEncoding": {"const": "UTF-8"},
+        "normativeReference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["standardId", "immutableRef"],
+          "properties": {
+            "standardId": {"const": "RFC8785"},
+            "immutableRef": {"const": "https://www.rfc-editor.org/rfc/rfc8785.html"}
+          }
+        }
+      }
+    },
+    "signatureEncoding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "padding",
+        "encodedLength",
+        "unusedFinalBits",
+        "canonicalReencoding",
+        "normativeReference"
+      ],
+      "properties": {
+        "id": {"const": "base64url"},
+        "padding": {"const": "FORBIDDEN"},
+        "encodedLength": {"const": 86},
+        "unusedFinalBits": {"const": "ZERO_REQUIRED"},
+        "canonicalReencoding": {"const": "EXACT_MATCH_REQUIRED"},
+        "normativeReference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["standardId", "immutableRef"],
+          "properties": {
+            "standardId": {"const": "RFC4648-SECTION5"},
+            "immutableRef": {"const": "https://www.rfc-editor.org/rfc/rfc4648.html#section-5"}
+          }
+        }
+      }
+    },
+    "signingInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "construction",
+        "canonicalization",
+        "textEncoding",
+        "prehash",
+        "proofValueExcluded",
+        "allOtherPresentProofFieldsIncluded",
+        "missingCreatedAtRepresentation"
+      ],
+      "properties": {
+        "domain": {"const": "DDT_SIGNATURE_PROOF_V1"},
+        "construction": {"const": "DOMAIN_AND_PROOF_CORE_OBJECT"},
+        "canonicalization": {"const": "RFC8785-JCS"},
+        "textEncoding": {"const": "UTF-8"},
+        "prehash": {"const": "NONE"},
+        "proofValueExcluded": {"const": true},
+        "allOtherPresentProofFieldsIncluded": {"const": true},
+        "missingCreatedAtRepresentation": {"const": "OMIT"}
+      }
+    },
+    "allowedBindings": {
+      "const": [
+        {
+          "proofPurpose": "CONFORMANCE_ATTESTATION",
+          "signedObjectType": "RECEIPT_CORE_HASH"
+        },
+        {
+          "proofPurpose": "DDT_REGISTRATION",
+          "signedObjectType": "REGISTRATION_STATEMENT_HASH"
+        },
+        {
+          "proofPurpose": "VERIFICATION_RESULT_ATTESTATION",
+          "signedObjectType": "VERIFICATION_RESULT_CORE_HASH"
+        }
+      ]
+    },
+    "verificationRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strictRfc8032Parsing",
+        "rejectDecodingFailure",
+        "rejectNonCanonicalPointEncoding",
+        "rejectSmallOrderPublicKey",
+        "rejectSmallOrderR",
+        "rejectScalarOutOfRange",
+        "forbidAlgorithmFallback",
+        "canonicalBase64urlReencoding",
+        "carrierDigestComparisonRequired",
+        "exactHistoricalKeyBytesRequired"
+      ],
+      "properties": {
+        "strictRfc8032Parsing": {"const": true},
+        "rejectDecodingFailure": {"const": true},
+        "rejectNonCanonicalPointEncoding": {"const": true},
+        "rejectSmallOrderPublicKey": {"const": true},
+        "rejectSmallOrderR": {"const": true},
+        "rejectScalarOutOfRange": {"const": true},
+        "forbidAlgorithmFallback": {"const": true},
+        "canonicalBase64urlReencoding": {"const": true},
+        "carrierDigestComparisonRequired": {"const": true},
+        "exactHistoricalKeyBytesRequired": {"const": true}
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validSignatureDoesNotEstablish"],
+      "properties": {
+        "validSignatureDoesNotEstablish": {
+          "const": [
+            "ALGORITHM_CURRENT_SECURITY",
+            "CREATED_TIME",
+            "EVENT_HISTORY_COMPLETENESS",
+            "KEY_HISTORICAL_STATUS",
+            "SIGNER_AUTHORITY",
+            "SIGNER_CIVIL_OR_ORGANIZATIONAL_IDENTITY",
+            "SUBSTANTIVE_TRUTH"
+          ]
+        }
+      }
+    },
+    "errorCodes": {
+      "const": [
+        "ALGORITHM_STATUS_UNRESOLVED",
+        "CREATED_AT_CLAIM_UNPROVEN",
+        "KEY_LIFECYCLE_UNRESOLVED",
+        "PROOF_CORE_CANONICALIZATION_FAILED",
+        "PROOF_PROFILE_BINDING_MISMATCH",
+        "PROOF_PROFILE_DIGEST_MISMATCH",
+        "PROOF_PROFILE_UNAVAILABLE",
+        "PROOF_PURPOSE_TARGET_MISMATCH",
+        "PROOF_SCHEMA_INVALID",
+        "PROOF_VALUE_ENCODING_INVALID",
+        "PUBLIC_KEY_ENCODING_INVALID",
+        "PUBLIC_KEY_SMALL_ORDER",
+        "PUBLIC_KEY_UNAVAILABLE",
+        "SIGNATURE_INVALID",
+        "SIGNATURE_R_SMALL_ORDER",
+        "SIGNATURE_SCALAR_OUT_OF_RANGE",
+        "SIGNED_OBJECT_BINDING_MISMATCH",
+        "SIGNER_AUTHORITY_UNRESOLVED",
+        "SIGNER_IDENTITY_UNRESOLVED"
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "$defs": {
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"const": "SHA-256"},
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "digest": {"$ref": "#/$defs/structuralDigest"},
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    }
+  }
+}

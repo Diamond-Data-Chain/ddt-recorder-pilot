@@ -1,0 +1,296 @@
+{
+  "specification": {
+    "standard": "DDT-NETWORK-FINALITY-PROFILE",
+    "version": "0.2.0-draft.1"
+  },
+  "profileId": "ddt.network-finality.deterministic-test-v2",
+  "profileVersion": "0.2.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "deploymentStatus": "TEST_ONLY",
+  "requiredArtifacts": [
+    {
+      "artifactId": "DDT-NETWORK-FINALITY-ADAPTER-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "1f8a4d2d46c11afc5a7785c914dbfe7ecbc1feddac6738fa4f70f718a12f0312"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/network-finality/0.2.0-draft.1/specification.md",
+      "mediaType": "text/markdown"
+    },
+    {
+      "artifactId": "DDT-NETWORK-FINALITY-PROFILE-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "79a8be8b4040767853e0a22f1f135bbb4d128c98a4917c96957e617c19b49f4f"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/network-finality/0.2.0-draft.1/profile.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-NETWORK-FINALITY-EVIDENCE-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "79675772df24de59fe701dd4d5e8573ebeb13d720c9c83dd788460b724cef13a"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/network-finality/0.2.0-draft.1/evidence.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-SIGNATURE-PROOF-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "17e2a47fdbf73d3d97f871cc80a26284f49eb609fc2e60b435388b03fbadfea7"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature/0.2.0-draft.1/ed25519-profile.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/profile.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-TIME-CHECKPOINT-PROFILE-ARTIFACT-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "2842a31a66376fc78a3f5111a858728284ce8b7fc3d4761a64277f1c01c53ad7"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/time-checkpoint/0.2.0-draft.1/profile.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-VERIFICATION-RESULT-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "4cbd31132ca17ff54898846f26a94a7f03873eb81c60cc83899372295ce4cfa8"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/verification-result/0.2.0-draft.1/schema.json",
+      "mediaType": "application/schema+json"
+    },
+    {
+      "artifactId": "DDT-VERIFICATION-AXIS-REGISTRY-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "adc0c50393cf0e285c0732dcc4dcd0ed777776f5e8be52caef0b58fbeaf737a6"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/verification-result/0.2.0-draft.1/axis-registry.json",
+      "mediaType": "application/json"
+    },
+    {
+      "artifactId": "DDT-VERIFICATION-REASON-CODE-REGISTRY-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "f5f1e7310439c8407f14942da6e4d71d808fa120d41ab7fe2a5d95050e8e0d35"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/verification-result/0.2.0-draft.1/reason-code-registry.json",
+      "mediaType": "application/json"
+    }
+  ],
+  "networkIdentity": {
+    "networkId": "ddt-test-ledger-v1",
+    "networkClass": "TEST_LEDGER",
+    "genesisCommitmentInput": "UTF8(DDT_TEST_LEDGER_GENESIS_V1)",
+    "genesisCommitment": {
+      "algorithm": "SHA-256",
+      "value": "893ffb702b2801ab493b804981cace29159e1c6ce8977c3dbbb5b1fd898f3acc"
+    },
+    "chainId": "ddt-test-1",
+    "protocolUpgradePolicy": "NO_UPGRADES_TEST_PROFILE"
+  },
+  "transaction": {
+    "domain": "DDT_TEST_TRANSACTION_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "transactionIdAlgorithm": "SHA-256",
+    "canonicalTransactionBytes": "UTF8(RFC8785-JCS(transactionCore))",
+    "transactionIdInput": "canonicalTransactionBytes",
+    "transactionBytesCommitmentInput": "canonicalTransactionBytes",
+    "targetExtractionMode": "EXACT_TRANSACTION_TARGET_OBJECT",
+    "targetJsonPointer": "/target",
+    "allowedTargetTypes": [
+      "DDT_RECORD_HASH",
+      "DDT_REGISTRATION_STATEMENT_HASH",
+      "DDT_CHECKPOINT_CORE_HASH",
+      "DDT_COVERAGE_STATEMENT_CORE_HASH"
+    ]
+  },
+  "inclusionTree": {
+    "leafDomain": "DDT_NETWORK_TRANSACTION_LEAF_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "digestAlgorithm": "SHA-256",
+    "leafPrefixHex": "00",
+    "internalNodePrefixHex": "01",
+    "leafHashInput": "HEX(00)||UTF8(RFC8785-JCS(transactionLeaf))",
+    "internalNodeHashInput": "HEX(01)||RAW(leftDigest)||RAW(rightDigest)",
+    "auditPathOrientation": "DERIVED_FROM_TRANSACTION_INDEX_TREE_SIZE_AND_SPLIT_RULE",
+    "leafOrder": "ASCENDING_TRANSACTION_INDEX",
+    "splitRule": "LARGEST_POWER_OF_TWO_LESS_THAN_N",
+    "padding": "NONE",
+    "duplicateLastNode": false
+  },
+  "blockHeader": {
+    "domain": "DDT_TEST_BLOCK_HEADER_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "blockIdAlgorithm": "SHA-256",
+    "blockIdInput": "UTF8(RFC8785-JCS(blockHeaderCore))",
+    "requiredFields": [
+      "domain",
+      "networkId",
+      "genesisCommitment",
+      "height",
+      "parentBlockId",
+      "transactionCount",
+      "transactionRoot",
+      "stateRoot",
+      "validatorSetId",
+      "proposedAtClaim"
+    ]
+  },
+  "finality": {
+    "model": "DETERMINISTIC_CERTIFICATE",
+    "certificateDomain": "DDT_TEST_FINALITY_CERTIFICATE_V1",
+    "canonicalization": "RFC8785-JCS",
+    "encoding": "UTF-8",
+    "coreHashAlgorithm": "SHA-256",
+    "coreHashInput": "UTF8(RFC8785-JCS(finalityCore))",
+    "signatureProfile": {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature/0.2.0-draft.1/ed25519-profile.json",
+      "mediaType": "application/json"
+    },
+    "validatorSetRequired": true,
+    "minimumValidSignatures": 1,
+    "weightModel": "ONE_AUTHORIZED_TEST_SIGNER",
+    "historicalKeyStateRequired": true,
+    "commonSignatureProof": {
+      "artifactId": "DDT-SIGNATURE-PROOF-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "17e2a47fdbf73d3d97f871cc80a26284f49eb609fc2e60b435388b03fbadfea7"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json",
+      "mediaType": "application/schema+json"
+    },
+    "requiredProofPurpose": "NETWORK_FINALITY_ATTESTATION",
+    "requiredSignedObjectType": "FINALITY_CORE_HASH",
+    "proofsEmbeddedInCarrier": true,
+    "proofsExcludedFromCore": true,
+    "proofOrdering": "ASCENDING_PROOF_ID_UNICODE_CODE_POINT",
+    "duplicateProofIdsRejected": true,
+    "signedObjectDigestMustEqualFinalityCoreHash": true
+  },
+  "forkHandling": {
+    "incompatibleFinalizedBlocksAtSameHeight": "CONFLICTING",
+    "rpcPreferenceResolvesConflict": false,
+    "laterConflictRewritesEarlierResult": false,
+    "conflictObservationEvidenceRequired": true
+  },
+  "timePolicy": {
+    "blockTimeClaimStatus": "ASSERTED",
+    "blockTimeIsIndependentUtcProof": false,
+    "externalTimeRequiresSeparateEvidence": true
+  },
+  "resultModel": {
+    "axes": [
+      {
+        "axisId": "NETWORK_TARGET_BINDING",
+        "statusClass": "BINDING"
+      },
+      {
+        "axisId": "NETWORK_OBJECT_INCLUSION",
+        "statusClass": "VALIDITY"
+      },
+      {
+        "axisId": "NETWORK_FINALITY",
+        "statusClass": "FINALITY"
+      }
+    ],
+    "finalityStatuses": [
+      "FINALIZED",
+      "CONFIRMED_PROBABILISTIC",
+      "NOT_FINAL",
+      "REVERTED",
+      "CONFLICTING",
+      "UNAVAILABLE",
+      "UNRESOLVED",
+      "NOT_APPLICABLE",
+      "NOT_EVALUATED"
+    ]
+  },
+  "claimBoundary": {
+    "finalityImpliesExternalUtcTime": false,
+    "finalityImpliesSourceCompleteness": false,
+    "finalityImpliesSignerAuthority": false,
+    "finalityImpliesSubstantiveTruth": false,
+    "testProfileImpliesProductionDdcFinality": false
+  },
+  "errorCodes": [
+    "NETWORK_ANCESTRY_INVALID",
+    "NETWORK_ANCESTRY_UNAVAILABLE",
+    "NETWORK_BLOCK_BYTES_UNAVAILABLE",
+    "NETWORK_BLOCK_FIELD_MISMATCH",
+    "NETWORK_BLOCK_ID_MISMATCH",
+    "NETWORK_BLOCK_TIME_ASSERTED_ONLY",
+    "NETWORK_CONFLICTING_FINALITY",
+    "NETWORK_CONFLICT_OBSERVATION_INSUFFICIENT",
+    "NETWORK_EXTERNAL_TIME_UNAVAILABLE",
+    "NETWORK_FINALITY_CERTIFICATE_INVALID",
+    "NETWORK_FINALITY_CORE_HASH_MISMATCH",
+    "NETWORK_FINALITY_MODEL_OVERSTATED",
+    "NETWORK_FINALITY_NOT_REACHED",
+    "NETWORK_FINALITY_PROOF_DUPLICATE_ID",
+    "NETWORK_FINALITY_PROOF_ORDER_INVALID",
+    "NETWORK_FINALITY_PROOF_PROFILE_MISMATCH",
+    "NETWORK_FINALITY_PROOF_PURPOSE_MISMATCH",
+    "NETWORK_FINALITY_PROOF_TARGET_MISMATCH",
+    "NETWORK_FINALITY_QUORUM_NOT_MET",
+    "NETWORK_GENESIS_MISMATCH",
+    "NETWORK_HISTORICAL_TRUST_STATE_UNAVAILABLE",
+    "NETWORK_IDENTITY_MISMATCH",
+    "NETWORK_INCLUSION_PROOF_INVALID",
+    "NETWORK_INCLUSION_PROOF_UNAVAILABLE",
+    "NETWORK_INCLUSION_ROOT_MISMATCH",
+    "NETWORK_OBJECT_BYTES_UNAVAILABLE",
+    "NETWORK_OBJECT_DECODING_FAILED",
+    "NETWORK_OBJECT_ID_MISMATCH",
+    "NETWORK_PROFILE_INTEGRITY_FAILED",
+    "NETWORK_PROFILE_UNAVAILABLE",
+    "NETWORK_PROTOCOL_VERSION_UNRESOLVED",
+    "NETWORK_REORGANIZATION_DETECTED",
+    "NETWORK_TARGET_BINDING_MISMATCH",
+    "NETWORK_TARGET_EXTRACTION_FAILED",
+    "NETWORK_UNSUPPORTED_PROTOCOL_UPGRADE",
+    "NETWORK_VALIDATOR_SET_MISMATCH"
+  ]
+}

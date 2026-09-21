@@ -1,0 +1,646 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/conformance-receipt/0.2.0-draft.1/schema.json",
+  "title": "DDT Conformance Receipt v0.2 Draft.1",
+  "description": "Exact registration-time conformance receipt for Preservation Contract v0.2 with closed artifact and capability coverage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specification", "receiptCore", "receiptCoreHash", "proofs"],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "receiptCore": { "$ref": "#/$defs/receiptCore" },
+    "receiptCoreHash": { "$ref": "#/$defs/structuralDigest" },
+    "proofs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/receiptProof" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reasonCode": {
+      "type": "string",
+      "pattern": "^(?:[A-Z][A-Z0-9_]{2,127}|x:[A-Za-z0-9][A-Za-z0-9._:-]{2,255})$"
+    },
+    "reasonCodeArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/reasonCode" }
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "nonEmptyIdentifierArray": {
+      "allOf": [
+        { "$ref": "#/$defs/identifierArray" },
+        { "minItems": 1 }
+      ]
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-CONFORMANCE-RECEIPT" },
+        "version": { "const": "0.2.0-draft.1" }
+      }
+    },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validatorId", "version", "digest", "executionId"],
+      "properties": {
+        "validatorId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "executionId": { "$ref": "#/$defs/identifier" },
+        "instanceIdentityRef": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "validationInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordHash",
+        "preservationContractCommitment",
+        "evaluatedArtifactSetHash",
+        "evaluatedEvidenceSetHash",
+        "inputManifestHash"
+      ],
+      "properties": {
+        "recordHash": { "$ref": "#/$defs/structuralDigest" },
+        "preservationContractCommitment": { "$ref": "#/$defs/structuralDigest" },
+        "evaluatedArtifactSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "evaluatedEvidenceSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "inputManifestHash": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "artifactEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact", "availability", "integrity", "reasonCodes", "ruleResultRef"],
+      "properties": {
+        "artifact": { "$ref": "#/$defs/artifactReference" },
+        "availability": { "enum": ["AVAILABLE", "UNAVAILABLE"] },
+        "integrity": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "NOT_EVALUATED"] },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" },
+        "ruleResultRef": { "$ref": "#/$defs/identifier" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "availability": { "const": "UNAVAILABLE" } },
+            "required": ["availability"]
+          },
+          "then": {
+            "properties": { "integrity": { "const": "UNAVAILABLE" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "integrity": { "enum": ["FAIL", "UNAVAILABLE", "NOT_EVALUATED"] } },
+            "required": ["integrity"]
+          },
+          "then": {
+            "properties": { "reasonCodes": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "artifactEvaluations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelopeSchema",
+        "enterpriseProfile",
+        "validationRuleSet",
+        "canonicalizationProfile",
+        "structuralCommitmentProfile",
+        "identifierProfile",
+        "evidenceManifestProfile",
+        "relationshipVocabulary",
+        "registrationSignatureProfile",
+        "conformanceReceiptProfile",
+        "verificationResultProfile",
+        "verificationAxisRegistry",
+        "verificationReasonCodeRegistry"
+      ],
+      "properties": {
+        "envelopeSchema": { "$ref": "#/$defs/artifactEvaluation" },
+        "enterpriseProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "validationRuleSet": { "$ref": "#/$defs/artifactEvaluation" },
+        "canonicalizationProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "structuralCommitmentProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "identifierProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "evidenceManifestProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "relationshipVocabulary": { "$ref": "#/$defs/artifactEvaluation" },
+        "registrationSignatureProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "conformanceReceiptProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "verificationResultProfile": { "$ref": "#/$defs/artifactEvaluation" },
+        "verificationAxisRegistry": { "$ref": "#/$defs/artifactEvaluation" },
+        "verificationReasonCodeRegistry": { "$ref": "#/$defs/artifactEvaluation" }
+      }
+    },
+    "evidenceEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluationId",
+        "evidenceRef",
+        "availabilityAtValidation",
+        "integrity",
+        "reasonCodes",
+        "ruleResultRefs"
+      ],
+      "properties": {
+        "evaluationId": { "$ref": "#/$defs/identifier" },
+        "evidenceRef": { "$ref": "#/$defs/identifier" },
+        "commitment": { "$ref": "#/$defs/structuralDigest" },
+        "availabilityAtValidation": { "enum": ["PRESENTED", "UNAVAILABLE", "NOT_REQUIRED"] },
+        "integrity": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "NOT_EVALUATED", "NOT_APPLICABLE"] },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" },
+        "ruleResultRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "availabilityAtValidation": { "const": "UNAVAILABLE" } },
+            "required": ["availabilityAtValidation"]
+          },
+          "then": {
+            "properties": { "integrity": { "const": "UNAVAILABLE" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "availabilityAtValidation": { "const": "NOT_REQUIRED" } },
+            "required": ["availabilityAtValidation"]
+          },
+          "then": {
+            "properties": { "integrity": { "const": "NOT_APPLICABLE" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "integrity": { "enum": ["FAIL", "UNAVAILABLE", "NOT_EVALUATED"] } },
+            "required": ["integrity"]
+          },
+          "then": {
+            "properties": { "reasonCodes": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "requirementLevel": {
+      "enum": ["REQUIRED", "CONDITIONAL", "OPTIONAL"]
+    },
+    "contractFailureBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failureCode", "failureAxis"],
+      "properties": {
+        "failureCode": { "$ref": "#/$defs/reasonCode" },
+        "failureAxis": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "ruleResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultId",
+        "sourceType",
+        "sourceId",
+        "requirement",
+        "applicability",
+        "status",
+        "reasonCodes",
+        "targetRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "resultId": { "$ref": "#/$defs/identifier" },
+        "sourceType": {
+          "enum": [
+            "CORE_REQUIREMENT",
+            "SCHEMA_RULE",
+            "PROFILE_RULE",
+            "CONTRACT_OBLIGATION",
+            "EXTENSION_RULE"
+          ]
+        },
+        "sourceId": { "$ref": "#/$defs/identifier" },
+        "originTemplateId": { "$ref": "#/$defs/identifier" },
+        "contractFailureBinding": { "$ref": "#/$defs/contractFailureBinding" },
+        "requirement": { "$ref": "#/$defs/requirementLevel" },
+        "conditionResultRef": { "$ref": "#/$defs/identifier" },
+        "applicability": { "enum": ["APPLICABLE", "NOT_APPLICABLE", "UNRESOLVED"] },
+        "status": { "enum": ["PASS", "FAIL", "INDETERMINATE", "NOT_APPLICABLE"] },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" },
+        "targetRefs": { "$ref": "#/$defs/identifierArray" },
+        "evidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "sourceType": { "const": "CONTRACT_OBLIGATION" } },
+            "required": ["sourceType"]
+          },
+          "then": {
+            "required": ["originTemplateId"]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["originTemplateId"] },
+                { "required": ["contractFailureBinding"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "sourceType": { "const": "CONTRACT_OBLIGATION" },
+              "requirement": { "enum": ["REQUIRED", "CONDITIONAL"] }
+            },
+            "required": ["sourceType", "requirement"]
+          },
+          "then": {
+            "required": ["contractFailureBinding"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "requirement": { "const": "CONDITIONAL" } },
+            "required": ["requirement"]
+          },
+          "then": { "required": ["conditionResultRef"] },
+          "else": { "not": { "required": ["conditionResultRef"] } }
+        },
+        {
+          "if": {
+            "properties": { "applicability": { "const": "APPLICABLE" } },
+            "required": ["applicability"]
+          },
+          "then": {
+            "properties": { "status": { "enum": ["PASS", "FAIL", "INDETERMINATE"] } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "applicability": { "const": "NOT_APPLICABLE" } },
+            "required": ["applicability"]
+          },
+          "then": { "properties": { "status": { "const": "NOT_APPLICABLE" } } }
+        },
+        {
+          "if": {
+            "properties": { "applicability": { "const": "UNRESOLVED" } },
+            "required": ["applicability"]
+          },
+          "then": { "properties": { "status": { "const": "INDETERMINATE" } } }
+        },
+        {
+          "if": {
+            "properties": { "status": { "enum": ["FAIL", "INDETERMINATE"] } },
+            "required": ["status"]
+          },
+          "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "capabilityResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractRequirement",
+        "applicability",
+        "status",
+        "reasonCodes",
+        "ruleResultRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "contractRequirement": { "enum": ["REQUIRED", "CONDITIONAL", "NOT_APPLICABLE"] },
+        "profile": { "$ref": "#/$defs/artifactReference" },
+        "conditionRuleId": { "$ref": "#/$defs/identifier" },
+        "conditionResultRef": { "$ref": "#/$defs/identifier" },
+        "notApplicableReasonCode": { "$ref": "#/$defs/reasonCode" },
+        "applicability": { "enum": ["APPLICABLE", "NOT_APPLICABLE", "UNRESOLVED"] },
+        "status": { "enum": ["PASS", "FAIL", "INDETERMINATE", "NOT_APPLICABLE"] },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" },
+        "ruleResultRefs": { "$ref": "#/$defs/nonEmptyIdentifierArray" },
+        "evidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "contractRequirement": { "const": "REQUIRED" },
+            "applicability": { "const": "APPLICABLE" },
+            "status": { "enum": ["PASS", "FAIL", "INDETERMINATE"] }
+          },
+          "required": ["contractRequirement", "profile", "applicability", "status"],
+          "not": {
+            "anyOf": [
+              { "required": ["conditionRuleId"] },
+              { "required": ["conditionResultRef"] },
+              { "required": ["notApplicableReasonCode"] }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "contractRequirement": { "const": "CONDITIONAL" }
+          },
+          "required": [
+            "contractRequirement",
+            "profile",
+            "conditionRuleId",
+            "conditionResultRef"
+          ],
+          "not": { "required": ["notApplicableReasonCode"] },
+          "allOf": [
+            {
+              "if": {
+                "properties": { "applicability": { "const": "APPLICABLE" } },
+                "required": ["applicability"]
+              },
+              "then": {
+                "properties": { "status": { "enum": ["PASS", "FAIL", "INDETERMINATE"] } }
+              }
+            },
+            {
+              "if": {
+                "properties": { "applicability": { "const": "NOT_APPLICABLE" } },
+                "required": ["applicability"]
+              },
+              "then": { "properties": { "status": { "const": "NOT_APPLICABLE" } } }
+            },
+            {
+              "if": {
+                "properties": { "applicability": { "const": "UNRESOLVED" } },
+                "required": ["applicability"]
+              },
+              "then": { "properties": { "status": { "const": "INDETERMINATE" } } }
+            }
+          ]
+        },
+        {
+          "properties": {
+            "contractRequirement": { "const": "NOT_APPLICABLE" },
+            "applicability": { "const": "NOT_APPLICABLE" },
+            "status": { "const": "NOT_APPLICABLE" }
+          },
+          "required": [
+            "contractRequirement",
+            "notApplicableReasonCode",
+            "applicability",
+            "status"
+          ],
+          "not": {
+            "anyOf": [
+              { "required": ["profile"] },
+              { "required": ["conditionRuleId"] },
+              { "required": ["conditionResultRef"] }
+            ]
+          }
+        }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "enum": ["FAIL", "INDETERMINATE"] } },
+            "required": ["status"]
+          },
+          "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "capabilityResults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identityAuthority",
+        "independentTime",
+        "eventCoverage",
+        "networkFinality",
+        "offlineVerification",
+        "cryptographicRenewal"
+      ],
+      "properties": {
+        "identityAuthority": { "$ref": "#/$defs/capabilityResult" },
+        "independentTime": { "$ref": "#/$defs/capabilityResult" },
+        "eventCoverage": { "$ref": "#/$defs/capabilityResult" },
+        "networkFinality": { "$ref": "#/$defs/capabilityResult" },
+        "offlineVerification": { "$ref": "#/$defs/capabilityResult" },
+        "cryptographicRenewal": { "$ref": "#/$defs/capabilityResult" }
+      }
+    },
+    "ruleCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pass", "fail", "indeterminate", "notApplicable"],
+      "properties": {
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "indeterminate": { "type": "integer", "minimum": 0 },
+        "notApplicable": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "capabilityCounts": {
+      "allOf": [
+        { "$ref": "#/$defs/ruleCounts" },
+        {
+          "properties": {
+            "pass": { "maximum": 6 },
+            "fail": { "maximum": 6 },
+            "indeterminate": { "maximum": 6 },
+            "notApplicable": { "maximum": 6 }
+          }
+        }
+      ]
+    },
+    "overallResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "derivationProfile",
+        "ruleResultSetHash",
+        "capabilityResultSetHash",
+        "ruleCounts",
+        "capabilityCounts",
+        "reasonCodes"
+      ],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL", "INDETERMINATE"] },
+        "derivationProfile": { "$ref": "#/$defs/artifactReference" },
+        "ruleResultSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "capabilityResultSetHash": { "$ref": "#/$defs/structuralDigest" },
+        "ruleCounts": { "$ref": "#/$defs/ruleCounts" },
+        "capabilityCounts": { "$ref": "#/$defs/capabilityCounts" },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "enum": ["FAIL", "INDETERMINATE"] } },
+            "required": ["status"]
+          },
+          "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substantiveTruth",
+        "legalValidity",
+        "recordIntegrity",
+        "documentAvailability",
+        "documentIntegrity",
+        "registrantAuthority",
+        "independentTime",
+        "networkFinality",
+        "eventHistoryCompleteness",
+        "historicalSemanticResolution",
+        "contractApplicability"
+      ],
+      "properties": {
+        "substantiveTruth": { "const": "NOT_EVALUATED" },
+        "legalValidity": { "const": "NOT_EVALUATED" },
+        "recordIntegrity": { "const": "SEPARATE_AXIS" },
+        "documentAvailability": { "const": "SEPARATE_AXIS" },
+        "documentIntegrity": { "const": "SEPARATE_AXIS" },
+        "registrantAuthority": { "const": "SEPARATE_AXIS" },
+        "independentTime": { "const": "SEPARATE_AXIS" },
+        "networkFinality": { "const": "SEPARATE_AXIS" },
+        "eventHistoryCompleteness": { "const": "SEPARATE_AXIS" },
+        "historicalSemanticResolution": { "const": "SEPARATE_AXIS" },
+        "contractApplicability": { "const": "SEPARATE_AXIS" }
+      }
+    },
+    "validationTimeClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startedAt": { "$ref": "#/$defs/dateTime" },
+        "completedAt": { "$ref": "#/$defs/dateTime" }
+      }
+    },
+    "receiptCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receiptId",
+        "recordHash",
+        "preservationContractCommitment",
+        "validator",
+        "validationInput",
+        "artifactEvaluations",
+        "evidenceEvaluations",
+        "ruleResults",
+        "capabilityResults",
+        "overallResult",
+        "claimBoundary",
+        "validationTimeClaims"
+      ],
+      "properties": {
+        "receiptId": { "$ref": "#/$defs/identifier" },
+        "recordHash": { "$ref": "#/$defs/structuralDigest" },
+        "preservationContractCommitment": { "$ref": "#/$defs/structuralDigest" },
+        "validator": { "$ref": "#/$defs/validator" },
+        "validationInput": { "$ref": "#/$defs/validationInput" },
+        "artifactEvaluations": { "$ref": "#/$defs/artifactEvaluations" },
+        "evidenceEvaluations": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/evidenceEvaluation" }
+        },
+        "ruleResults": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": { "$ref": "#/$defs/ruleResult" }
+        },
+        "capabilityResults": { "$ref": "#/$defs/capabilityResults" },
+        "overallResult": { "$ref": "#/$defs/overallResult" },
+        "claimBoundary": { "$ref": "#/$defs/claimBoundary" },
+        "validationTimeClaims": { "$ref": "#/$defs/validationTimeClaims" }
+      }
+    },
+    "receiptProof": {
+      "allOf": [
+        {
+          "$ref": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json"
+        },
+        {
+          "properties": {
+            "proofPurpose": { "const": "CONFORMANCE_ATTESTATION" },
+            "signedObject": {
+              "properties": {
+                "type": { "const": "RECEIPT_CORE_HASH" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

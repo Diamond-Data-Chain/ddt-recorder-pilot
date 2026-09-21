@@ -1,0 +1,734 @@
+{
+  "specification": {
+    "standard": "DDT-VERIFICATION-AXIS-REGISTRY",
+    "version": "0.2.0-draft.1"
+  },
+  "registryId": "ddt.verification.axis-registry.v2",
+  "lifecycleStatus": "DRAFT",
+  "deploymentStatus": "TEST_ONLY",
+  "statusClasses": [
+    {
+      "statusClass": "AVAILABILITY",
+      "statuses": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "NOT_REQUIRED",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "BINDING",
+      "statuses": [
+        "BOUND",
+        "UNBOUND",
+        "FAIL",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "COMPLETENESS",
+      "statuses": [
+        "COMPLETE",
+        "INCOMPLETE",
+        "PARTIAL",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "CONFORMANCE",
+      "statuses": [
+        "PASS",
+        "FAIL",
+        "INDETERMINATE",
+        "UNAVAILABLE",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "CONTINUITY",
+      "statuses": [
+        "PRESERVED",
+        "NOT_PRESERVED",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "FINALITY",
+      "statuses": [
+        "FINAL",
+        "NOT_FINAL",
+        "CONFLICTING",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "INTEGRITY",
+      "statuses": [
+        "PASS",
+        "FAIL",
+        "UNAVAILABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "LIFECYCLE",
+      "statuses": [
+        "VALID",
+        "EXPIRED",
+        "SUSPENDED",
+        "REVOKED",
+        "COMPROMISED",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "PRESERVATION",
+      "statuses": [
+        "PASS",
+        "FAIL",
+        "UNAVAILABLE",
+        "INDETERMINATE",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "REPRODUCTION",
+      "statuses": [
+        "MATCH",
+        "MISMATCH",
+        "PARTIAL",
+        "UNAVAILABLE",
+        "INDETERMINATE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "RESOLUTION",
+      "statuses": [
+        "VERIFIED",
+        "FAILED",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "SEMANTIC",
+      "statuses": [
+        "COMPLETE",
+        "PARTIAL",
+        "AMBIGUOUS",
+        "UNKNOWN",
+        "UNAVAILABLE",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "TIME",
+      "statuses": [
+        "ASSERTED",
+        "PROVEN",
+        "FAILED",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    },
+    {
+      "statusClass": "TRUTH_BOUNDARY",
+      "statuses": [
+        "NOT_APPLICABLE"
+      ]
+    },
+    {
+      "statusClass": "VALIDITY",
+      "statuses": [
+        "VALID",
+        "INVALID",
+        "UNAVAILABLE",
+        "UNRESOLVED",
+        "NOT_APPLICABLE",
+        "NOT_EVALUATED"
+      ]
+    }
+  ],
+  "axes": [
+    {
+      "axisId": "CHECKPOINT_CORE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "CHECKPOINT_INCLUSION_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "CHECKPOINT_PREDECESSOR_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "CHECKPOINT_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "CHECKPOINT_SIGNER_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "CHECKPOINT_SIGNER_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "CHECKPOINT_TIME_CLAIM",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "CHECKPOINT_TIME_PROOF",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "CONFORMANCE_RECEIPT_CORE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "CONFORMANCE_RECEIPT_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "CONFORMANCE_RECEIPT_PROOF_VALIDITY",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "CONFORMANCE_REPRODUCIBILITY",
+      "statusClass": "REPRODUCTION"
+    },
+    {
+      "axisId": "CONTRACT_ARTIFACT_AVAILABILITY",
+      "statusClass": "AVAILABILITY"
+    },
+    {
+      "axisId": "CONTRACT_ARTIFACT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "COVERAGE_TOMBSTONE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "COVERAGE_TOMBSTONE_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "CURRENT_PRESERVATION_OBLIGATION",
+      "statusClass": "PRESERVATION"
+    },
+    {
+      "axisId": "DDT_RECORD_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "DDT_RECORD_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "ENTERPRISE_PROFILE_APPLICABILITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "ENTERPRISE_PROFILE_BOUND_TO_CONTRACT",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "ENTERPRISE_PROFILE_COMPATIBILITY",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "ENTERPRISE_PROFILE_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "ENTERPRISE_PROFILE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "EVENT_COVERAGE_CONTRACT_APPLICABILITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVENT_COVERAGE_CONTRACT_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVENT_COVERAGE_CONTRACT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "EVENT_HISTORY_COMPLETENESS",
+      "statusClass": "COMPLETENESS"
+    },
+    {
+      "axisId": "EVIDENCE_AVAILABILITY",
+      "statusClass": "AVAILABILITY"
+    },
+    {
+      "axisId": "EVIDENCE_COMMITMENT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "EVIDENCE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "EVIDENCE_MANIFEST_BOUND_TO_RECORD",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "EVIDENCE_MANIFEST_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVIDENCE_MANIFEST_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "EVIDENCE_OBJECT_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVIDENCE_PRESERVATION_OBLIGATION",
+      "statusClass": "PRESERVATION"
+    },
+    {
+      "axisId": "EVIDENCE_PROVENANCE",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVIDENCE_REPRESENTATION_RESOLUTION",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVIDENCE_SIGNER_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVIDENCE_SIGNER_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "EVIDENCE_TIME",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "FAMILY_CONTINUITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "HISTORICAL_SEMANTIC_RESOLUTION",
+      "statusClass": "SEMANTIC"
+    },
+    {
+      "axisId": "HISTORICAL_TARGET_IDENTITY",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "INDEPENDENT_PROVENANCE",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "NETWORK_ANCESTRY",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "NETWORK_BLOCK_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "NETWORK_FINALITY",
+      "statusClass": "FINALITY"
+    },
+    {
+      "axisId": "NETWORK_OBJECT_INCLUSION",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "NETWORK_OBJECT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "NETWORK_PROFILE_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "NETWORK_PROFILE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "NETWORK_TARGET_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "NETWORK_TIME_CLAIM",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "NETWORK_TIME_PROOF",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "NETWORK_TRUST_STATE_RESOLUTION",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "OBLIGATION_MATERIALIZATION",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "OFFLINE_EXECUTION_NETWORK_ISOLATION",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "OFFLINE_EXTERNAL_DEPENDENCY_AVAILABILITY",
+      "statusClass": "AVAILABILITY"
+    },
+    {
+      "axisId": "OFFLINE_PACKAGE_DEPENDENCY_CLOSURE",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "OFFLINE_PACKAGE_EXTRACTION_SAFETY",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "OFFLINE_PACKAGE_FILE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "OFFLINE_PACKAGE_MANIFEST_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "OFFLINE_PACKAGE_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "OFFLINE_PACKAGE_TARGET_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "OFFLINE_VERIFICATION_REPRODUCIBILITY",
+      "statusClass": "REPRODUCTION"
+    },
+    {
+      "axisId": "ORIGINAL_PROOF_INDEPENDENTLY_VERIFIABLE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "OVERALL_RESULT_DERIVATION",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "PRESERVATION_CONTRACT_APPLICABILITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "PRESERVATION_CONTRACT_BOUND_TO_RECORD",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "PRESERVATION_CONTRACT_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "PRESERVATION_CONTRACT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "PROFILE_ARTIFACT_AVAILABILITY",
+      "statusClass": "AVAILABILITY"
+    },
+    {
+      "axisId": "PROFILE_ARTIFACT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "PROFILE_EXTENSION_RESOLUTION",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "PROFILE_RULE_EVALUATION",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "PROOF_CREATED_TIME_CLAIM",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "PROOF_PROFILE_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "PROOF_PROFILE_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "PROOF_PURPOSE_TARGET_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "PROOF_SCHEMA_CONFORMANCE",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "PROOF_SIGNER_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "PROOF_SIGNER_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "PROOF_TIME_PROOF",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "RECEIPT_CONTRACT_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "RECEIPT_ISSUER_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "RECEIPT_ISSUER_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "RECEIPT_RECORD_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "RECEIPT_REGISTRATION_STATEMENT_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "REGISTRANT_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "REGISTRANT_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "REGISTRATION_CONFORMANCE",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "REGISTRATION_MECHANISM_PROOF",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "REGISTRATION_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "REGISTRATION_STATEMENT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "REGISTRATION_TIME_CLAIM",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "REGISTRATION_TIME_PROOF",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "RELATIONSHIP_ASSERTION_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "RELATIONSHIP_ASSERTION_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "RENEWAL_CLASS_CONFORMANCE",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "RENEWAL_CRYPTOGRAPHIC_CONTINUITY",
+      "statusClass": "CONTINUITY"
+    },
+    {
+      "axisId": "RENEWAL_ORIGINAL_BYTES_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "RENEWAL_ORIGINAL_PROFILE_RESOLUTION",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "RENEWAL_PROOF_SCOPE_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "RENEWAL_RECORD_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "RENEWAL_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "RENEWAL_TARGET_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "RENEWAL_TIME_PROOF",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "RENEWAL_VERIFICATION_ASSERTION_BOUND",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "RENEWAL_VERIFICATION_TIME_CLAIM",
+      "statusClass": "TIME"
+    },
+    {
+      "axisId": "RENEWAL_WITNESS_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "RENEWAL_WITNESS_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "RULE_RESULT_COVERAGE",
+      "statusClass": "CONFORMANCE"
+    },
+    {
+      "axisId": "SCHEMA_AVAILABILITY",
+      "statusClass": "AVAILABILITY"
+    },
+    {
+      "axisId": "SCHEMA_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "SEMANTIC_DEPENDENCY_RESOLUTION",
+      "statusClass": "SEMANTIC"
+    },
+    {
+      "axisId": "SIGNATURE_ALGORITHM_LIFECYCLE",
+      "statusClass": "LIFECYCLE"
+    },
+    {
+      "axisId": "SIGNATURE_VALIDITY",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "SIGNED_OBJECT_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "SIGNING_KEY_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "SIGNING_KEY_LIFECYCLE",
+      "statusClass": "LIFECYCLE"
+    },
+    {
+      "axisId": "SOURCE_COVERAGE_STATEMENT_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "SOURCE_COVERAGE_STATEMENT_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "SOURCE_EVENT_DDT_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "SOURCE_EVENT_POSITION_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "SOURCE_STATE_COMMITMENT_REPRODUCIBILITY",
+      "statusClass": "REPRODUCTION"
+    },
+    {
+      "axisId": "SOURCE_WITNESS_ATTESTATION_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "SOURCE_WITNESS_ATTESTATION_SIGNATURE",
+      "statusClass": "VALIDITY"
+    },
+    {
+      "axisId": "SOURCE_WITNESS_AUTHORITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "SOURCE_WITNESS_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "SOURCE_WITNESS_INDEPENDENCE",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "SUBSTANTIVE_TRUTH",
+      "statusClass": "TRUTH_BOUNDARY"
+    },
+    {
+      "axisId": "TARGET_COMMITMENT_BINDING",
+      "statusClass": "BINDING"
+    },
+    {
+      "axisId": "UPSTREAM_PAYLOAD_AVAILABILITY",
+      "statusClass": "AVAILABILITY"
+    },
+    {
+      "axisId": "UPSTREAM_PAYLOAD_INTEGRITY",
+      "statusClass": "INTEGRITY"
+    },
+    {
+      "axisId": "VALIDATION_INPUT_REPRODUCIBILITY",
+      "statusClass": "REPRODUCTION"
+    },
+    {
+      "axisId": "VERIFICATION_METHOD_IDENTITY",
+      "statusClass": "RESOLUTION"
+    },
+    {
+      "axisId": "VERIFICATION_METHOD_LIFECYCLE",
+      "statusClass": "LIFECYCLE"
+    }
+  ],
+  "extensionRule": {
+    "axisIdPrefix": "x:",
+    "baseAxisRedefinition": "FORBIDDEN",
+    "unknownRequiredAxis": "REJECT"
+  }
+}

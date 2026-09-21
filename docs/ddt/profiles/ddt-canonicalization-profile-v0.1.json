@@ -1,0 +1,64 @@
+{
+  "specification": {
+    "standard": "DDT-CANONICALIZATION-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.canonicalization.rfc8785-jcs-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "normativeReference": {
+    "standardId": "RFC8785",
+    "scheme": "JCS",
+    "immutableRef": "https://www.rfc-editor.org/rfc/rfc8785.html"
+  },
+  "inputPolicy": {
+    "duplicateMemberNames": "REJECT",
+    "interoperableJsonRequired": true,
+    "nonFiniteNumbers": "REJECT",
+    "invalidUnicodeScalarValues": "REJECT",
+    "unpairedSurrogates": "REJECT",
+    "silentRepair": "FORBIDDEN",
+    "unicodeNormalization": "NONE"
+  },
+  "canonicalization": {
+    "scheme": "RFC8785-JCS",
+    "objectMemberOrdering": "ECMASCRIPT_UTF16_CODE_UNIT_LEXICOGRAPHIC",
+    "numberSerialization": "RFC8785_ECMASCRIPT_JSON_NUMBER_SERIALIZATION",
+    "stringSerialization": "RFC8785_ECMASCRIPT_JSON_STRING_SERIALIZATION",
+    "arrayOrdering": "PRESERVE_INPUT_ORDER",
+    "literalSerialization": "JSON_LOWERCASE_LITERALS",
+    "inputObjectPropertyOrderSignificant": false
+  },
+  "outputPolicy": {
+    "encoding": "UTF-8",
+    "bom": false,
+    "insignificantWhitespace": "NONE",
+    "unicodeNormalization": "NONE",
+    "output": "CANONICAL_JSON_BYTES"
+  },
+  "verificationPolicy": {
+    "historicalProfileDigestRequired": true,
+    "duplicateAwareParsingRequired": true,
+    "canonicalReencoding": "EXACT_BYTE_MATCH",
+    "networkDependency": "NONE",
+    "hashingDefinedHere": false
+  },
+  "claimBoundary": {
+    "serializationOnly": true,
+    "substantiveTruth": "NOT_ESTABLISHED",
+    "signerAuthority": "NOT_ESTABLISHED",
+    "independentTime": "NOT_ESTABLISHED",
+    "networkFinality": "NOT_ESTABLISHED",
+    "eventHistoryCompleteness": "NOT_ESTABLISHED",
+    "legalValidity": "NOT_ESTABLISHED"
+  },
+  "errorCodes": [
+    "CANONICALIZATION_DUPLICATE_MEMBER",
+    "CANONICALIZATION_FAILED",
+    "CANONICALIZATION_INVALID_UNICODE",
+    "CANONICALIZATION_NON_FINITE_NUMBER",
+    "CANONICALIZATION_NON_IJSON_VALUE",
+    "CANONICALIZATION_UNPAIRED_SURROGATE",
+    "CANONICAL_REENCODING_MISMATCH"
+  ],
+  "extensions": []
+}

@@ -1,0 +1,64 @@
+{
+  "specification": {
+    "standard": "DDT-VERIFICATION-RESULT-SUMMARY-DERIVATION-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.verification.result-summary.base-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "status": "TEST_ONLY",
+  "appliesTo": {
+    "resultStandard": "DDT-VERIFICATION-RESULT",
+    "resultVersion": "0.2.0-draft.1"
+  },
+  "precedence": [
+    {
+      "priority": 1,
+      "summaryStatus": "FAIL",
+      "condition": "ANY_REQUIRED_AXIS_HARD_FAILURE"
+    },
+    {
+      "priority": 2,
+      "summaryStatus": "INDETERMINATE",
+      "condition": "ANY_REQUIRED_AXIS_UNRESOLVED_UNAVAILABLE_PARTIAL_OR_NOT_EVALUATED"
+    },
+    {
+      "priority": 3,
+      "summaryStatus": "PASS_WITH_LIMITATIONS",
+      "condition": "ALL_REQUIRED_AXES_POSITIVE_AND_SUMMARY_RELEVANT_OPTIONAL_LIMITATION_PRESENT"
+    },
+    {
+      "priority": 4,
+      "summaryStatus": "PASS",
+      "condition": "ALL_REQUIRED_AXES_POSITIVE_AND_NO_SUMMARY_RELEVANT_LIMITATION"
+    }
+  ],
+  "requiredAxisPolicy": {
+    "allRequiredAxesMustBePresentExactlyOnce": true,
+    "missingRequiredAxisStatus": "INDETERMINATE",
+    "duplicateRequiredAxisStatus": "INDETERMINATE"
+  },
+  "positiveStatusByClass": {
+    "INTEGRITY": ["PASS"],
+    "AVAILABILITY": ["AVAILABLE", "NOT_REQUIRED"],
+    "BINDING": ["BOUND", "NOT_APPLICABLE"],
+    "CONFORMANCE": ["PASS", "NOT_APPLICABLE"],
+    "VALIDITY": ["VALID", "NOT_APPLICABLE"],
+    "RESOLUTION": ["VERIFIED", "NOT_APPLICABLE"],
+    "LIFECYCLE": ["VALID"],
+    "TIME": ["ASSERTED", "PROVEN", "NOT_APPLICABLE"],
+    "REPRODUCTION": ["MATCH"],
+    "SEMANTIC": ["COMPLETE", "NOT_APPLICABLE"],
+    "PRESERVATION": ["PASS", "NOT_APPLICABLE"],
+    "COMPLETENESS": ["COMPLETE", "NOT_APPLICABLE"],
+    "FINALITY": ["FINAL", "NOT_APPLICABLE"],
+    "CONTINUITY": ["PRESERVED", "NOT_APPLICABLE"],
+    "TRUTH_BOUNDARY": ["NOT_APPLICABLE"]
+  },
+  "claimBoundary": {
+    "summaryDoesNotEstablishSubstantiveTruth": true,
+    "summaryDoesNotEstablishSignerAuthority": true,
+    "summaryDoesNotEstablishIndependentTime": true,
+    "summaryDoesNotEstablishNetworkFinality": true,
+    "summaryDoesNotEstablishEventCompleteness": true
+  }
+}

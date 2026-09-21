@@ -1,0 +1,499 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/registration-mechanism-profile/0.1.0-draft.1/schema.json",
+  "title": "DDT Registration Mechanism Profile v0.1 Draft.1",
+  "description": "Machine-readable profile defining exact registration-mechanism semantics, sequence allocation, replay/conflict behavior, DDT Number rendering, persistence boundary and verification requirements.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "status",
+    "mechanism",
+    "registrar",
+    "sequencePolicy",
+    "ddtNumberPolicy",
+    "registrationPolicy",
+    "replayPolicy",
+    "conflictPolicy",
+    "lookupPolicy",
+    "persistencePolicy",
+    "registrationResult",
+    "verificationPolicy",
+    "claimBoundary",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-REGISTRATION-MECHANISM-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "profileId": {
+      "$ref": "#/$defs/identifier"
+    },
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "CANDIDATE",
+        "FINAL"
+      ]
+    },
+    "mechanism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mechanismId",
+        "environment"
+      ],
+      "properties": {
+        "mechanismId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "environment": {
+          "enum": [
+            "TEST_ONLY",
+            "PRODUCTION"
+          ]
+        }
+      }
+    },
+    "registrar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registrarId",
+        "sequenceDomain"
+      ],
+      "properties": {
+        "registrarId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "sequenceDomain": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "sequencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "firstSequence",
+        "allocationRule",
+        "allocationScope",
+        "failedAttemptConsumesPosition",
+        "parallelCounterPermitted",
+        "duplicateSequencePolicy",
+        "concurrencyPolicy"
+      ],
+      "properties": {
+        "firstSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "allocationRule": {
+          "enum": [
+            "MAX_EXISTING_PLUS_ONE"
+          ]
+        },
+        "allocationScope": {
+          "enum": [
+            "SEQUENCE_DOMAIN"
+          ]
+        },
+        "failedAttemptConsumesPosition": {
+          "const": false
+        },
+        "parallelCounterPermitted": {
+          "const": false
+        },
+        "duplicateSequencePolicy": {
+          "enum": [
+            "REJECT"
+          ]
+        },
+        "concurrencyPolicy": {
+          "enum": [
+            "EXCLUSIVE_LOCAL_LOCK"
+          ]
+        }
+      }
+    },
+    "ddtNumberPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "derivation",
+        "prefix",
+        "decimalPaddingWidth",
+        "minimumSequence",
+        "productionSyntaxClaim"
+      ],
+      "properties": {
+        "derivation": {
+          "enum": [
+            "REGISTRATION_SEQUENCE"
+          ]
+        },
+        "prefix": {
+          "const": "DDT-"
+        },
+        "decimalPaddingWidth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "minimumSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "productionSyntaxClaim": {
+          "enum": [
+            "NOT_ESTABLISHED"
+          ]
+        }
+      }
+    },
+    "registrationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredVerificationDisposition",
+        "rejectedDispositions",
+        "failedAttemptPolicy"
+      ],
+      "properties": {
+        "requiredVerificationDisposition": {
+          "const": "PASS"
+        },
+        "rejectedDispositions": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "FAIL",
+              "REVIEW",
+              "UNRESOLVED"
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "const": "FAIL"
+              }
+            },
+            {
+              "contains": {
+                "const": "REVIEW"
+              }
+            },
+            {
+              "contains": {
+                "const": "UNRESOLVED"
+              }
+            }
+          ]
+        },
+        "failedAttemptPolicy": {
+          "const": "REJECT_NO_DDT"
+        }
+      }
+    },
+    "replayPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exactReplayFields",
+        "exactReplayBehavior",
+        "newSequenceOnExactReplay"
+      ],
+      "properties": {
+        "exactReplayFields": {
+          "type": "array",
+          "const": [
+            "ddtRecordId",
+            "recordHash",
+            "registrationStatementHash"
+          ]
+        },
+        "exactReplayBehavior": {
+          "const": "RETURN_EXISTING_REGISTRATION_RESULT"
+        },
+        "newSequenceOnExactReplay": {
+          "const": false
+        }
+      }
+    },
+    "conflictPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordIdReuseWithDifferentCommitments",
+        "duplicateDDTNumber",
+        "duplicateSequence"
+      ],
+      "properties": {
+        "recordIdReuseWithDifferentCommitments": {
+          "const": "REJECT"
+        },
+        "duplicateDDTNumber": {
+          "const": "REJECT"
+        },
+        "duplicateSequence": {
+          "const": "REJECT"
+        }
+      }
+    },
+    "lookupPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "byDDTNumber",
+        "byRecordId",
+        "byRegisteredSequence",
+        "crossLookupConsistencyRequired"
+      ],
+      "properties": {
+        "byDDTNumber": {
+          "const": true
+        },
+        "byRecordId": {
+          "const": true
+        },
+        "byRegisteredSequence": {
+          "const": true
+        },
+        "crossLookupConsistencyRequired": {
+          "const": true
+        }
+      }
+    },
+    "persistencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementationClass",
+        "writeStrategy",
+        "normalProcessAtomicity",
+        "powerLossDurabilityClaim",
+        "staleLockRecoveryClaim",
+        "distributedConsensusClaim",
+        "networkFinalityClaim"
+      ],
+      "properties": {
+        "implementationClass": {
+          "enum": [
+            "LOCAL_JSON_FILE_STORE"
+          ]
+        },
+        "writeStrategy": {
+          "enum": [
+            "TEMP_FILE_THEN_RENAME"
+          ]
+        },
+        "normalProcessAtomicity": {
+          "enum": [
+            "CLAIMED_WITHIN_LOCAL_LOCK_SCOPE"
+          ]
+        },
+        "powerLossDurabilityClaim": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "staleLockRecoveryClaim": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "distributedConsensusClaim": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "networkFinalityClaim": {
+          "const": "NOT_ESTABLISHED"
+        }
+      }
+    },
+    "registrationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "specification",
+        "schema"
+      ],
+      "properties": {
+        "specification": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "schema": {
+          "$ref": "#/$defs/artifactReference"
+        }
+      }
+    },
+    "verificationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historicalProfileDigestRequired",
+        "registrationResultSchemaValidationRequired",
+        "registrationResultSemanticValidationRequired",
+        "sequenceNumberBindingRequired",
+        "registrarIdentityBindingRequired",
+        "mechanismIdentityBindingRequired",
+        "silentRepair"
+      ],
+      "properties": {
+        "historicalProfileDigestRequired": {
+          "const": true
+        },
+        "registrationResultSchemaValidationRequired": {
+          "const": true
+        },
+        "registrationResultSemanticValidationRequired": {
+          "const": true
+        },
+        "sequenceNumberBindingRequired": {
+          "const": true
+        },
+        "registrarIdentityBindingRequired": {
+          "const": true
+        },
+        "mechanismIdentityBindingRequired": {
+          "const": true
+        },
+        "silentRepair": {
+          "const": "FORBIDDEN"
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "successfulRegistrationBinding",
+        "substantiveTruth",
+        "registrantAuthority",
+        "independentTime",
+        "blockchainInclusion",
+        "networkFinality",
+        "powerLossDurability",
+        "productionReadiness"
+      ],
+      "properties": {
+        "successfulRegistrationBinding": {
+          "enum": [
+            "ESTABLISHED_WHEN_ALL_REQUIRED_CHECKS_PASS"
+          ]
+        },
+        "substantiveTruth": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "registrantAuthority": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "independentTime": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "blockchainInclusion": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "networkFinality": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "powerLossDurability": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "productionReadiness": {
+          "const": "NOT_ESTABLISHED"
+        }
+      }
+    },
+    "errorCodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {}
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    }
+  }
+}

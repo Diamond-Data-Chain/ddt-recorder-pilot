@@ -1,0 +1,88 @@
+{
+  "specification": {
+    "standard": "DDT-CONFORMANCE-RESULT-DERIVATION-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.conformance.base-derivation-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "appliesTo": {
+    "receiptStandard": "DDT-CONFORMANCE-RECEIPT",
+    "receiptVersion": "0.3.0-draft.1"
+  },
+  "normativeSource": {
+    "artifactId": "DDT-CONFORMANCE-RECEIPT-0.3-DRAFT.1",
+    "version": "0.3.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "ce9d6fd957a5378818a4a86f9812efac198240c5404d80852f3ffdb83c0ff892"
+    },
+    "immutableRef": "specs/DDT_CONFORMANCE_RECEIPT_V0.3_DRAFT.md",
+    "mediaType": "text/markdown"
+  },
+  "evaluationOrder": [
+    {
+      "priority": 1,
+      "result": "FAIL",
+      "condition": "ANY_APPLICABLE_MANDATORY_FAILURE"
+    },
+    {
+      "priority": 2,
+      "result": "INDETERMINATE",
+      "condition": "ANY_MANDATORY_UNRESOLVED_OR_UNREPRODUCIBLE"
+    },
+    {
+      "priority": 3,
+      "result": "PASS",
+      "condition": "ALL_APPLICABLE_MANDATORY_PASS_AND_NOT_APPLICABLE_JUSTIFIED"
+    }
+  ],
+  "failureInputs": [
+    "APPLICABLE_REQUIRED_RULE_FAIL",
+    "APPLICABLE_CONTRACT_OBLIGATION_FAIL",
+    "CORE_ARTIFACT_RULE_FAIL",
+    "REQUIRED_CAPABILITY_FAIL",
+    "APPLICABLE_CONDITIONAL_CAPABILITY_FAIL"
+  ],
+  "indeterminateInputs": [
+    "MANDATORY_RESULT_ABSENT",
+    "MANDATORY_RESULT_DUPLICATED",
+    "MANDATORY_RESULT_UNRESOLVED",
+    "MANDATORY_RESULT_INDETERMINATE",
+    "REQUIRED_HISTORICAL_INPUT_NOT_EVALUABLE",
+    "NORMATIVE_DEPENDENCY_CLOSURE_NOT_EXACT",
+    "STORED_SET_HASH_MISMATCH",
+    "STORED_RESULT_COUNT_MISMATCH"
+  ],
+  "passRequirements": {
+    "allApplicableMandatoryResultsPass": true,
+    "allNotApplicableResultsContractJustified": true
+  },
+  "optionalRulePolicy": {
+    "failureAutomaticallyFailsReceipt": false,
+    "mandatoryAggregateMayOverride": true
+  },
+  "resultPolicy": {
+    "permittedOverallStatuses": [
+      "PASS",
+      "FAIL",
+      "INDETERMINATE"
+    ],
+    "partialStatusPermitted": false,
+    "failOrIndeterminateMayNotBeHidden": true
+  },
+  "boundResultInputs": [
+    "ruleResultSetHash",
+    "capabilityResultSetHash",
+    "ruleCounts",
+    "capabilityCounts"
+  ],
+  "claimBoundary": {
+    "conformanceDerivationOnly": true,
+    "substantiveTruth": "NOT_ESTABLISHED",
+    "legalValidity": "NOT_ESTABLISHED",
+    "independentTime": "NOT_ESTABLISHED",
+    "networkFinality": "NOT_ESTABLISHED",
+    "eventHistoryCompleteness": "NOT_ESTABLISHED"
+  },
+  "extensions": []
+}

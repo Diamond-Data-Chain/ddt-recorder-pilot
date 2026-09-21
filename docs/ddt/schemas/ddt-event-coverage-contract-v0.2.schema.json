@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/event-coverage/0.2.0-draft.1/contract.schema.json",
+  "title": "DDT Event Coverage Contract v0.2 Draft.1",
+  "description": "Historically bound machine-readable contract defining a closed source-event coverage scope and omission-detection obligations for Event Coverage v0.2 carriers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "contractId",
+    "contractVersion",
+    "coverageProfile",
+    "sourceScope",
+    "selection",
+    "interval",
+    "positionPolicy",
+    "registrationPolicy",
+    "commitmentPolicy",
+    "witnessPolicy",
+    "preservationPolicy",
+    "resultPolicy"
+  ],
+  "properties": {
+    "specification": {
+      "$ref": "#/$defs/specification"
+    },
+    "contractId": {
+      "$ref": "#/$defs/identifier"
+    },
+    "contractVersion": {
+      "$ref": "#/$defs/version"
+    },
+    "coverageProfile": {
+      "$ref": "#/$defs/artifactReference"
+    },
+    "sourceScope": {
+      "$ref": "#/$defs/sourceScope"
+    },
+    "selection": {
+      "$ref": "#/$defs/selection"
+    },
+    "interval": {
+      "$ref": "#/$defs/interval"
+    },
+    "positionPolicy": {
+      "$ref": "#/$defs/positionPolicy"
+    },
+    "registrationPolicy": {
+      "$ref": "#/$defs/registrationPolicy"
+    },
+    "commitmentPolicy": {
+      "$ref": "#/$defs/commitmentPolicy"
+    },
+    "witnessPolicy": {
+      "$ref": "#/$defs/witnessPolicy"
+    },
+    "preservationPolicy": {
+      "$ref": "#/$defs/preservationPolicy"
+    },
+    "resultPolicy": {
+      "$ref": "#/$defs/resultPolicy"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "safeSequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "durationSeconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3155760000
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-EVENT-COVERAGE-CONTRACT"
+        },
+        "version": {
+          "const": "0.2.0-draft.1"
+        }
+      }
+    },
+    "jsonPointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~/]|~[01])*)*$",
+      "maxLength": 2048
+    },
+    "sourceScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "sourceNamespace",
+        "sequenceDomain",
+        "includedRecordTypes",
+        "includedEventTypes",
+        "sourceIdentityEvidenceRefs",
+        "sourceAuthorityProfile"
+      ],
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "sourceNamespace": {
+          "$ref": "#/$defs/identifier"
+        },
+        "sequenceDomain": {
+          "$ref": "#/$defs/identifier"
+        },
+        "includedRecordTypes": {
+          "$ref": "#/$defs/nonEmptyIdentifierArray"
+        },
+        "includedEventTypes": {
+          "$ref": "#/$defs/nonEmptyIdentifierArray"
+        },
+        "sourceIdentityEvidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdentifierArray"
+        },
+        "sourceAuthorityProfile": {
+          "$ref": "#/$defs/artifactReference"
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selectionRule",
+        "exclusionPolicy",
+        "permittedDispositions",
+        "historicalReproductionRequired"
+      ],
+      "properties": {
+        "selectionRule": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "exclusionRule": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "exclusionPolicy": {
+          "enum": [
+            "NO_EXCLUSIONS",
+            "EXACT_RULE_REQUIRED"
+          ]
+        },
+        "permittedDispositions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/disposition"
+          }
+        },
+        "historicalReproductionRequired": {
+          "const": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "exclusionPolicy": {
+                "const": "EXACT_RULE_REQUIRED"
+              }
+            },
+            "required": [
+              "exclusionPolicy"
+            ]
+          },
+          "then": {
+            "required": [
+              "exclusionRule"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "exclusionRule"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "disposition": {
+      "enum": [
+        "REGISTERED",
+        "PENDING_WITHIN_ALLOWED_DELAY",
+        "FAILED_REGISTRATION",
+        "EXCLUDED_BY_CONTRACT",
+        "VOIDED_SOURCE_POSITION"
+      ]
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundaryMode",
+        "firstSequence",
+        "closureRule"
+      ],
+      "properties": {
+        "boundaryMode": {
+          "enum": [
+            "FIXED_SEQUENCE_INTERVAL",
+            "CHECKPOINT_CLOSED_SEQUENCE_INTERVAL"
+          ]
+        },
+        "firstSequence": {
+          "$ref": "#/$defs/safeSequence"
+        },
+        "endSequenceExclusive": {
+          "$ref": "#/$defs/safeSequence"
+        },
+        "closureRule": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "notBeforeClaim": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notAfterClaim": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "boundaryMode": {
+                "const": "FIXED_SEQUENCE_INTERVAL"
+              }
+            },
+            "required": [
+              "boundaryMode"
+            ]
+          },
+          "then": {
+            "required": [
+              "endSequenceExclusive"
+            ]
+          }
+        }
+      ]
+    },
+    "positionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceEventIdPath",
+        "sourceSequencePath",
+        "allocationMode",
+        "strictlyIncreasing",
+        "contiguousAtClosure",
+        "nonReuse",
+        "conflictingReuseResult",
+        "unregisteredPositionPolicy"
+      ],
+      "properties": {
+        "sourceEventIdPath": {
+          "$ref": "#/$defs/jsonPointer"
+        },
+        "sourceSequencePath": {
+          "$ref": "#/$defs/jsonPointer"
+        },
+        "allocationMode": {
+          "const": "ATOMIC_WITH_DURABLE_SOURCE_EVENT_COMMIT"
+        },
+        "strictlyIncreasing": {
+          "const": true
+        },
+        "contiguousAtClosure": {
+          "const": true
+        },
+        "nonReuse": {
+          "const": true
+        },
+        "conflictingReuseResult": {
+          "const": "INCOMPLETE"
+        },
+        "unregisteredPositionPolicy": {
+          "const": "COMMITTED_TOMBSTONE_REQUIRED"
+        }
+      }
+    },
+    "registrationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggerRule",
+        "maximumDelaySeconds",
+        "pendingPermittedBeforeClosure",
+        "pendingPermittedAtClosure",
+        "failureDisposition",
+        "laterRemediationMode",
+        "correctionMode"
+      ],
+      "properties": {
+        "triggerRule": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "maximumDelaySeconds": {
+          "$ref": "#/$defs/durationSeconds"
+        },
+        "pendingPermittedBeforeClosure": {
+          "type": "boolean"
+        },
+        "pendingPermittedAtClosure": {
+          "const": false
+        },
+        "failureDisposition": {
+          "const": "FAILED_REGISTRATION"
+        },
+        "laterRemediationMode": {
+          "const": "APPEND_ONLY"
+        },
+        "correctionMode": {
+          "const": "NEW_SOURCE_EVENT_AND_NEW_DDT_RECORD"
+        }
+      }
+    },
+    "commitmentPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coverageLeafProfile",
+        "eventSetTreeProfile",
+        "sourceStateSchema",
+        "sourceStateCommitmentProfile",
+        "coverageStatementSchema"
+      ],
+      "properties": {
+        "coverageLeafProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "eventSetTreeProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "sourceStateSchema": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "sourceStateCommitmentProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "coverageStatementSchema": {
+          "$ref": "#/$defs/artifactReference"
+        }
+      }
+    },
+    "witnessPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumIndependentWitnesses",
+        "independenceRule",
+        "requiredObservationScopes",
+        "signatureProfiles",
+        "identityAuthorityProfile",
+        "independentTimeRequired"
+      ],
+      "properties": {
+        "minimumIndependentWitnesses": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "independenceRule": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "requiredObservationScopes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "SOURCE_STATE",
+              "ALLOCATION_BOUNDARY",
+              "EVENT_SET_ROOT",
+              "DDT_BINDINGS",
+              "TOMBSTONES",
+              "SELECTION_REPRODUCTION",
+              "GAP_DETECTION"
+            ]
+          }
+        },
+        "signatureProfiles": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/artifactReference"
+          }
+        },
+        "identityAuthorityProfile": {
+          "$ref": "#/$defs/artifactReference"
+        },
+        "independentTimeRequired": {
+          "type": "boolean"
+        }
+      }
+    },
+    "preservationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractBytesRequired",
+        "transitiveRuleBytesRequired",
+        "sourceStateEvidenceRequired",
+        "coverageLeavesRequired",
+        "tombstonesRequired",
+        "witnessEvidenceRequired",
+        "offlineVerificationRequired"
+      ],
+      "properties": {
+        "contractBytesRequired": {
+          "const": true
+        },
+        "transitiveRuleBytesRequired": {
+          "const": true
+        },
+        "sourceStateEvidenceRequired": {
+          "const": true
+        },
+        "coverageLeavesRequired": {
+          "const": true
+        },
+        "tombstonesRequired": {
+          "const": true
+        },
+        "witnessEvidenceRequired": {
+          "const": true
+        },
+        "offlineVerificationRequired": {
+          "const": true
+        }
+      }
+    },
+    "resultPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axisId",
+        "statusClass",
+        "gapResult",
+        "unavailableRequiredEvidenceResult",
+        "unresolvedApplicabilityResult",
+        "scopeLimitationRequired",
+        "substantiveTruthInferencePermitted"
+      ],
+      "properties": {
+        "axisId": {
+          "const": "EVENT_HISTORY_COMPLETENESS"
+        },
+        "statusClass": {
+          "const": "COMPLETENESS"
+        },
+        "gapResult": {
+          "const": "INCOMPLETE"
+        },
+        "unavailableRequiredEvidenceResult": {
+          "const": "UNAVAILABLE"
+        },
+        "unresolvedApplicabilityResult": {
+          "const": "UNRESOLVED"
+        },
+        "scopeLimitationRequired": {
+          "const": true
+        },
+        "substantiveTruthInferencePermitted": {
+          "const": false
+        }
+      }
+    }
+  }
+}

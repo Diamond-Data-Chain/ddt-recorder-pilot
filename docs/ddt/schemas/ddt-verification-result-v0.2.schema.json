@@ -1,0 +1,1017 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/verification-result/0.2.0-draft.1/schema.json",
+  "title": "DDT Verification Result v0.2 Draft.1",
+  "description": "Machine-readable multi-axis DDT verification result covering records, proofs, checkpoints, event coverage, network finality, offline reproduction and cryptographic renewal.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specification", "resultCore", "resultCoreHash", "proofs"],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "resultCore": { "$ref": "#/$defs/resultCore" },
+    "resultCoreHash": { "$ref": "#/$defs/structuralDigest" },
+    "proofs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/resultProof" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "reasonCode": {
+      "anyOf": [
+        {
+          "enum": [
+          "ALGORITHM_STATUS_UNRESOLVED",
+          "ARTIFACT_DIGEST_MISMATCH",
+          "ARTIFACT_UNAVAILABLE",
+          "AUTHORITY_CHAIN_INCOMPLETE",
+          "AUTHORITY_SCOPE_MISMATCH",
+          "CHECKPOINT_CORE_HASH_MISMATCH",
+          "CHECKPOINT_INCLUSION_INVALID",
+          "CHECKPOINT_PREDECESSOR_MISMATCH",
+          "COMPLETENESS_CONTRACT_UNAVAILABLE",
+          "CONFORMANCE_FAILED",
+          "DEPENDENCY_CYCLE",
+          "DEPENDENCY_FAILED",
+          "DEPENDENCY_UNAVAILABLE",
+          "DOCUMENT_HASH_MISMATCH",
+          "DOCUMENT_UNAVAILABLE",
+          "EVIDENCE_UNAVAILABLE",
+          "FINALITY_CONFLICT",
+          "FINALITY_NOT_ESTABLISHED",
+          "HISTORICAL_CONTEXT_INSUFFICIENT",
+          "HISTORICAL_KEY_STATE_UNRESOLVED",
+          "IDENTITY_UNRESOLVED",
+          "INVALID_STATUS_FOR_AXIS",
+          "NETWORK_ANCESTRY_INVALID",
+          "NETWORK_PROFILE_UNAVAILABLE",
+          "NETWORK_TARGET_MISMATCH",
+          "NOT_APPLICABLE_TO_TARGET",
+          "NOT_EVALUATED_BY_REQUEST",
+          "OFFLINE_DEPENDENCY_CLOSURE_INCOMPLETE",
+          "OFFLINE_EXTRACTION_UNSAFE",
+          "OFFLINE_NETWORK_ACCESS_ATTEMPTED",
+          "ORIGINAL_PROOF_UNVERIFIABLE",
+          "PACKAGE_FILE_DIGEST_MISMATCH",
+          "PRESERVATION_OBLIGATION_FAILED",
+          "PROFILE_APPLICABILITY_UNRESOLVED",
+          "PROFILE_DIGEST_MISMATCH",
+          "PROOF_PURPOSE_TARGET_MISMATCH",
+          "RECONSTRUCTION_AMBIGUOUS",
+          "RECONSTRUCTION_PARTIAL",
+          "RECORD_HASH_MISMATCH",
+          "RENEWAL_CLASS_INVALID",
+          "RENEWAL_CONTINUITY_NOT_PRESERVED",
+          "RENEWAL_TIME_UNPROVEN",
+          "REQUIRED_AXIS_MISSING",
+          "REQUIRED_DEPENDENCY_MISSING",
+          "REQUIRED_EVIDENCE_MISSING",
+          "RESULT_CORE_HASH_MISMATCH",
+          "RESULT_PROOF_INVALID",
+          "SCHEMA_INVALID",
+          "SIGNATURE_INVALID",
+          "SIGNED_OBJECT_BINDING_MISMATCH",
+          "SOURCE_POSITION_GAP",
+          "SOURCE_STATE_MISMATCH",
+          "SUBSTANTIVE_TRUTH_OUT_OF_SCOPE",
+          "SUMMARY_DERIVATION_MISMATCH",
+          "TARGET_COMMITMENT_UNBOUND",
+          "TARGET_IDENTITY_UNRESOLVED",
+          "TIME_CLAIM_UNPROVEN",
+          "UNREGISTERED_AXIS",
+          "UNREGISTERED_REASON_CODE",
+          "VERIFICATION_METHOD_UNAVAILABLE",
+          "VERIFIER_IMPLEMENTATION_UNAVAILABLE",
+          "WITNESS_INDEPENDENCE_UNRESOLVED",
+          "WITNESS_QUORUM_INSUFFICIENT"
+          ]
+        },
+        {
+          "type": "string",
+          "pattern": "^x:[A-Za-z0-9][A-Za-z0-9._:-]{2,255}$"
+        }
+      ]
+    },
+    "reasonCodeArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/reasonCode" }
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "axisRegistryReference": {
+      "allOf": [
+        { "$ref": "#/$defs/artifactReference" },
+        {
+          "required": ["immutableRef", "mediaType"],
+          "properties": {
+            "artifactId": { "const": "ddt.verification.axis-registry.v2" },
+            "version": { "const": "0.2.0-draft.1" },
+            "digest": {
+              "properties": {
+                "algorithm": { "const": "SHA-256" },
+                "value": { "const": "adc0c50393cf0e285c0732dcc4dcd0ed777776f5e8be52caef0b58fbeaf737a6" }
+              }
+            },
+            "immutableRef": { "const": "https://diamonddatachain.org/specifications/ddt/verification-axis-registry/0.2.0-draft.1/registry.json" },
+            "mediaType": { "const": "application/json" }
+          }
+        }
+      ]
+    },
+    "reasonCodeRegistryReference": {
+      "allOf": [
+        { "$ref": "#/$defs/artifactReference" },
+        {
+          "required": ["immutableRef", "mediaType"],
+          "properties": {
+            "artifactId": { "const": "ddt.verification.reason-code-registry.v2" },
+            "version": { "const": "0.2.0-draft.1" },
+            "digest": {
+              "properties": {
+                "algorithm": { "const": "SHA-256" },
+                "value": { "const": "f5f1e7310439c8407f14942da6e4d71d808fa120d41ab7fe2a5d95050e8e0d35" }
+              }
+            },
+            "immutableRef": { "const": "https://diamonddatachain.org/specifications/ddt/verification-reason-code-registry/0.2.0-draft.1/registry.json" },
+            "mediaType": { "const": "application/json" }
+          }
+        }
+      ]
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-VERIFICATION-RESULT" },
+        "version": { "const": "0.2.0-draft.1" }
+      }
+    },
+    "baseAxisId": {
+      "enum": [
+        "DDT_RECORD_IDENTITY",
+        "DDT_RECORD_INTEGRITY",
+        "UPSTREAM_PAYLOAD_AVAILABILITY",
+        "UPSTREAM_PAYLOAD_INTEGRITY",
+        "EVIDENCE_MANIFEST_IDENTITY",
+        "EVIDENCE_MANIFEST_INTEGRITY",
+        "EVIDENCE_MANIFEST_BOUND_TO_RECORD",
+        "EVIDENCE_OBJECT_IDENTITY",
+        "EVIDENCE_REPRESENTATION_RESOLUTION",
+        "EVIDENCE_COMMITMENT_INTEGRITY",
+        "EVIDENCE_AVAILABILITY",
+        "EVIDENCE_INTEGRITY",
+        "EVIDENCE_PROVENANCE",
+        "EVIDENCE_SIGNER_IDENTITY",
+        "EVIDENCE_SIGNER_AUTHORITY",
+        "EVIDENCE_TIME",
+        "EVIDENCE_PRESERVATION_OBLIGATION",
+        "SEMANTIC_DEPENDENCY_RESOLUTION",
+        "HISTORICAL_TARGET_IDENTITY",
+        "TARGET_COMMITMENT_BINDING",
+        "FAMILY_CONTINUITY",
+        "RELATIONSHIP_ASSERTION_INTEGRITY",
+        "RELATIONSHIP_ASSERTION_AUTHORITY",
+        "SCHEMA_AVAILABILITY",
+        "SCHEMA_INTEGRITY",
+        "ENTERPRISE_PROFILE_IDENTITY",
+        "ENTERPRISE_PROFILE_INTEGRITY",
+        "ENTERPRISE_PROFILE_BOUND_TO_CONTRACT",
+        "ENTERPRISE_PROFILE_COMPATIBILITY",
+        "ENTERPRISE_PROFILE_APPLICABILITY",
+        "PROFILE_ARTIFACT_AVAILABILITY",
+        "PROFILE_ARTIFACT_INTEGRITY",
+        "PROFILE_RULE_EVALUATION",
+        "OBLIGATION_MATERIALIZATION",
+        "PROFILE_EXTENSION_RESOLUTION",
+        "PRESERVATION_CONTRACT_IDENTITY",
+        "PRESERVATION_CONTRACT_INTEGRITY",
+        "PRESERVATION_CONTRACT_BOUND_TO_RECORD",
+        "PRESERVATION_CONTRACT_APPLICABILITY",
+        "CONTRACT_ARTIFACT_AVAILABILITY",
+        "CONTRACT_ARTIFACT_INTEGRITY",
+        "REGISTRATION_CONFORMANCE",
+        "CURRENT_PRESERVATION_OBLIGATION",
+        "CONFORMANCE_RECEIPT_IDENTITY",
+        "CONFORMANCE_RECEIPT_CORE_INTEGRITY",
+        "CONFORMANCE_RECEIPT_PROOF_VALIDITY",
+        "RECEIPT_ISSUER_IDENTITY",
+        "RECEIPT_ISSUER_AUTHORITY",
+        "RECEIPT_RECORD_BINDING",
+        "RECEIPT_CONTRACT_BINDING",
+        "RECEIPT_REGISTRATION_STATEMENT_BINDING",
+        "VALIDATION_INPUT_REPRODUCIBILITY",
+        "RULE_RESULT_COVERAGE",
+        "OVERALL_RESULT_DERIVATION",
+        "CONFORMANCE_REPRODUCIBILITY",
+        "REGISTRATION_STATEMENT_INTEGRITY",
+        "REGISTRATION_SIGNATURE",
+        "SIGNING_KEY_IDENTITY",
+        "SIGNING_KEY_LIFECYCLE",
+        "REGISTRANT_IDENTITY",
+        "REGISTRANT_AUTHORITY",
+        "REGISTRATION_TIME_CLAIM",
+        "REGISTRATION_TIME_PROOF",
+        "REGISTRATION_MECHANISM_PROOF",
+        "INDEPENDENT_PROVENANCE",
+        "HISTORICAL_SEMANTIC_RESOLUTION",
+        "RENEWAL_RECORD_INTEGRITY",
+        "ORIGINAL_PROOF_INDEPENDENTLY_VERIFIABLE",
+        "RENEWAL_VERIFICATION_ASSERTION_BOUND",
+        "RENEWAL_SIGNATURE",
+        "RENEWAL_TIME_PROOF",
+        "PROOF_SCHEMA_CONFORMANCE",
+        "PROOF_PROFILE_IDENTITY",
+        "PROOF_PROFILE_INTEGRITY",
+        "PROOF_PURPOSE_TARGET_BINDING",
+        "SIGNED_OBJECT_BINDING",
+        "SIGNATURE_VALIDITY",
+        "VERIFICATION_METHOD_IDENTITY",
+        "VERIFICATION_METHOD_LIFECYCLE",
+        "PROOF_SIGNER_IDENTITY",
+        "PROOF_SIGNER_AUTHORITY",
+        "PROOF_CREATED_TIME_CLAIM",
+        "PROOF_TIME_PROOF",
+        "SIGNATURE_ALGORITHM_LIFECYCLE",
+        "CHECKPOINT_CORE_INTEGRITY",
+        "CHECKPOINT_PREDECESSOR_BINDING",
+        "CHECKPOINT_INCLUSION_BINDING",
+        "CHECKPOINT_SIGNATURE",
+        "CHECKPOINT_SIGNER_IDENTITY",
+        "CHECKPOINT_SIGNER_AUTHORITY",
+        "CHECKPOINT_TIME_CLAIM",
+        "CHECKPOINT_TIME_PROOF",
+        "EVENT_COVERAGE_CONTRACT_IDENTITY",
+        "EVENT_COVERAGE_CONTRACT_INTEGRITY",
+        "EVENT_COVERAGE_CONTRACT_APPLICABILITY",
+        "SOURCE_EVENT_POSITION_INTEGRITY",
+        "SOURCE_EVENT_DDT_BINDING",
+        "COVERAGE_TOMBSTONE_INTEGRITY",
+        "COVERAGE_TOMBSTONE_SIGNATURE",
+        "SOURCE_COVERAGE_STATEMENT_INTEGRITY",
+        "SOURCE_COVERAGE_STATEMENT_SIGNATURE",
+        "SOURCE_STATE_COMMITMENT_REPRODUCIBILITY",
+        "SOURCE_WITNESS_ATTESTATION_INTEGRITY",
+        "SOURCE_WITNESS_ATTESTATION_SIGNATURE",
+        "SOURCE_WITNESS_IDENTITY",
+        "SOURCE_WITNESS_AUTHORITY",
+        "SOURCE_WITNESS_INDEPENDENCE",
+        "EVENT_HISTORY_COMPLETENESS",
+        "NETWORK_PROFILE_IDENTITY",
+        "NETWORK_PROFILE_INTEGRITY",
+        "NETWORK_TARGET_BINDING",
+        "NETWORK_OBJECT_INTEGRITY",
+        "NETWORK_OBJECT_INCLUSION",
+        "NETWORK_BLOCK_INTEGRITY",
+        "NETWORK_ANCESTRY",
+        "NETWORK_TRUST_STATE_RESOLUTION",
+        "NETWORK_FINALITY",
+        "NETWORK_TIME_CLAIM",
+        "NETWORK_TIME_PROOF",
+        "OFFLINE_PACKAGE_MANIFEST_INTEGRITY",
+        "OFFLINE_PACKAGE_SIGNATURE",
+        "OFFLINE_PACKAGE_TARGET_BINDING",
+        "OFFLINE_PACKAGE_FILE_INTEGRITY",
+        "OFFLINE_EXTERNAL_DEPENDENCY_AVAILABILITY",
+        "OFFLINE_PACKAGE_DEPENDENCY_CLOSURE",
+        "OFFLINE_PACKAGE_EXTRACTION_SAFETY",
+        "OFFLINE_EXECUTION_NETWORK_ISOLATION",
+        "OFFLINE_VERIFICATION_REPRODUCIBILITY",
+        "RENEWAL_TARGET_BINDING",
+        "RENEWAL_ORIGINAL_BYTES_INTEGRITY",
+        "RENEWAL_ORIGINAL_PROFILE_RESOLUTION",
+        "RENEWAL_PROOF_SCOPE_BINDING",
+        "RENEWAL_CLASS_CONFORMANCE",
+        "RENEWAL_WITNESS_IDENTITY",
+        "RENEWAL_WITNESS_AUTHORITY",
+        "RENEWAL_CRYPTOGRAPHIC_CONTINUITY",
+        "RENEWAL_VERIFICATION_TIME_CLAIM",
+        "SUBSTANTIVE_TRUTH"
+      ]
+    },
+    "axisId": {
+      "anyOf": [
+        { "$ref": "#/$defs/baseAxisId" },
+        {
+          "type": "string",
+          "pattern": "^x:[A-Za-z0-9][A-Za-z0-9._:-]{2,255}$"
+        }
+      ]
+    },
+    "axisIdArray": {
+      "type": "array",
+      "maxItems": 1000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/axisId" }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetType", "targetId", "targetCommitment"],
+      "properties": {
+        "targetType": {
+          "enum": [
+            "DDT_RECORD",
+            "CONFORMANCE_RECEIPT",
+            "EVIDENCE_OBJECT",
+            "PRESERVATION_CONTRACT",
+            "ENTERPRISE_PROFILE",
+            "SIGNATURE_PROOF",
+            "CHECKPOINT",
+            "EVENT_COVERAGE_EVIDENCE",
+            "NETWORK_FINALITY_EVIDENCE",
+            "RENEWAL_EVENT",
+            "OFFLINE_PACKAGE",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "targetId": { "$ref": "#/$defs/identifier" },
+        "targetCommitment": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implementation", "executionId"],
+      "properties": {
+        "implementation": { "$ref": "#/$defs/artifactReference" },
+        "executionId": { "$ref": "#/$defs/identifier" },
+        "operatorIdentityRef": { "$ref": "#/$defs/identifier" },
+        "executionEnvironmentCommitment": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "reconstructionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reconstructionId",
+        "questionClass",
+        "subjectRefs",
+        "reconstructionProfile",
+        "requiredSemanticDependencyClasses"
+      ],
+      "properties": {
+        "reconstructionId": { "$ref": "#/$defs/identifier" },
+        "questionClass": { "$ref": "#/$defs/identifier" },
+        "subjectRefs": { "$ref": "#/$defs/identifierArray" },
+        "reconstructionProfile": { "$ref": "#/$defs/artifactReference" },
+        "requiredSemanticDependencyClasses": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "verificationRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestId", "requiredAxes", "optionalAxes", "scopeProfile"],
+      "properties": {
+        "requestId": { "$ref": "#/$defs/identifier" },
+        "requiredAxes": { "$ref": "#/$defs/axisIdArray" },
+        "optionalAxes": { "$ref": "#/$defs/axisIdArray" },
+        "scopeProfile": { "$ref": "#/$defs/artifactReference" },
+        "reconstructionRequest": { "$ref": "#/$defs/reconstructionRequest" }
+      }
+    },
+    "artifactEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evaluationId", "role", "artifact", "availability", "integrity", "reasonCodes"],
+      "properties": {
+        "evaluationId": { "$ref": "#/$defs/identifier" },
+        "role": { "$ref": "#/$defs/identifier" },
+        "artifact": { "$ref": "#/$defs/artifactReference" },
+        "availability": { "enum": ["AVAILABLE", "UNAVAILABLE"] },
+        "integrity": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "NOT_EVALUATED"] },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "availability": { "const": "UNAVAILABLE" } }, "required": ["availability"] },
+          "then": { "properties": { "integrity": { "const": "UNAVAILABLE" } } }
+        },
+        {
+          "if": { "properties": { "integrity": { "enum": ["FAIL", "UNAVAILABLE"] } }, "required": ["integrity"] },
+          "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "axisSubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref"],
+      "properties": {
+        "type": { "$ref": "#/$defs/identifier" },
+        "ref": { "$ref": "#/$defs/identifier" },
+        "commitment": { "$ref": "#/$defs/structuralDigest" }
+      }
+    },
+    "axisDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["axisResultRef", "required", "observedStatus"],
+      "properties": {
+        "axisResultRef": { "$ref": "#/$defs/identifier" },
+        "required": { "type": "boolean" },
+        "observedStatus": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
+    "statusClass": {
+      "enum": [
+        "INTEGRITY",
+        "AVAILABILITY",
+        "BINDING",
+        "CONFORMANCE",
+        "VALIDITY",
+        "RESOLUTION",
+        "LIFECYCLE",
+        "TIME",
+        "REPRODUCTION",
+        "SEMANTIC",
+        "PRESERVATION",
+        "COMPLETENESS",
+        "FINALITY",
+        "CONTINUITY",
+        "TRUTH_BOUNDARY"
+      ]
+    },
+    "axisStatus": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "axisResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axisResultId",
+        "axisId",
+        "statusClass",
+        "subject",
+        "requirement",
+        "status",
+        "procedureProfile",
+        "reasonCodes",
+        "evaluatedArtifactRefs",
+        "evidenceRefs",
+        "dependencies"
+      ],
+      "properties": {
+        "axisResultId": { "$ref": "#/$defs/identifier" },
+        "axisId": { "$ref": "#/$defs/axisId" },
+        "statusClass": { "$ref": "#/$defs/statusClass" },
+        "subject": { "$ref": "#/$defs/axisSubject" },
+        "requirement": { "enum": ["REQUIRED", "OPTIONAL", "INFORMATIONAL"] },
+        "status": { "$ref": "#/$defs/axisStatus" },
+        "procedureProfile": { "$ref": "#/$defs/artifactReference" },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" },
+        "evaluatedArtifactRefs": { "$ref": "#/$defs/identifierArray" },
+        "evidenceRefs": { "$ref": "#/$defs/identifierArray" },
+        "dependencies": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/axisDependency" }
+        },
+        "detail": {
+          "type": "string",
+          "maxLength": 20000
+        }
+      },
+      "allOf": [
+        { "$ref": "#/$defs/integrityAxisConstraint" },
+        { "$ref": "#/$defs/availabilityAxisConstraint" },
+        { "$ref": "#/$defs/bindingAxisConstraint" },
+        { "$ref": "#/$defs/conformanceAxisConstraint" },
+        { "$ref": "#/$defs/validityAxisConstraint" },
+        { "$ref": "#/$defs/resolutionAxisConstraint" },
+        { "$ref": "#/$defs/lifecycleAxisConstraint" },
+        { "$ref": "#/$defs/timeAxisConstraint" },
+        { "$ref": "#/$defs/reproductionAxisConstraint" },
+        { "$ref": "#/$defs/semanticAxisConstraint" },
+        { "$ref": "#/$defs/preservationAxisConstraint" },
+        { "$ref": "#/$defs/completenessAxisConstraint" },
+        { "$ref": "#/$defs/finalityAxisConstraint" },
+        { "$ref": "#/$defs/continuityAxisConstraint" },
+        { "$ref": "#/$defs/truthAxisConstraint" },
+        { "$ref": "#/$defs/reasonRequirement" }
+      ]
+    },
+    "integrityAxes": {
+      "enum": [
+        "DDT_RECORD_INTEGRITY",
+        "UPSTREAM_PAYLOAD_INTEGRITY",
+        "EVIDENCE_MANIFEST_INTEGRITY",
+        "EVIDENCE_COMMITMENT_INTEGRITY",
+        "EVIDENCE_INTEGRITY",
+        "FAMILY_CONTINUITY",
+        "RELATIONSHIP_ASSERTION_INTEGRITY",
+        "SCHEMA_INTEGRITY",
+        "ENTERPRISE_PROFILE_INTEGRITY",
+        "PROFILE_ARTIFACT_INTEGRITY",
+        "PRESERVATION_CONTRACT_INTEGRITY",
+        "CONTRACT_ARTIFACT_INTEGRITY",
+        "CONFORMANCE_RECEIPT_CORE_INTEGRITY",
+        "REGISTRATION_STATEMENT_INTEGRITY",
+        "RENEWAL_RECORD_INTEGRITY",
+        "PROOF_PROFILE_INTEGRITY",
+        "CHECKPOINT_CORE_INTEGRITY",
+        "EVENT_COVERAGE_CONTRACT_INTEGRITY",
+        "SOURCE_EVENT_POSITION_INTEGRITY",
+        "COVERAGE_TOMBSTONE_INTEGRITY",
+        "SOURCE_COVERAGE_STATEMENT_INTEGRITY",
+        "SOURCE_WITNESS_ATTESTATION_INTEGRITY",
+        "NETWORK_PROFILE_INTEGRITY",
+        "NETWORK_OBJECT_INTEGRITY",
+        "NETWORK_BLOCK_INTEGRITY",
+        "OFFLINE_PACKAGE_MANIFEST_INTEGRITY",
+        "OFFLINE_PACKAGE_FILE_INTEGRITY",
+        "RENEWAL_ORIGINAL_BYTES_INTEGRITY"
+      ]
+    },
+    "availabilityAxes": {
+      "enum": [
+        "UPSTREAM_PAYLOAD_AVAILABILITY",
+        "EVIDENCE_AVAILABILITY",
+        "SCHEMA_AVAILABILITY",
+        "PROFILE_ARTIFACT_AVAILABILITY",
+        "CONTRACT_ARTIFACT_AVAILABILITY",
+        "OFFLINE_EXTERNAL_DEPENDENCY_AVAILABILITY"
+      ]
+    },
+    "bindingAxes": {
+      "enum": [
+        "EVIDENCE_MANIFEST_BOUND_TO_RECORD",
+        "HISTORICAL_TARGET_IDENTITY",
+        "TARGET_COMMITMENT_BINDING",
+        "ENTERPRISE_PROFILE_BOUND_TO_CONTRACT",
+        "PRESERVATION_CONTRACT_BOUND_TO_RECORD",
+        "RECEIPT_RECORD_BINDING",
+        "RECEIPT_CONTRACT_BINDING",
+        "RECEIPT_REGISTRATION_STATEMENT_BINDING",
+        "RENEWAL_VERIFICATION_ASSERTION_BOUND",
+        "PROOF_PURPOSE_TARGET_BINDING",
+        "SIGNED_OBJECT_BINDING",
+        "CHECKPOINT_PREDECESSOR_BINDING",
+        "CHECKPOINT_INCLUSION_BINDING",
+        "SOURCE_EVENT_DDT_BINDING",
+        "NETWORK_TARGET_BINDING",
+        "OFFLINE_PACKAGE_TARGET_BINDING",
+        "RENEWAL_TARGET_BINDING",
+        "RENEWAL_PROOF_SCOPE_BINDING"
+      ]
+    },
+    "conformanceAxes": {
+      "enum": [
+        "ENTERPRISE_PROFILE_COMPATIBILITY",
+        "PROFILE_RULE_EVALUATION",
+        "OBLIGATION_MATERIALIZATION",
+        "REGISTRATION_CONFORMANCE",
+        "RULE_RESULT_COVERAGE",
+        "OVERALL_RESULT_DERIVATION",
+        "PROOF_SCHEMA_CONFORMANCE",
+        "OFFLINE_PACKAGE_DEPENDENCY_CLOSURE",
+        "OFFLINE_PACKAGE_EXTRACTION_SAFETY",
+        "OFFLINE_EXECUTION_NETWORK_ISOLATION",
+        "RENEWAL_CLASS_CONFORMANCE"
+      ]
+    },
+    "validityAxes": {
+      "enum": [
+        "CONFORMANCE_RECEIPT_PROOF_VALIDITY",
+        "REGISTRATION_SIGNATURE",
+        "REGISTRATION_MECHANISM_PROOF",
+        "ORIGINAL_PROOF_INDEPENDENTLY_VERIFIABLE",
+        "RENEWAL_SIGNATURE",
+        "SIGNATURE_VALIDITY",
+        "CHECKPOINT_SIGNATURE",
+        "COVERAGE_TOMBSTONE_SIGNATURE",
+        "SOURCE_COVERAGE_STATEMENT_SIGNATURE",
+        "SOURCE_WITNESS_ATTESTATION_SIGNATURE",
+        "NETWORK_OBJECT_INCLUSION",
+        "NETWORK_ANCESTRY",
+        "OFFLINE_PACKAGE_SIGNATURE"
+      ]
+    },
+    "resolutionAxes": {
+      "enum": [
+        "DDT_RECORD_IDENTITY",
+        "EVIDENCE_MANIFEST_IDENTITY",
+        "EVIDENCE_OBJECT_IDENTITY",
+        "EVIDENCE_REPRESENTATION_RESOLUTION",
+        "EVIDENCE_PROVENANCE",
+        "EVIDENCE_SIGNER_IDENTITY",
+        "EVIDENCE_SIGNER_AUTHORITY",
+        "RELATIONSHIP_ASSERTION_AUTHORITY",
+        "ENTERPRISE_PROFILE_IDENTITY",
+        "ENTERPRISE_PROFILE_APPLICABILITY",
+        "PROFILE_EXTENSION_RESOLUTION",
+        "PRESERVATION_CONTRACT_IDENTITY",
+        "PRESERVATION_CONTRACT_APPLICABILITY",
+        "CONFORMANCE_RECEIPT_IDENTITY",
+        "RECEIPT_ISSUER_IDENTITY",
+        "RECEIPT_ISSUER_AUTHORITY",
+        "SIGNING_KEY_IDENTITY",
+        "REGISTRANT_IDENTITY",
+        "REGISTRANT_AUTHORITY",
+        "INDEPENDENT_PROVENANCE",
+        "PROOF_PROFILE_IDENTITY",
+        "VERIFICATION_METHOD_IDENTITY",
+        "PROOF_SIGNER_IDENTITY",
+        "PROOF_SIGNER_AUTHORITY",
+        "CHECKPOINT_SIGNER_IDENTITY",
+        "CHECKPOINT_SIGNER_AUTHORITY",
+        "EVENT_COVERAGE_CONTRACT_IDENTITY",
+        "EVENT_COVERAGE_CONTRACT_APPLICABILITY",
+        "SOURCE_WITNESS_IDENTITY",
+        "SOURCE_WITNESS_AUTHORITY",
+        "SOURCE_WITNESS_INDEPENDENCE",
+        "NETWORK_PROFILE_IDENTITY",
+        "NETWORK_TRUST_STATE_RESOLUTION",
+        "RENEWAL_ORIGINAL_PROFILE_RESOLUTION",
+        "RENEWAL_WITNESS_IDENTITY",
+        "RENEWAL_WITNESS_AUTHORITY"
+      ]
+    },
+    "lifecycleAxes": {
+      "enum": [
+        "SIGNING_KEY_LIFECYCLE",
+        "VERIFICATION_METHOD_LIFECYCLE",
+        "SIGNATURE_ALGORITHM_LIFECYCLE"
+      ]
+    },
+    "timeAxes": {
+      "enum": [
+        "EVIDENCE_TIME",
+        "REGISTRATION_TIME_CLAIM",
+        "REGISTRATION_TIME_PROOF",
+        "RENEWAL_TIME_PROOF",
+        "PROOF_CREATED_TIME_CLAIM",
+        "PROOF_TIME_PROOF",
+        "CHECKPOINT_TIME_CLAIM",
+        "CHECKPOINT_TIME_PROOF",
+        "NETWORK_TIME_CLAIM",
+        "NETWORK_TIME_PROOF",
+        "RENEWAL_VERIFICATION_TIME_CLAIM"
+      ]
+    },
+    "reproductionAxes": {
+      "enum": [
+        "VALIDATION_INPUT_REPRODUCIBILITY",
+        "CONFORMANCE_REPRODUCIBILITY",
+        "SOURCE_STATE_COMMITMENT_REPRODUCIBILITY",
+        "OFFLINE_VERIFICATION_REPRODUCIBILITY"
+      ]
+    },
+    "semanticAxes": {
+      "enum": ["SEMANTIC_DEPENDENCY_RESOLUTION", "HISTORICAL_SEMANTIC_RESOLUTION"]
+    },
+    "preservationAxes": {
+      "enum": [
+        "EVIDENCE_PRESERVATION_OBLIGATION",
+        "CURRENT_PRESERVATION_OBLIGATION"
+      ]
+    },
+    "completenessAxes": {
+      "enum": ["EVENT_HISTORY_COMPLETENESS"]
+    },
+    "finalityAxes": {
+      "enum": ["NETWORK_FINALITY"]
+    },
+    "continuityAxes": {
+      "enum": ["RENEWAL_CRYPTOGRAPHIC_CONTINUITY"]
+    },
+    "truthAxes": {
+      "enum": ["SUBSTANTIVE_TRUTH"]
+    },
+    "integrityAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/integrityAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "INTEGRITY" },
+          "status": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "availabilityAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/availabilityAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "AVAILABILITY" },
+          "status": { "enum": ["AVAILABLE", "UNAVAILABLE", "NOT_REQUIRED", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "bindingAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/bindingAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "BINDING" },
+          "status": { "enum": ["BOUND", "UNBOUND", "FAIL", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "conformanceAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/conformanceAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "CONFORMANCE" },
+          "status": { "enum": ["PASS", "FAIL", "INDETERMINATE", "UNAVAILABLE", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "validityAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/validityAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "VALIDITY" },
+          "status": { "enum": ["VALID", "INVALID", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "resolutionAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/resolutionAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "RESOLUTION" },
+          "status": { "enum": ["VERIFIED", "FAILED", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "lifecycleAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/lifecycleAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "LIFECYCLE" },
+          "status": { "enum": ["VALID", "EXPIRED", "SUSPENDED", "REVOKED", "COMPROMISED", "UNAVAILABLE", "UNRESOLVED", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "timeAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/timeAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "TIME" },
+          "status": { "enum": ["ASSERTED", "PROVEN", "FAILED", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "reproductionAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/reproductionAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "REPRODUCTION" },
+          "status": { "enum": ["MATCH", "MISMATCH", "PARTIAL", "UNAVAILABLE", "INDETERMINATE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "semanticAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/semanticAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "SEMANTIC" },
+          "status": { "enum": ["COMPLETE", "PARTIAL", "AMBIGUOUS", "UNKNOWN", "UNAVAILABLE", "FAIL", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "preservationAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/preservationAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "PRESERVATION" },
+          "status": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "INDETERMINATE", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "completenessAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/completenessAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "COMPLETENESS" },
+          "status": { "enum": ["COMPLETE", "INCOMPLETE", "PARTIAL", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "finalityAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/finalityAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "FINALITY" },
+          "status": { "enum": ["FINAL", "NOT_FINAL", "CONFLICTING", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "continuityAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/continuityAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "CONTINUITY" },
+          "status": { "enum": ["PRESERVED", "NOT_PRESERVED", "UNAVAILABLE", "UNRESOLVED", "NOT_APPLICABLE", "NOT_EVALUATED"] }
+        }
+      }
+    },
+    "truthAxisConstraint": {
+      "if": { "properties": { "axisId": { "$ref": "#/$defs/truthAxes" } }, "required": ["axisId"] },
+      "then": {
+        "properties": {
+          "statusClass": { "const": "TRUTH_BOUNDARY" },
+          "status": { "const": "NOT_APPLICABLE" }
+        }
+      }
+    },
+    "reasonRequirement": {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "FAIL",
+              "FAILED",
+              "INVALID",
+              "UNBOUND",
+              "UNAVAILABLE",
+              "UNRESOLVED",
+              "NOT_EVALUATED",
+              "EXPIRED",
+              "SUSPENDED",
+              "REVOKED",
+              "COMPROMISED",
+              "MISMATCH",
+              "PARTIAL",
+              "INDETERMINATE",
+              "AMBIGUOUS",
+              "UNKNOWN",
+              "INCOMPLETE",
+              "NOT_FINAL",
+              "CONFLICTING",
+              "NOT_PRESERVED"
+            ]
+          }
+        },
+        "required": ["status"]
+      },
+      "then": { "properties": { "reasonCodes": { "minItems": 1 } } }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "derivationProfile",
+        "requiredAxisResultRefs",
+        "limitingAxisResultRefs",
+        "failingAxisResultRefs",
+        "unresolvedAxisResultRefs",
+        "reasonCodes"
+      ],
+      "properties": {
+        "status": { "enum": ["PASS", "PASS_WITH_LIMITATIONS", "FAIL", "INDETERMINATE"] },
+        "derivationProfile": { "$ref": "#/$defs/artifactReference" },
+        "requiredAxisResultRefs": { "$ref": "#/$defs/identifierArray" },
+        "limitingAxisResultRefs": { "$ref": "#/$defs/identifierArray" },
+        "failingAxisResultRefs": { "$ref": "#/$defs/identifierArray" },
+        "unresolvedAxisResultRefs": { "$ref": "#/$defs/identifierArray" },
+        "reasonCodes": { "$ref": "#/$defs/reasonCodeArray" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "PASS_WITH_LIMITATIONS" } }, "required": ["status"] },
+          "then": { "properties": { "limitingAxisResultRefs": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "FAIL" } }, "required": ["status"] },
+          "then": { "properties": { "failingAxisResultRefs": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "INDETERMINATE" } }, "required": ["status"] },
+          "then": { "properties": { "unresolvedAxisResultRefs": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "resultCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultId",
+        "target",
+        "verifier",
+        "verificationRequest",
+        "axisRegistry",
+        "reasonCodeRegistry",
+        "artifactEvaluations",
+        "axisResults"
+      ],
+      "properties": {
+        "resultId": { "$ref": "#/$defs/identifier" },
+        "target": { "$ref": "#/$defs/target" },
+        "verifier": { "$ref": "#/$defs/verifier" },
+        "verificationRequest": { "$ref": "#/$defs/verificationRequest" },
+        "axisRegistry": { "$ref": "#/$defs/axisRegistryReference" },
+        "reasonCodeRegistry": { "$ref": "#/$defs/reasonCodeRegistryReference" },
+        "artifactEvaluations": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/artifactEvaluation" }
+        },
+        "axisResults": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": { "$ref": "#/$defs/axisResult" }
+        },
+        "summary": { "$ref": "#/$defs/summary" },
+        "evaluatedAtClaim": { "$ref": "#/$defs/dateTime" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "axisResults": {
+                "contains": {
+                  "type": "object",
+                  "properties": { "axisId": { "const": "HISTORICAL_SEMANTIC_RESOLUTION" } },
+                  "required": ["axisId"]
+                }
+              }
+            },
+            "required": ["axisResults"]
+          },
+          "then": {
+            "properties": {
+              "verificationRequest": { "required": ["reconstructionRequest"] }
+            }
+          }
+        }
+      ]
+    },
+    "resultProof": {
+      "allOf": [
+        {
+          "$ref": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json"
+        },
+        {
+          "properties": {
+            "proofPurpose": { "const": "VERIFICATION_RESULT_ATTESTATION" },
+            "signedObject": {
+              "properties": {
+                "type": { "const": "VERIFICATION_RESULT_CORE_HASH" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

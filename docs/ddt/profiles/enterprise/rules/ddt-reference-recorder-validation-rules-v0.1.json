@@ -1,0 +1,18 @@
+{
+  "specification": {
+    "standard": "DDT-ENTERPRISE-VALIDATION-RULESET",
+    "version": "0.1.0-draft.1"
+  },
+  "ruleSetId": "ddt.enterprise.reference-recorder.rules",
+  "ruleSetVersion": "0.1.0-draft.1",
+  "profileId": "ddt.enterprise.reference-recorder",
+  "sufficiencyPolicy": {
+    "requiredEvidenceClasses": [
+      "REFERENCE_RECORDER_EVIDENCE"
+    ],
+    "distinctSourcePairs": [],
+    "rejectOnConflict": true,
+    "successResult": "SUFFICIENT_WITHIN_PROFILE_SCOPE"
+  },
+  "claimBoundary": "Passing sufficiency rules means only that the exact profile evidence rules were satisfied; it does not establish substantive truth."
+}

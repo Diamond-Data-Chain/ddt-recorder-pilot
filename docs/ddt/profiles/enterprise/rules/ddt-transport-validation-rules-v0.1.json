@@ -1,0 +1,25 @@
+{
+  "specification": {
+    "standard": "DDT-ENTERPRISE-VALIDATION-RULESET",
+    "version": "0.1.0-draft.1"
+  },
+  "ruleSetId": "ddt.enterprise.transport-custody.rules",
+  "ruleSetVersion": "0.1.0-draft.1",
+  "profileId": "ddt.enterprise.transport-custody",
+  "sufficiencyPolicy": {
+    "requiredEvidenceClasses": [
+      "CONDITION_SENSOR_SNAPSHOT",
+      "CUSTODY_DOCUMENT",
+      "LOCATION_OBSERVATION"
+    ],
+    "distinctSourcePairs": [
+      {
+        "leftClass": "CUSTODY_DOCUMENT",
+        "rightClass": "LOCATION_OBSERVATION"
+      }
+    ],
+    "rejectOnConflict": true,
+    "successResult": "SUFFICIENT_WITHIN_PROFILE_SCOPE"
+  },
+  "claimBoundary": "Passing sufficiency rules means only that the exact profile evidence rules were satisfied; it does not establish substantive truth."
+}

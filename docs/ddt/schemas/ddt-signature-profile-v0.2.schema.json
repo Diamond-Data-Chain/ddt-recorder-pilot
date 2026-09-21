@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/signature-profile/0.2.0-draft.1/schema.json",
+  "title": "DDT Ed25519 Signature Profile v0.2 Draft.1",
+  "description": "Schema for the exact test-only DDT Ed25519/JCS signature profile with the expanded closed carrier-binding registry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "lifecycleStatus",
+    "deploymentStatus",
+    "profileId",
+    "profileVersion",
+    "proofStructure",
+    "algorithm",
+    "canonicalization",
+    "signatureEncoding",
+    "signingInput",
+    "allowedBindings",
+    "verificationRequirements",
+    "claimBoundary",
+    "errorCodes",
+    "extensions"
+  ],
+  "properties": {
+    "specification": {
+      "const": {
+        "standard": "DDT-SIGNATURE-PROFILE",
+        "version": "0.2.0-draft.1"
+      }
+    },
+    "lifecycleStatus": {"const": "DRAFT"},
+    "deploymentStatus": {"const": "TEST_ONLY"},
+    "profileId": {"const": "ddt.signature.ed25519-jcs-v2"},
+    "profileVersion": {"const": "0.2.0-draft.1"},
+    "proofStructure": {
+      "const": {
+        "schema": {
+          "artifactId": "DDT-SIGNATURE-PROOF-SCHEMA-0.2-DRAFT.1",
+          "version": "0.2.0-draft.1",
+          "digest": {
+            "algorithm": "SHA-256",
+            "value": "17e2a47fdbf73d3d97f871cc80a26284f49eb609fc2e60b435388b03fbadfea7"
+          },
+          "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json",
+          "mediaType": "application/schema+json"
+        }
+      }
+    },
+    "algorithm": {
+      "const": {
+        "id": "Ed25519",
+        "variant": "PURE_EDDSA",
+        "curve": "edwards25519",
+        "internalHash": "SHA-512",
+        "prehash": "NONE",
+        "context": "NONE",
+        "publicKeyBytes": 32,
+        "signatureBytes": 64,
+        "securityStrengthBits": 128,
+        "normativeReference": {
+          "standardId": "RFC8032",
+          "immutableRef": "https://www.rfc-editor.org/rfc/rfc8032.html"
+        }
+      }
+    },
+    "canonicalization": {
+      "const": {
+        "id": "RFC8785-JCS",
+        "inputModel": "I-JSON",
+        "duplicateProperties": "REJECT",
+        "stringNormalization": "NONE_PRESERVE_AS_IS",
+        "textEncoding": "UTF-8",
+        "normativeReference": {
+          "standardId": "RFC8785",
+          "immutableRef": "https://www.rfc-editor.org/rfc/rfc8785.html"
+        }
+      }
+    },
+    "signatureEncoding": {
+      "const": {
+        "id": "base64url",
+        "padding": "FORBIDDEN",
+        "encodedLength": 86,
+        "unusedFinalBits": "ZERO_REQUIRED",
+        "canonicalReencoding": "EXACT_MATCH_REQUIRED",
+        "normativeReference": {
+          "standardId": "RFC4648-SECTION5",
+          "immutableRef": "https://www.rfc-editor.org/rfc/rfc4648.html#section-5"
+        }
+      }
+    },
+    "signingInput": {
+      "const": {
+        "domain": "DDT_SIGNATURE_PROOF_V2",
+        "construction": "DOMAIN_AND_PROOF_CORE_OBJECT",
+        "canonicalization": "RFC8785-JCS",
+        "textEncoding": "UTF-8",
+        "prehash": "NONE",
+        "proofValueExcluded": true,
+        "allOtherPresentProofFieldsIncluded": true,
+        "missingCreatedAtRepresentation": "OMIT"
+      }
+    },
+    "allowedBindings": {
+      "const": [
+        {
+          "proofPurpose": "CHECKPOINT_ATTESTATION",
+          "signedObjectType": "CHECKPOINT_CORE_HASH"
+        },
+        {
+          "proofPurpose": "CONFORMANCE_ATTESTATION",
+          "signedObjectType": "RECEIPT_CORE_HASH"
+        },
+        {
+          "proofPurpose": "COVERAGE_TOMBSTONE_ATTESTATION",
+          "signedObjectType": "COVERAGE_TOMBSTONE_CORE_HASH"
+        },
+        {
+          "proofPurpose": "CRYPTOGRAPHIC_RENEWAL_ATTESTATION",
+          "signedObjectType": "RENEWAL_CORE_HASH"
+        },
+        {
+          "proofPurpose": "DDT_REGISTRATION",
+          "signedObjectType": "REGISTRATION_STATEMENT_HASH"
+        },
+        {
+          "proofPurpose": "NETWORK_FINALITY_ATTESTATION",
+          "signedObjectType": "FINALITY_CORE_HASH"
+        },
+        {
+          "proofPurpose": "OFFLINE_PACKAGE_ATTESTATION",
+          "signedObjectType": "MANIFEST_CORE_HASH"
+        },
+        {
+          "proofPurpose": "SOURCE_COVERAGE_ATTESTATION",
+          "signedObjectType": "COVERAGE_STATEMENT_CORE_HASH"
+        },
+        {
+          "proofPurpose": "SOURCE_WITNESS_ATTESTATION",
+          "signedObjectType": "SOURCE_WITNESS_ATTESTATION_CORE_HASH"
+        },
+        {
+          "proofPurpose": "VERIFICATION_RESULT_ATTESTATION",
+          "signedObjectType": "VERIFICATION_RESULT_CORE_HASH"
+        }
+      ]
+    },
+    "verificationRequirements": {
+      "const": {
+        "strictRfc8032Parsing": true,
+        "rejectDecodingFailure": true,
+        "rejectNonCanonicalPointEncoding": true,
+        "rejectSmallOrderPublicKey": true,
+        "rejectSmallOrderR": true,
+        "rejectScalarOutOfRange": true,
+        "forbidAlgorithmFallback": true,
+        "canonicalBase64urlReencoding": true,
+        "carrierDigestComparisonRequired": true,
+        "exactHistoricalKeyBytesRequired": true,
+        "proofPurposeTargetPairRequired": true,
+        "profileAndDomainExactMatchRequired": true
+      }
+    },
+    "claimBoundary": {
+      "const": {
+        "validSignatureDoesNotEstablish": [
+          "ALGORITHM_CURRENT_SECURITY",
+          "CREATED_TIME",
+          "EVENT_HISTORY_COMPLETENESS",
+          "INDEPENDENT_TIME",
+          "KEY_HISTORICAL_STATUS",
+          "NETWORK_FINALITY",
+          "SIGNER_AUTHORITY",
+          "SIGNER_CIVIL_OR_ORGANIZATIONAL_IDENTITY",
+          "SUBSTANTIVE_TRUTH"
+        ]
+      }
+    },
+    "errorCodes": {
+      "const": [
+        "ALGORITHM_STATUS_UNRESOLVED",
+        "CREATED_AT_CLAIM_UNPROVEN",
+        "KEY_LIFECYCLE_UNRESOLVED",
+        "PROOF_CORE_CANONICALIZATION_FAILED",
+        "PROOF_PROFILE_BINDING_MISMATCH",
+        "PROOF_PROFILE_DIGEST_MISMATCH",
+        "PROOF_PROFILE_UNAVAILABLE",
+        "PROOF_PURPOSE_TARGET_MISMATCH",
+        "PROOF_SCHEMA_INVALID",
+        "PROOF_VALUE_ENCODING_INVALID",
+        "PUBLIC_KEY_ENCODING_INVALID",
+        "PUBLIC_KEY_SMALL_ORDER",
+        "PUBLIC_KEY_UNAVAILABLE",
+        "SIGNATURE_INVALID",
+        "SIGNATURE_PROFILE_VERSION_MISMATCH",
+        "SIGNATURE_R_SMALL_ORDER",
+        "SIGNATURE_SCALAR_OUT_OF_RANGE",
+        "SIGNATURE_SIGNING_DOMAIN_MISMATCH",
+        "SIGNED_OBJECT_BINDING_MISMATCH",
+        "SIGNER_AUTHORITY_UNRESOLVED",
+        "SIGNER_IDENTITY_UNRESOLVED"
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  }
+}

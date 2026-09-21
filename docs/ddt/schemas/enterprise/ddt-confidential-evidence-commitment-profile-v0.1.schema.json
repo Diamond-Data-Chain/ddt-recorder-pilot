@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/enterprise/examples/confidential-evidence-commitment/0.1/schema.json",
+  "title": "DDT Enterprise Example Confidential Evidence Commitment Profile v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "lifecycleStatus",
+    "construction",
+    "disclosure",
+    "claimBoundary"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-ENTERPRISE-EVIDENCE-COMMITMENT-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "profileId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "lifecycleStatus": {
+      "const": "DRAFT"
+    },
+    "construction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commitmentType",
+        "algorithm",
+        "domainSeparator",
+        "saltMode",
+        "minimumSaltBytes",
+        "inputFormation"
+      ],
+      "properties": {
+        "commitmentType": {
+          "const": "RANDOMIZED_COMMITMENT"
+        },
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "domainSeparator": {
+          "const": "DDT_ENTERPRISE_CONFIDENTIAL_EVIDENCE_V1"
+        },
+        "saltMode": {
+          "const": "PER_EVIDENCE_RANDOM_SECRET_UNTIL_DISCLOSURE"
+        },
+        "minimumSaltBytes": {
+          "type": "integer",
+          "minimum": 32
+        },
+        "inputFormation": {
+          "const": "UTF8(domainSeparator) || 0x00 || salt || 0x00 || rawEvidenceBytes"
+        }
+      }
+    },
+    "disclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "saltDisclosure",
+        "evidenceDisclosure",
+        "unavailableSaltResult"
+      ],
+      "properties": {
+        "saltDisclosure": {
+          "const": "AUTHORIZED_VERIFICATION_ONLY"
+        },
+        "evidenceDisclosure": {
+          "const": "AUTHORIZED_VERIFICATION_ONLY"
+        },
+        "unavailableSaltResult": {
+          "const": "UNAVAILABLE"
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provesByteBindingOnly",
+        "provesSubstantiveTruth",
+        "productionApproved"
+      ],
+      "properties": {
+        "provesByteBindingOnly": {
+          "const": true
+        },
+        "provesSubstantiveTruth": {
+          "const": false
+        },
+        "productionApproved": {
+          "const": false
+        }
+      }
+    }
+  }
+}

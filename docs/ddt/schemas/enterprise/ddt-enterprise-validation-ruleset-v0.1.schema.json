@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/enterprise/examples/validation-ruleset/0.1/schema.json",
+  "title": "DDT Enterprise Example Validation Rule Set v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "ruleSetId",
+    "ruleSetVersion",
+    "profileId",
+    "sufficiencyPolicy",
+    "claimBoundary"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-ENTERPRISE-VALIDATION-RULESET"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "ruleSetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ruleSetVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "profileId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sufficiencyPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredEvidenceClasses",
+        "distinctSourcePairs",
+        "rejectOnConflict",
+        "successResult"
+      ],
+      "properties": {
+        "requiredEvidenceClasses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "distinctSourcePairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "leftClass",
+              "rightClass"
+            ],
+            "properties": {
+              "leftClass": {
+                "type": "string"
+              },
+              "rightClass": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "rejectOnConflict": {
+          "const": true
+        },
+        "successResult": {
+          "const": "SUFFICIENT_WITHIN_PROFILE_SCOPE"
+        }
+      }
+    },
+    "claimBoundary": {
+      "const": "Passing sufficiency rules means only that the exact profile evidence rules were satisfied; it does not establish substantive truth."
+    }
+  }
+}

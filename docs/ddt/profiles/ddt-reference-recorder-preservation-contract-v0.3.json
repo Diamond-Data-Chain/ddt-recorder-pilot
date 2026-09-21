@@ -1,0 +1,757 @@
+{
+  "specification": {
+    "standard": "DDT-PRESERVATION-CONTRACT",
+    "version": "0.3.0-draft.1"
+  },
+  "contractId": "ddt.reference-recorder.preservation-contract",
+  "contractVersion": "0.3.0-draft.1",
+  "artifacts": {
+    "envelopeSchema": {
+      "artifactId": "DDT-ENVELOPE-SCHEMA-0.3-DRAFT.5",
+      "version": "0.3.0-draft.5",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "3b6518e2541fc04b5f5ef6227f6aa9e1bdc0442044742ee02ed6541c6bd02310"
+      },
+      "immutableRef": "schemas/ddt-record-envelope-v0.3-draft.5.schema.json",
+      "mediaType": "application/json"
+    },
+    "enterpriseProfile": {
+      "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-PROFILE-0.2-DRAFT.2",
+      "version": "0.2.0-draft.2",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "69963c3a403f89e0580112451ddd8b42af024f6cf2c17f43496a095d50c0efcf"
+      },
+      "immutableRef": "profiles/enterprise/ddt-reference-recorder-enterprise-profile-v0.2-draft.2.json",
+      "mediaType": "application/json"
+    },
+    "validationRuleSet": {
+      "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-VALIDATION-RULESET-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "6211edf15ff1094b4200d48952a1e4f1eb9659e9b73c998135b82d0a96c3d585"
+      },
+      "immutableRef": "profiles/enterprise/rules/ddt-reference-recorder-validation-rules-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "canonicalizationProfile": {
+      "artifactId": "DDT-CANONICALIZATION-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "988a4b770177ebfb595de9c2e286a76cd4b4f108e8cffdd0844656d03d2f443e"
+      },
+      "immutableRef": "profiles/ddt-canonicalization-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "structuralCommitmentProfile": {
+      "artifactId": "DDT-STRUCTURAL-COMMITMENT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "60c73c543e4e86f478c24042abb4a01ad920b675b709607e455cec113089e825"
+      },
+      "immutableRef": "profiles/ddt-structural-commitment-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "identifierProfile": {
+      "artifactId": "DDT-IDENTIFIER-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "a4f88a9936cab3d8a957bf0c3b7f09aeeff23fc5b322d5b5ce9731372ab30e86"
+      },
+      "immutableRef": "profiles/ddt-identifier-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "evidenceManifestProfile": {
+      "artifactId": "DDT-EVIDENCE-MANIFEST-PROFILE-ARTIFACT-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "74ea30e4f37cf23851f89b962507d0e2176ac9a1136455c924e274afd10bab51"
+      },
+      "immutableRef": "profiles/ddt-evidence-manifest-profile-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "relationshipVocabulary": {
+      "artifactId": "DDT-BASE-RELATIONSHIP-VOCABULARY-0.1-DRAFT.1",
+      "version": "0.1.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "87a50bd36dc0739389609e2bed1b885396d950d719307fedde2092b15d3dd56e"
+      },
+      "immutableRef": "profiles/ddt-base-relationship-vocabulary-v0.1.json",
+      "mediaType": "application/json"
+    },
+    "registrationSignatureProfile": {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"
+      },
+      "immutableRef": "profiles/ddt-ed25519-signature-profile-v0.2.json",
+      "mediaType": "application/json"
+    },
+    "conformanceReceiptProfile": {
+      "artifactId": "DDT-CONFORMANCE-RECEIPT-0.3-DRAFT.1",
+      "version": "0.3.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "ce9d6fd957a5378818a4a86f9812efac198240c5404d80852f3ffdb83c0ff892"
+      },
+      "immutableRef": "specs/DDT_CONFORMANCE_RECEIPT_V0.3_DRAFT.md",
+      "mediaType": "text/markdown"
+    },
+    "verificationResultProfile": {
+      "artifactId": "DDT-VERIFICATION-RESULT-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "04608e0af8ec44abcf91a1b1ac8f44615719888c731e1aac130ec9a508c34b40"
+      },
+      "immutableRef": "specs/DDT_VERIFICATION_RESULT_V0.2_DRAFT.md",
+      "mediaType": "text/markdown"
+    },
+    "verificationAxisRegistry": {
+      "artifactId": "DDT-VERIFICATION-AXIS-REGISTRY-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "adc0c50393cf0e285c0732dcc4dcd0ed777776f5e8be52caef0b58fbeaf737a6"
+      },
+      "immutableRef": "profiles/ddt-verification-axis-registry-v0.2.json",
+      "mediaType": "application/json"
+    },
+    "verificationReasonCodeRegistry": {
+      "artifactId": "DDT-VERIFICATION-REASON-CODE-REGISTRY-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "f5f1e7310439c8407f14942da6e4d71d808fa120d41ab7fe2a5d95050e8e0d35"
+      },
+      "immutableRef": "profiles/ddt-verification-reason-code-registry-v0.2.json",
+      "mediaType": "application/json"
+    }
+  },
+  "normativeDependencies": {
+    "artifacts": [
+      {
+        "artifactId": "DDC-TRS-2.0-DRAFT.1",
+        "version": "2.0.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "bdd5eb95cd0bed12646b6cea66083b21c36c42bfeea171c01a96f951986268c2"
+        },
+        "immutableRef": "specs/DDC_TOKEN_RECORD_STANDARD_V2.0_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-BASE-RELATIONSHIP-VOCABULARY-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "87a50bd36dc0739389609e2bed1b885396d950d719307fedde2092b15d3dd56e"
+        },
+        "immutableRef": "profiles/ddt-base-relationship-vocabulary-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-CANONICALIZATION-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "7df86210f5ba60c42b31566a6c28bfaf834485f78871f937a5a518a5f7d09389"
+        },
+        "immutableRef": "specs/DDT_CANONICALIZATION_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-CANONICALIZATION-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "988a4b770177ebfb595de9c2e286a76cd4b4f108e8cffdd0844656d03d2f443e"
+        },
+        "immutableRef": "profiles/ddt-canonicalization-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-CANONICALIZATION-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f385156e9989918a353e90fe4a8312b17d8b69ec1c9ccfec50453cc0c0a4750d"
+        },
+        "immutableRef": "schemas/ddt-canonicalization-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-CONFORMANCE-RECEIPT-0.3-DRAFT.1",
+        "version": "0.3.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "ce9d6fd957a5378818a4a86f9812efac198240c5404d80852f3ffdb83c0ff892"
+        },
+        "immutableRef": "specs/DDT_CONFORMANCE_RECEIPT_V0.3_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-CONFORMANCE-RECEIPT-SCHEMA-0.3-DRAFT.1",
+        "version": "0.3.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "927108f1e372743b1d5f10a16c2e8b85d650f4c37ca69d4acf26bd7d557e84a8"
+        },
+        "immutableRef": "schemas/ddt-conformance-receipt-v0.3.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"
+        },
+        "immutableRef": "profiles/ddt-ed25519-signature-profile-v0.2.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "d741b7edbceeaa49a9274fc799d38ff7911a4631269c328e43fd85028355656c"
+        },
+        "immutableRef": "profiles/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-CONFIDENTIAL-EVIDENCE-COMMITMENT-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "59d5481cd90411270aaa7cd88837ae10778bec43827350519baa0fe0073e4de8"
+        },
+        "immutableRef": "schemas/enterprise/ddt-confidential-evidence-commitment-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-PROFILE-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "74089095a9d182b4d6910bab284631004e888a193ad5017dedf1f5313f1af94c"
+        },
+        "immutableRef": "specs/DDT_ENTERPRISE_PROFILE_V0.2_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-PROFILE-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "1a42bbd7edc3113bafcb04a7975712f06cda7f36766b3a4fb800909cde9ef392"
+        },
+        "immutableRef": "schemas/ddt-enterprise-profile-v0.2.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-PAYLOAD-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f7df51c5c33b3b5214cfb96a0fff69727827fa662b8e20d55852257e267d344d"
+        },
+        "immutableRef": "schemas/enterprise/ddt-reference-recorder-payload-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-PROFILE-0.2-DRAFT.2",
+        "version": "0.2.0-draft.2",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "69963c3a403f89e0580112451ddd8b42af024f6cf2c17f43496a095d50c0efcf"
+        },
+        "immutableRef": "profiles/enterprise/ddt-reference-recorder-enterprise-profile-v0.2-draft.2.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-REFERENCE-RECORDER-VALIDATION-RULESET-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "6211edf15ff1094b4200d48952a1e4f1eb9659e9b73c998135b82d0a96c3d585"
+        },
+        "immutableRef": "profiles/enterprise/rules/ddt-reference-recorder-validation-rules-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENTERPRISE-VALIDATION-RULESET-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "847154ae5c6d125f415ff347620f6f4b2d882eab3517c0ab501aba21c44d63ce"
+        },
+        "immutableRef": "schemas/enterprise/ddt-enterprise-validation-ruleset-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-ENVELOPE-0.3-DRAFT.5",
+        "version": "0.3.0-draft.5",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "42083e9b8c538fa10cd1c494d83863ef831b8ae1873fcfb6168ddff50857f5a6"
+        },
+        "immutableRef": "specs/DDT_RECORD_ENVELOPE_V0.3_DRAFT_5.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-ENVELOPE-SCHEMA-0.3-DRAFT.5",
+        "version": "0.3.0-draft.5",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "3b6518e2541fc04b5f5ef6227f6aa9e1bdc0442044742ee02ed6541c6bd02310"
+        },
+        "immutableRef": "schemas/ddt-record-envelope-v0.3-draft.5.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "b84fc4cb028a84e27b809c0fac61c2a3837c39f3c8f4b8485cbb9b872900de82"
+        },
+        "immutableRef": "specs/DDT_EVIDENCE_DIGEST_COMMITMENT_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "d0408be2633164aff62e5341064e971644e07105fd85abbdbb9b081d55b056e8"
+        },
+        "immutableRef": "profiles/ddt-evidence-digest-commitment-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-DIGEST-COMMITMENT-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "47474ab4edb87b30d0a5f7cc0a1e4e67f2594da75c3f399efb9a9f66a5301a73"
+        },
+        "immutableRef": "schemas/ddt-evidence-digest-commitment-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "0c2462f09211f777a740b48b18e9ba8dfa20973e446bb22daff32a6200d359a6"
+        },
+        "immutableRef": "specs/DDT_EVIDENCE_MANIFEST_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "db68a0572ca560ea165234cc3b4999f1bdb56f16bbfe672b6376092a8c2a7088"
+        },
+        "immutableRef": "specs/DDT_EVIDENCE_MANIFEST_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "74ea30e4f37cf23851f89b962507d0e2176ac9a1136455c924e274afd10bab51"
+        },
+        "immutableRef": "profiles/ddt-evidence-manifest-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "c6227381db63fee11d4814c8d70b1e9d8087db92e89c7cd352085de6a4ff7e30"
+        },
+        "immutableRef": "schemas/ddt-evidence-manifest-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-EVIDENCE-MANIFEST-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "150e7f7f59ff86349d107d3f9db86314f378119b9f403cbc32a76e3f490593c6"
+        },
+        "immutableRef": "schemas/ddt-evidence-manifest-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-HISTORICAL-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "de9f997def86859cdd9fbde46c6d4c2c9370d39f62103b590a27c8c3d4e871b5"
+        },
+        "immutableRef": "profiles/ddt-historical-identity-authority-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-IDENTIFIER-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f63b471630475aa6428f00382775992e383a428fa75df86ce6f4072581be48a4"
+        },
+        "immutableRef": "specs/DDT_IDENTIFIER_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-IDENTIFIER-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "a4f88a9936cab3d8a957bf0c3b7f09aeeff23fc5b322d5b5ce9731372ab30e86"
+        },
+        "immutableRef": "profiles/ddt-identifier-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-IDENTIFIER-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "689bdd2ce4c9e354735f3358fb495e19f23930bb01e06d6fca9575f3f96ad460"
+        },
+        "immutableRef": "schemas/ddt-identifier-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-IDENTITY-AUTHORITY-EVIDENCE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "bd90fc81efa66fb406fefb5d08aaecce04e11f009e13502e0e71464630384e38"
+        },
+        "immutableRef": "schemas/ddt-identity-authority-evidence-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-IDENTITY-AUTHORITY-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "03b2d14194463f3cb5e960292914f53292f8a978aecf66d95d406629e0f52710"
+        },
+        "immutableRef": "specs/DDT_IDENTITY_AUTHORITY_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-IDENTITY-AUTHORITY-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "25ec672e7015eaf9f69c0de5644e57802b34063d3c537b525b7a4386a642497e"
+        },
+        "immutableRef": "schemas/ddt-identity-authority-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-OFFLINE-VERIFICATION-PACKAGE-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "be401fdb1eef4fda3454636a1908010903cb3d3e0e1d112525d4d144be5bea55"
+        },
+        "immutableRef": "specs/DDT_OFFLINE_VERIFICATION_PACKAGE_V0.2_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-OFFLINE-VERIFICATION-PACKAGE-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "945265907ea05ac8c4e0b68eccb68cd6b1cad2c5b3a21e71d2fd70e8c0bd272a"
+        },
+        "immutableRef": "schemas/ddt-offline-verification-package-v0.2.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-PRESERVATION-CONTRACT-0.3-DRAFT.1",
+        "version": "0.3.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "8abb79f6f5fa0e7945dac7c4faa7d376eb600fa5b3597f36c5e37b16259caac8"
+        },
+        "immutableRef": "specs/DDT_PRESERVATION_CONTRACT_V0.3_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-PRESERVATION-CONTRACT-SCHEMA-0.3-DRAFT.1",
+        "version": "0.3.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "5db0e94a82440dd5726d5ddfa9f161681252b7f6dd66c84e6199a7b7b951d721"
+        },
+        "immutableRef": "schemas/ddt-preservation-contract-v0.3.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-REGISTRATION-MECHANISM-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "55e6792f9343af951123a60200456c66bbdfd661ed6d24eab5b07b37bdc48579"
+        },
+        "immutableRef": "specs/DDT_REGISTRATION_MECHANISM_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-REGISTRATION-MECHANISM-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f2c21f7bdb7c56ff115027df9f0182c87e5891eb3d631f7660400680d9f60bb0"
+        },
+        "immutableRef": "profiles/ddt-reference-registrar-registration-mechanism-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-REGISTRATION-MECHANISM-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "ec0d446a12f8066c893b920aa75888c8eabd72d04538bfb9fe774e2ac646279a"
+        },
+        "immutableRef": "schemas/ddt-registration-mechanism-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-REGISTRATION-RESULT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "9b9be27679b36d31bc280088a093ab4c224b1ab898ce540ca8078d5c7e330457"
+        },
+        "immutableRef": "specs/DDT_REGISTRATION_RESULT_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-REGISTRATION-RESULT-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "e4d3a79933b333835e4b0f763cab6c4af6f337ff495950ae867d55ee930ddcfe"
+        },
+        "immutableRef": "schemas/ddt-registration-result-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-RELATIONSHIP-VOCABULARY-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "0f6ef2cb88b7c49273fa78597fef934c574fbf488097a2aa185390bb9ffbc08c"
+        },
+        "immutableRef": "specs/DDT_RELATIONSHIP_VOCABULARY_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-RELATIONSHIP-VOCABULARY-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "a48c8ab9ebb8d1780ba61ea48e89c33fc4837c4b4abe349a6d369a0e532fbab7"
+        },
+        "immutableRef": "schemas/ddt-relationship-vocabulary-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-SIGNATURE-PROFILE-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "2e6ac084e924b8f1394124c2b5bdea3b86493293547fe8d25724c06605654a11"
+        },
+        "immutableRef": "schemas/ddt-signature-profile-v0.2.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-SIGNATURE-PROOF-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "2eb02946082be635eb73df2f19951b5e067d7cbe2815fbd87ea734888a9b92cb"
+        },
+        "immutableRef": "specs/DDT_SIGNATURE_PROOF_V0.2_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-SIGNATURE-PROOF-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "17e2a47fdbf73d3d97f871cc80a26284f49eb609fc2e60b435388b03fbadfea7"
+        },
+        "immutableRef": "schemas/ddt-signature-proof-v0.2.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-STRUCTURAL-COMMITMENT-PROFILE-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "6af71a8124ae68d8d061db930ab4a523acf39cc54649f8b1c1a3b797b8979426"
+        },
+        "immutableRef": "specs/DDT_STRUCTURAL_COMMITMENT_PROFILE_V0.1_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-STRUCTURAL-COMMITMENT-PROFILE-ARTIFACT-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "60c73c543e4e86f478c24042abb4a01ad920b675b709607e455cec113089e825"
+        },
+        "immutableRef": "profiles/ddt-structural-commitment-profile-v0.1.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-STRUCTURAL-COMMITMENT-PROFILE-SCHEMA-0.1-DRAFT.1",
+        "version": "0.1.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "8dde9afb630bca4b2607313a7579940f9706a18ee7a9c3c992d43aa4c923bbed"
+        },
+        "immutableRef": "schemas/ddt-structural-commitment-profile-v0.1.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-AXIS-REGISTRY-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "adc0c50393cf0e285c0732dcc4dcd0ed777776f5e8be52caef0b58fbeaf737a6"
+        },
+        "immutableRef": "profiles/ddt-verification-axis-registry-v0.2.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-AXIS-REGISTRY-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "10ed5607ef0824a4e7aa1dbef197c6c67c3da6a20980e172216ec2f9f051cd4e"
+        },
+        "immutableRef": "schemas/ddt-verification-axis-registry-v0.2.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-REASON-CODE-REGISTRY-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "f5f1e7310439c8407f14942da6e4d71d808fa120d41ab7fe2a5d95050e8e0d35"
+        },
+        "immutableRef": "profiles/ddt-verification-reason-code-registry-v0.2.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-REASON-CODE-REGISTRY-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "d2f2b218a2e8cc6f9e543afe7859114cd9eb1e69df2135e2e47e43404d6522a1"
+        },
+        "immutableRef": "schemas/ddt-verification-reason-code-registry-v0.2.schema.json",
+        "mediaType": "application/json"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-RESULT-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "04608e0af8ec44abcf91a1b1ac8f44615719888c731e1aac130ec9a508c34b40"
+        },
+        "immutableRef": "specs/DDT_VERIFICATION_RESULT_V0.2_DRAFT.md",
+        "mediaType": "text/markdown"
+      },
+      {
+        "artifactId": "DDT-VERIFICATION-RESULT-SCHEMA-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "4cbd31132ca17ff54898846f26a94a7f03873eb81c60cc83899372295ce4cfa8"
+        },
+        "immutableRef": "schemas/ddt-verification-result-v0.2.schema.json",
+        "mediaType": "application/json"
+      }
+    ],
+    "closureDigest": {
+      "algorithm": "SHA-256",
+      "value": "9d868ffca8c8d8183e4903ae9b314631c627b053df521e327665a956f0a43062"
+    }
+  },
+  "capabilities": {
+    "identityAuthority": {
+      "requirement": "NOT_APPLICABLE",
+      "notApplicableReasonCode": "NOT_APPLICABLE_TO_TARGET"
+    },
+    "independentTime": {
+      "requirement": "NOT_APPLICABLE",
+      "notApplicableReasonCode": "NOT_APPLICABLE_TO_TARGET"
+    },
+    "eventCoverage": {
+      "requirement": "NOT_APPLICABLE",
+      "notApplicableReasonCode": "NOT_APPLICABLE_TO_TARGET"
+    },
+    "networkFinality": {
+      "requirement": "NOT_APPLICABLE",
+      "notApplicableReasonCode": "NOT_APPLICABLE_TO_TARGET"
+    },
+    "offlineVerification": {
+      "requirement": "REQUIRED",
+      "profile": {
+        "artifactId": "DDT-OFFLINE-VERIFICATION-PACKAGE-0.2-DRAFT.1",
+        "version": "0.2.0-draft.1",
+        "digest": {
+          "algorithm": "SHA-256",
+          "value": "be401fdb1eef4fda3454636a1908010903cb3d3e0e1d112525d4d144be5bea55"
+        },
+        "immutableRef": "specs/DDT_OFFLINE_VERIFICATION_PACKAGE_V0.2_DRAFT.md",
+        "mediaType": "text/markdown"
+      }
+    },
+    "cryptographicRenewal": {
+      "requirement": "NOT_APPLICABLE",
+      "notApplicableReasonCode": "NOT_APPLICABLE_TO_TARGET"
+    }
+  },
+  "validator": {
+    "validatorId": "ddt-reference-validator",
+    "version": "0.2.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "461b39e515ddcc5c5167ae03395223ff905d257e004ce507f4d96b98b9babb36"
+    },
+    "immutableRef": "reference/v0.2/DDT_REFERENCE_IMPLEMENTATION_V0.2_DRAFT.json"
+  },
+  "applicability": {
+    "basis": "REGISTRANT_ASSERTED",
+    "evidenceRefs": []
+  },
+  "obligations": []
+}

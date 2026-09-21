@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/evidence-manifest/0.1.0-draft.1/schema.json",
+  "title": "DDT Evidence Manifest v0.1 Draft.1",
+  "description": "Machine-readable draft schema for privacy-aware off-chain evidence commitments associated with a DDT Record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specification", "manifestId", "entries", "extensions"],
+  "properties": {
+    "specification": { "$ref": "#/$defs/specification" },
+    "manifestId": { "$ref": "#/$defs/identifier" },
+    "entries": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": { "$ref": "#/$defs/evidenceEntry" }
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/extension" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identifierArray": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "nonEmptyIdentifierArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "version", "digest"],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/version" },
+        "digest": { "$ref": "#/$defs/structuralDigest" },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": { "const": "DDT-EVIDENCE-MANIFEST" },
+        "version": { "const": "0.1.0-draft.1" }
+      }
+    },
+    "representation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["RAW_BYTES", "RFC8785_JCS", "PROFILE_DEFINED"] },
+        "profile": { "$ref": "#/$defs/artifactReference" },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "mode": { "const": "PROFILE_DEFINED" } },
+            "required": ["mode"]
+          },
+          "then": { "required": ["profile"] },
+          "else": { "not": { "required": ["profile"] } }
+        }
+      ]
+    },
+    "evidenceCommitment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commitmentType", "profile", "value", "encoding"],
+      "properties": {
+        "commitmentType": {
+          "enum": [
+            "DIGEST",
+            "RANDOMIZED_COMMITMENT",
+            "KEYED_COMMITMENT",
+            "ZERO_KNOWLEDGE_PROOF_COMMITMENT",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "profile": { "$ref": "#/$defs/artifactReference" },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1048576
+        },
+        "encoding": {
+          "enum": ["LOWERCASE_HEX", "BASE64URL", "MULTIBASE", "PROFILE_DEFINED"]
+        }
+      }
+    },
+    "declaredIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "objectId", "versionEvidenceRefs"],
+      "properties": {
+        "namespace": { "$ref": "#/$defs/identifier" },
+        "objectId": { "$ref": "#/$defs/identifier" },
+        "objectVersion": { "$ref": "#/$defs/version" },
+        "issuerRef": { "$ref": "#/$defs/identifier" },
+        "versionEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "retrievalReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["referenceId", "referenceType", "value", "accessMode", "immutable"],
+      "properties": {
+        "referenceId": { "$ref": "#/$defs/identifier" },
+        "referenceType": {
+          "enum": [
+            "IMMUTABLE_URI",
+            "CONTENT_ADDRESS",
+            "OWNER_CONTROLLED_REFERENCE",
+            "PUBLICATION_REFERENCE",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "accessMode": {
+          "enum": ["PUBLIC", "AUTHORIZED_REQUEST", "PRIVATE_RESOLUTION", "PROFILE_DEFINED"]
+        },
+        "immutable": { "type": "boolean" }
+      }
+    },
+    "custody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "retrievalRefs"],
+      "properties": {
+        "mode": {
+          "enum": [
+            "OWNER_CONTROLLED",
+            "ENTERPRISE_CONTROLLED",
+            "THIRD_PARTY_REPOSITORY",
+            "PUBLIC_IMMUTABLE_REPOSITORY",
+            "DISTRIBUTED_CONTENT_ADDRESSING",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "custodianRef": { "$ref": "#/$defs/identifier" },
+        "retrievalRefs": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/retrievalReference" }
+        }
+      }
+    },
+    "confidentiality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "publicCommitmentRisk", "redactionPermitted"],
+      "properties": {
+        "classification": {
+          "enum": ["PUBLIC", "RESTRICTED", "CONFIDENTIAL", "SECRET", "PROFILE_DEFINED"]
+        },
+        "publicCommitmentRisk": { "enum": ["LOW", "REVIEWED", "HIGH", "UNRESOLVED"] },
+        "disclosureProfile": { "$ref": "#/$defs/artifactReference" },
+        "redactionPermitted": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              {
+                "properties": { "classification": { "not": { "const": "PUBLIC" } } },
+                "required": ["classification"]
+              },
+              {
+                "properties": { "redactionPermitted": { "const": true } },
+                "required": ["redactionPermitted"]
+              }
+            ]
+          },
+          "then": { "required": ["disclosureProfile"] }
+        }
+      ]
+    },
+    "assertedBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identityRef", "layer"],
+      "properties": {
+        "identityRef": { "$ref": "#/$defs/identifier" },
+        "layer": { "enum": ["UPSTREAM", "REGISTRANT", "CUSTODIAN"] }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertedBy", "signatureProofRefs", "authorityEvidenceRefs"],
+      "properties": {
+        "assertedBy": { "$ref": "#/$defs/assertedBy" },
+        "sourceSystemRef": { "$ref": "#/$defs/identifier" },
+        "capturedAtClaim": { "$ref": "#/$defs/dateTime" },
+        "signatureProofRefs": { "$ref": "#/$defs/identifierArray" },
+        "authorityEvidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "semanticScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["historicallyLoadBearing", "reconstructionScopes", "unresolvedResult"],
+      "properties": {
+        "historicallyLoadBearing": { "type": "boolean" },
+        "dependencyClass": { "$ref": "#/$defs/identifier" },
+        "reconstructionScopes": { "$ref": "#/$defs/identifierArray" },
+        "unresolvedResult": {
+          "enum": ["PARTIAL", "AMBIGUOUS", "UNKNOWN", "UNAVAILABLE", "FAIL", "NOT_APPLICABLE"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "historicallyLoadBearing": { "const": true } },
+            "required": ["historicallyLoadBearing"]
+          },
+          "then": {
+            "required": ["dependencyClass"],
+            "properties": {
+              "reconstructionScopes": { "minItems": 1 },
+              "unresolvedResult": {
+                "enum": ["PARTIAL", "AMBIGUOUS", "UNKNOWN", "UNAVAILABLE", "FAIL"]
+              }
+            }
+          },
+          "else": {
+            "not": { "required": ["dependencyClass"] },
+            "properties": {
+              "unresolvedResult": { "const": "NOT_APPLICABLE" }
+            }
+          }
+        }
+      ]
+    },
+    "relatedEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relationshipType", "targetEvidenceId", "evidenceRefs"],
+      "properties": {
+        "relationshipType": { "$ref": "#/$defs/identifier" },
+        "targetEvidenceId": { "$ref": "#/$defs/identifier" },
+        "targetCommitment": { "$ref": "#/$defs/evidenceCommitment" },
+        "evidenceRefs": { "$ref": "#/$defs/identifierArray" }
+      }
+    },
+    "evidenceEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceId",
+        "role",
+        "evidenceClass",
+        "mediaType",
+        "representation",
+        "commitment",
+        "declaredIdentity",
+        "custody",
+        "confidentiality",
+        "preservationObligationRefs",
+        "provenance",
+        "semanticScope",
+        "relatedEvidence"
+      ],
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/identifier" },
+        "role": {
+          "enum": [
+            "SOURCE_PAYLOAD",
+            "SUPPORTING_EVIDENCE",
+            "SEMANTIC_DEPENDENCY",
+            "POLICY_OR_RULEBOOK",
+            "FRAMEWORK_OR_DEFINITION",
+            "AUTHORITY_EVIDENCE",
+            "IDENTITY_OR_KEY_EVIDENCE",
+            "PROVENANCE_EVIDENCE",
+            "TIME_OR_ORDERING_EVIDENCE",
+            "VALIDATION_ARTIFACT",
+            "PROFILE_DEFINED"
+          ]
+        },
+        "evidenceClass": { "$ref": "#/$defs/identifier" },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "representation": { "$ref": "#/$defs/representation" },
+        "commitment": { "$ref": "#/$defs/evidenceCommitment" },
+        "declaredIdentity": { "$ref": "#/$defs/declaredIdentity" },
+        "custody": { "$ref": "#/$defs/custody" },
+        "confidentiality": { "$ref": "#/$defs/confidentiality" },
+        "preservationObligationRefs": { "$ref": "#/$defs/identifierArray" },
+        "provenance": { "$ref": "#/$defs/provenance" },
+        "semanticScope": { "$ref": "#/$defs/semanticScope" },
+        "relatedEvidence": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/relatedEvidence" }
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        }
+      }
+    },
+    "extension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "schema", "value"],
+      "properties": {
+        "namespace": { "$ref": "#/$defs/identifier" },
+        "schema": { "$ref": "#/$defs/artifactReference" },
+        "value": {}
+      }
+    }
+  }
+}

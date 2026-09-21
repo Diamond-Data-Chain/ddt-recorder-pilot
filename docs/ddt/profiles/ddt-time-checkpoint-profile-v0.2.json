@@ -1,0 +1,241 @@
+{
+  "specification": {
+    "standard": "DDT-TIME-CHECKPOINT-PROFILE",
+    "version": "0.2.0-draft.1"
+  },
+  "profileId": "ddt.time-checkpoint.sha256-jcs-v2",
+  "profileVersion": "0.2.0-draft.1",
+  "evidenceStructure": {
+    "schema": {
+      "artifactId": "DDT-TIME-CHECKPOINT-EVIDENCE-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "9e54a415a8d5b507b2dcce678198462edf97d2273131c61d28845f07ee9bc456"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/time-checkpoint/0.2.0-draft.1/evidence.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    "acceptedEvidenceTypes": [
+      "DDT_CHECKPOINT_INCLUSION_PROOF",
+      "DDT_SIGNED_CHECKPOINT",
+      "NETWORK_INCLUSION_PROOF",
+      "RFC3161_TIMESTAMP_TOKEN"
+    ],
+    "evidenceBytesMustBeDigestBound": true
+  },
+  "timeLayers": [
+    "DDC_REGISTRATION_TIME_CLAIM",
+    "EXTERNAL_TIME_EVIDENCE",
+    "NETWORK_INCLUSION_ORDER",
+    "SOURCE_SIGNING_TIME_CLAIM",
+    "SUBMISSION_RECEIPT_TIME_CLAIM",
+    "UPSTREAM_EVENT_TIME_CLAIM"
+  ],
+  "claimSemantics": {
+    "localClaimMaximumStatus": "ASSERTED",
+    "validSignatureProvesCreatedTime": false,
+    "networkBlockTimeIsExternalTimeByDefault": false,
+    "externalTimestampMinimumClaim": "TARGET_EXISTED_NO_LATER_THAN_PROVEN_UPPER_BOUND",
+    "accuracyAppliedToUpperBound": true,
+    "timeProofImpliesEventOccurredAtProvenTime": false
+  },
+  "merkleTree": {
+    "hashAlgorithm": "SHA-256",
+    "leafDomain": "DDT_CHECKPOINT_LEAF_V1",
+    "leafCanonicalization": "RFC8785-JCS",
+    "leafEncoding": "UTF-8",
+    "leafPrefixHex": "00",
+    "nodePrefixHex": "01",
+    "nodeChildrenEncoding": "LEFT_32_BYTES_THEN_RIGHT_32_BYTES",
+    "splitRule": "LARGEST_POWER_OF_TWO_LESS_THAN_N",
+    "leafOrdering": "ASCENDING_SEQUENCE_NO_REORDER",
+    "padding": "NONE",
+    "duplicateLastNode": false,
+    "emptyTreePermitted": false
+  },
+  "checkpoints": {
+    "checkpointCoreCanonicalization": "RFC8785-JCS",
+    "checkpointCoreEncoding": "UTF-8",
+    "signatureRequired": true,
+    "previousCheckpointRequiredAfterGenesis": true,
+    "treeSizeMustEqualCoverageLeafCount": true,
+    "contiguousRangeCountRule": "LEAF_COUNT_EQUALS_LAST_MINUS_FIRST_PLUS_ONE",
+    "independentAnchorRequiredForExternalTime": true,
+    "unanchoredCheckpointTimeStatus": "ASSERTED",
+    "commonSignatureProof": {
+      "artifactId": "DDT-SIGNATURE-PROOF-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "17e2a47fdbf73d3d97f871cc80a26284f49eb609fc2e60b435388b03fbadfea7"
+      },
+      "immutableRef": "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json",
+      "mediaType": "application/schema+json"
+    },
+    "checkpointSignatureProfile": {
+      "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "1718a4a2bc3deaff5f3648838d47b506b045a3603146456f2ee5d9c13d8342ce"
+      },
+      "immutableRef": "ddt-ed25519-signature-profile-v0.2.json",
+      "mediaType": "application/json"
+    },
+    "requiredProofPurpose": "CHECKPOINT_ATTESTATION",
+    "requiredSignedObjectType": "CHECKPOINT_CORE_HASH",
+    "proofsEmbeddedInCarrier": true,
+    "proofsExcludedFromCore": true,
+    "proofOrdering": "ASCENDING_PROOF_ID_UNICODE_CODE_POINT",
+    "duplicateProofIdsRejected": true,
+    "signedObjectDigestMustEqualCheckpointCoreHash": true
+  },
+  "rfc3161": {
+    "tokenEncoding": "DER",
+    "messageImprintAlgorithm": "SHA-256",
+    "messageImprintAlgorithmOid": "2.16.840.1.101.3.4.2.1",
+    "messageImprintExactMatchRequired": true,
+    "hashAlgorithmOidRequired": true,
+    "tsaSignatureRequired": true,
+    "tsaCertificatePathRequired": true,
+    "timestampingEkuRequired": true,
+    "policyOidRequired": true,
+    "historicalCertificateStatusRequired": true,
+    "accuracyRequiredFromTokenOrPolicy": true,
+    "nonceCheckedWhenPresent": true,
+    "unknownCriticalExtensionsRejected": true
+  },
+  "networkInclusion": {
+    "exactNetworkProfileRequired": true,
+    "transactionInclusionRequired": true,
+    "blockIdentityRequired": true,
+    "finalityEvidenceRequired": true,
+    "forkHandlingRequired": true,
+    "networkOrderSeparateFromExternalUtcTime": true,
+    "networkProfileMayQualifyAsExternalTime": "ONLY_IF_EXPLICITLY_BOUND_AND_INDEPENDENT_TIME_REQUIREMENTS_PASS"
+  },
+  "coverage": {
+    "registeredSequenceContinuityProvesGlobalCompleteness": false,
+    "closedCoverageContractRequiredForCompleteness": true,
+    "deterministicSourceSequenceRequired": true,
+    "sourceStateCommitmentRequired": true,
+    "independentSourceWitnessRequired": true,
+    "gapOrCountMismatchResult": "FAIL",
+    "unwitnessedSourceOmissionResult": "UNRESOLVED"
+  },
+  "resultModel": {
+    "baseAxes": [
+      {
+        "axisId": "EVIDENCE_TIME",
+        "statusClass": "TIME"
+      },
+      {
+        "axisId": "INDEPENDENT_PROVENANCE",
+        "statusClass": "RESOLUTION"
+      },
+      {
+        "axisId": "REGISTRATION_TIME_CLAIM",
+        "statusClass": "TIME"
+      },
+      {
+        "axisId": "REGISTRATION_TIME_PROOF",
+        "statusClass": "TIME"
+      }
+    ],
+    "noCrossAxisInference": true,
+    "verificationResultVersion": "0.2.0-draft.1",
+    "verificationResultSchema": {
+      "artifactId": "DDT-VERIFICATION-RESULT-SCHEMA-0.2-DRAFT.1",
+      "version": "0.2.0-draft.1",
+      "digest": {
+        "algorithm": "SHA-256",
+        "value": "4cbd31132ca17ff54898846f26a94a7f03873eb81c60cc83899372295ce4cfa8"
+      },
+      "immutableRef": "../schemas/ddt-verification-result-v0.2.schema.json",
+      "mediaType": "application/schema+json"
+    },
+    "checkpointComponentAxesRequired": true
+  },
+  "preservation": {
+    "originalEvidenceBytesRequired": true,
+    "validationDependenciesRequired": true,
+    "tsaAndNetworkTrustStateRequired": true,
+    "renewalBeforeSecurityExpiryRequired": true,
+    "renewalRewritesOriginal": false
+  },
+  "claimBoundary": {
+    "provenTimeDoesNotEstablish": [
+      "EVENT_OCCURRED_AT_TIMESTAMP",
+      "EVENT_HISTORY_COMPLETENESS",
+      "SIGNER_AUTHORITY",
+      "SUBSTANTIVE_TRUTH"
+    ],
+    "checkpointInclusionDoesNotEstablish": [
+      "EXTERNAL_UTC_TIME_WITHOUT_ANCHOR",
+      "GLOBAL_EVENT_COMPLETENESS",
+      "RECORD_SUBSTANTIVE_TRUTH"
+    ]
+  },
+  "normativeReferences": [
+    {
+      "standardId": "RFC3161",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc3161.html",
+      "use": "EXTERNAL_TIMESTAMP_TOKEN_PROFILE"
+    },
+    {
+      "standardId": "RFC3339",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc3339.html",
+      "use": "JSON_DATE_TIME_REPRESENTATION"
+    },
+    {
+      "standardId": "RFC8785",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc8785.html",
+      "use": "CHECKPOINT_LEAF_AND_CORE_CANONICALIZATION"
+    },
+    {
+      "standardId": "RFC9162",
+      "immutableRef": "https://www.rfc-editor.org/rfc/rfc9162.html",
+      "use": "DOMAIN_SEPARATED_BINARY_MERKLE_TREE_REFERENCE"
+    }
+  ],
+  "errorCodes": [
+    "CHECKPOINT_CORE_HASH_MISMATCH",
+    "CHECKPOINT_CORE_SIGNATURE_INVALID",
+    "CHECKPOINT_INCLUSION_INVALID",
+    "CHECKPOINT_LEAF_MISMATCH",
+    "CHECKPOINT_LINEAGE_BROKEN",
+    "CHECKPOINT_PROOF_DUPLICATE_ID",
+    "CHECKPOINT_PROOF_ORDER_INVALID",
+    "CHECKPOINT_PROOF_PROFILE_MISMATCH",
+    "CHECKPOINT_PROOF_PURPOSE_MISMATCH",
+    "CHECKPOINT_PROOF_TARGET_MISMATCH",
+    "CHECKPOINT_PROOF_UNAVAILABLE",
+    "CHECKPOINT_RANGE_COUNT_MISMATCH",
+    "CHECKPOINT_ROOT_MISMATCH",
+    "COVERAGE_CONTRACT_UNAVAILABLE",
+    "EVENT_COVERAGE_UNRESOLVED",
+    "EVENT_SEQUENCE_GAP",
+    "EXTERNAL_ANCHOR_UNAVAILABLE",
+    "EXTERNAL_TIME_PROOF_INVALID",
+    "NETWORK_FINALITY_UNRESOLVED",
+    "NETWORK_FORK_CONFLICT",
+    "NETWORK_INCLUSION_INVALID",
+    "RFC3161_CERTIFICATE_STATUS_UNRESOLVED",
+    "RFC3161_MESSAGE_IMPRINT_MISMATCH",
+    "RFC3161_POLICY_UNACCEPTED",
+    "RFC3161_SIGNATURE_INVALID",
+    "RFC3161_TOKEN_UNAVAILABLE",
+    "RFC3161_TSA_IDENTITY_UNRESOLVED",
+    "SOURCE_STATE_COMMITMENT_MISMATCH",
+    "TIMESTAMP_TARGET_BINDING_MISMATCH",
+    "TIME_ACCURACY_UNRESOLVED",
+    "TIME_CLAIM_ONLY",
+    "TIME_LAYER_CONFLATION",
+    "UNBOUND_CURRENT_TIME_SOURCE",
+    "WITNESS_AUTHORITY_UNRESOLVED"
+  ],
+  "extensions": [],
+  "lifecycleStatus": "DRAFT",
+  "deploymentStatus": "TEST_ONLY"
+}
