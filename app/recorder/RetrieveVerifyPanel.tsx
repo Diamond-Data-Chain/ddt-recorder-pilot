@@ -570,6 +570,20 @@ export default function RetrieveVerifyPanel() {
     result?.reconstruction
       .relationships ?? {};
 
+  const previousRecordInFamily =
+    relationships
+      .previousRecordInFamily &&
+    typeof relationships
+      .previousRecordInFamily ===
+      "object" &&
+    !Array.isArray(
+      relationships
+        .previousRecordInFamily
+    )
+      ? relationships
+          .previousRecordInFamily
+      : null;
+
   const relatedRecords =
     Array.isArray(
       relationships
@@ -1112,19 +1126,34 @@ export default function RetrieveVerifyPanel() {
               title="Relationships"
               description="Recorded links to predecessor or related DDT Records."
             >
-              {relatedRecords.length ===
-              0 ? (
-                <div className="rounded-xl border border-slate-700 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
-                  No related records.
-                </div>
-              ) : (
-                <JsonBlock
-                  title="Related records"
-                  value={
-                    relatedRecords
-                  }
-                />
-              )}
+              <div className="space-y-4">
+                {previousRecordInFamily ? (
+                  <JsonBlock
+                    title="Previous record in family"
+                    value={
+                      previousRecordInFamily
+                    }
+                  />
+                ) : (
+                  <div className="rounded-xl border border-slate-700 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+                    No previous record in family.
+                  </div>
+                )}
+
+                {relatedRecords.length ===
+                0 ? (
+                  <div className="rounded-xl border border-slate-700 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-400">
+                    No additional related records.
+                  </div>
+                ) : (
+                  <JsonBlock
+                    title="Additional related records"
+                    value={
+                      relatedRecords
+                    }
+                  />
+                )}
+              </div>
             </Panel>
 
 
