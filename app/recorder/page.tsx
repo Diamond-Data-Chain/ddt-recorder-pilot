@@ -5,11 +5,13 @@ import { useState } from "react";
 import TestYourSystemForm from "./TestYourSystemForm";
 import SystemPresetForm from "./SystemPresetForm";
 import EnterpriseTemplateForm from "./EnterpriseTemplateForm";
+import DocumentUploadForm from "./DocumentUploadForm";
 import RetrieveVerifyPanel from "./RetrieveVerifyPanel";
 
 type RecorderMode =
   | "system"
   | "enterprise"
+  | "document"
   | "verify";
 
 const systemPresets = [
@@ -79,7 +81,7 @@ export default function RecorderPage() {
           </p>
         </div>
 
-        <div className="mb-10 grid gap-4 md:grid-cols-3">
+        <div className="mb-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <ModeButton
             active={mode === "system"}
             title="Record / Test System"
@@ -92,6 +94,13 @@ export default function RecorderPage() {
             title="Enterprise / Custom Record"
             description="Create a record using a domain template or custom fields."
             onClick={() => setMode("enterprise")}
+          />
+
+          <ModeButton
+            active={mode === "document"}
+            title="Upload Your Document"
+            description="Upload a document, review the extracted mapping and create a DDT Record."
+            onClick={() => setMode("document")}
           />
 
           <ModeButton
@@ -236,6 +245,23 @@ export default function RecorderPage() {
               Enterprise templates use the same DDT Recorder core.
               Flexible arbitrary fields are added in Step 14.
             </div>
+          </section>
+        )}
+
+        {mode === "document" && (
+          <section className="rounded-3xl border border-slate-700/80 bg-slate-900/75 p-6 shadow-2xl shadow-black/20 md:p-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold tracking-tight text-amber-200">
+                Upload Your Document
+              </h2>
+
+              <p className="mt-2 text-slate-400">
+                Upload an existing document, review the extracted DDT mapping
+                and register it through the same Recorder core.
+              </p>
+            </div>
+
+            <DocumentUploadForm />
           </section>
         )}
 
