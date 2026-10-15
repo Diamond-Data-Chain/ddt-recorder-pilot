@@ -117,7 +117,7 @@ function ensureSchema():
         await sql`
           CREATE TABLE IF NOT EXISTS ddt_recorder_family_authorizations (
             ddt_family_id TEXT PRIMARY KEY,
-            authorization JSONB NOT NULL
+            payload JSONB NOT NULL
           )
         `;
 
@@ -953,7 +953,7 @@ implements DDTFamilyAuthorizationStore {
     const sql = sqlClient();
 
     const rows = await sql`
-      SELECT authorization
+      SELECT payload AS authorization
       FROM ddt_recorder_family_authorizations
       WHERE ddt_family_id = ${ddtFamilyId}
       LIMIT 1
@@ -990,7 +990,7 @@ implements DDTFamilyAuthorizationStore {
       await sql`
         INSERT INTO ddt_recorder_family_authorizations (
           ddt_family_id,
-          authorization
+          payload
         )
         VALUES (
           ${authorization.ddtFamilyId},
