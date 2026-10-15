@@ -33,6 +33,7 @@ import {
 } from "./localOfflineArtifactStore";
 
 import {
+  PostgresDDTFamilyAuthorizationStore,
   PostgresDDTOfflineArtifactStore,
   PostgresDDTRecordStore,
   PostgresDDTRegistrationStore,
@@ -159,6 +160,9 @@ function buildPostgresStores():
 
     recordStore:
       new PostgresDDTRecordStore(),
+
+    familyAuthorizationStore:
+      new PostgresDDTFamilyAuthorizationStore(),
 
     offlineArtifactStore:
       new PostgresDDTOfflineArtifactStore(),

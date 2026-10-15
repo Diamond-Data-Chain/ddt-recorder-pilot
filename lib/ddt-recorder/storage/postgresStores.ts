@@ -33,6 +33,11 @@ import {
 } from "./jsonRecordStore";
 
 import type {
+  DDTFamilyAuthorization,
+  DDTFamilyAuthorizationStore,
+} from "./familyAuthorizationStore";
+
+import type {
   DDTOfflineArtifactDescriptor,
   DDTOfflineArtifactKind,
   DDTOfflineArtifactStore,
@@ -106,6 +111,13 @@ function ensureSchema():
               sequence_domain,
               registration_sequence
             )
+          )
+        `;
+
+        await sql`
+          CREATE TABLE IF NOT EXISTS ddt_recorder_family_authorizations (
+            ddt_family_id TEXT PRIMARY KEY,
+            authorization JSONB NOT NULL
           )
         `;
 
@@ -927,6 +939,88 @@ implements DDTRecordStore {
         return bundle;
       }
     );
+  }
+}
+
+
+export class PostgresDDTFamilyAuthorizationStore
+implements DDTFamilyAuthorizationStore {
+  async getByFamilyId(
+    ddtFamilyId: string
+  ): Promise<DDTFamilyAuthorization | null> {
+    await ensureSchema();
+
+    const sql = sqlClient();
+
+    const rows = await sql`
+      SELECT authorization
+      FROM ddt_recorder_family_authorizations
+      WHERE ddt_family_id = ${ddtFamilyId}
+      LIMIT 1
+    `;
+
+    const row = rows[0] as
+      | { authorization?: unknown }
+      | undefined;
+
+    if (!row) {
+      return null;
+    }
+
+    if (
+      !row.authorization ||
+      typeof row.authorization !== "object"
+    ) {
+      throw new Error(
+        "Invalid PostgreSQL DDT family authorization."
+      );
+    }
+
+    return row.authorization as DDTFamilyAuthorization;
+  }
+
+  async create(
+    authorization: DDTFamilyAuthorization
+  ): Promise<DDTFamilyAuthorization> {
+    await ensureSchema();
+
+    const sql = sqlClient();
+
+    try {
+      await sql`
+        INSERT INTO ddt_recorder_family_authorizations (
+          ddt_family_id,
+          authorization
+        )
+        VALUES (
+          ${authorization.ddtFamilyId},
+          ${JSON.stringify(authorization)}::jsonb
+        )
+      `;
+
+      return authorization;
+    } catch (error: unknown) {
+      if (postgresCode(error) === "23505") {
+        throw new Error(
+          "DDT family authorization already exists."
+        );
+      }
+
+      throw error;
+    }
+  }
+
+  async delete(
+    ddtFamilyId: string
+  ): Promise<void> {
+    await ensureSchema();
+
+    const sql = sqlClient();
+
+    await sql`
+      DELETE FROM ddt_recorder_family_authorizations
+      WHERE ddt_family_id = ${ddtFamilyId}
+    `;
   }
 }
 
