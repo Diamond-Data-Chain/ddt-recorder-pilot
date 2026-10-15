@@ -29,6 +29,43 @@ const PURPOSE_TARGET_PAIRS = {
   DDT_REGISTRATION: "REGISTRATION_STATEMENT_HASH",
 } as const;
 
+const IA_SIGNATURE_PROFILE_VERSION =
+  "0.3.0-draft.1";
+
+const IA_SIGNATURE_PROFILE_FILE =
+  "ddt-ed25519-signature-profile-v0.3.json";
+
+const IA_PURPOSE_TARGET_PAIRS = {
+  IDENTITY_EVIDENCE_ISSUANCE:
+    "IDENTITY_EVIDENCE_HASH",
+  AUTHORITY_EVIDENCE_ISSUANCE:
+    "AUTHORITY_EVIDENCE_HASH",
+  LIFECYCLE_EVIDENCE_ISSUANCE:
+    "LIFECYCLE_EVIDENCE_HASH",
+} as const;
+
+export type DDTIdentityAuthorityProofPurpose =
+  keyof typeof IA_PURPOSE_TARGET_PAIRS;
+
+export type DDTIdentityAuthoritySignedObjectType =
+  (typeof IA_PURPOSE_TARGET_PAIRS)[DDTIdentityAuthorityProofPurpose];
+
+export type DDTIdentityAuthoritySignatureProof = {
+  proofId: string;
+  proofType: "DDT_SIGNATURE";
+  proofPurpose: DDTIdentityAuthorityProofPurpose;
+  proofProfile: DDTArtifactReference;
+  algorithm: "Ed25519";
+  verificationMethod: string;
+  signedObject: {
+    type: DDTIdentityAuthoritySignedObjectType;
+    digest: DDTStructuralDigest;
+  };
+  signatureEncoding: "base64url";
+  proofValue: string;
+  createdAtClaim?: string;
+};
+
 export type DDTSupportedProofPurpose =
   keyof typeof PURPOSE_TARGET_PAIRS;
 
@@ -111,6 +148,47 @@ export async function loadBaselineSignatureProfileRef(
   };
 }
 
+export async function loadIdentityAuthoritySignatureProfileRef(
+  ddtRoot = path.join(process.cwd(), "docs", "ddt")
+): Promise<DDTArtifactReference> {
+  const profilePath = path.join(
+    ddtRoot,
+    "profiles",
+    IA_SIGNATURE_PROFILE_FILE
+  );
+
+  const bytes = await fs.readFile(profilePath);
+  const document = JSON.parse(
+    bytes.toString("utf8")
+  ) as {
+    profileId?: unknown;
+    profileVersion?: unknown;
+  };
+
+  if (
+    document.profileId !== SIGNATURE_PROFILE_ID ||
+    document.profileVersion !==
+      IA_SIGNATURE_PROFILE_VERSION
+  ) {
+    throw new Error(
+      "Identity/Authority Signature Profile identity/version mismatch."
+    );
+  }
+
+  return {
+    artifactId: SIGNATURE_PROFILE_ID,
+    version: IA_SIGNATURE_PROFILE_VERSION,
+    digest: {
+      algorithm: "SHA-256",
+      value: createHash("sha256")
+        .update(bytes)
+        .digest("hex"),
+    },
+    immutableRef: IA_SIGNATURE_PROFILE_FILE,
+    mediaType: "application/json",
+  };
+}
+
 export async function createEd25519Proof(input: {
   proofId: string;
   purpose: DDTSupportedProofPurpose;
@@ -119,6 +197,7 @@ export async function createEd25519Proof(input: {
   privateKeyPem: string | Buffer;
   createdAtClaim?: string;
   ddtRoot?: string;
+  profileVersion?: "0.2.0-draft.1" | "0.3.0-draft.1";
 }): Promise<DDTSignatureProof> {
   const proofId = requireNonEmpty(
     input.proofId,
@@ -151,9 +230,13 @@ export async function createEd25519Proof(input: {
   }
 
   const proofProfile =
-    await loadBaselineSignatureProfileRef(
-      input.ddtRoot
-    );
+    input.profileVersion === "0.3.0-draft.1"
+      ? await loadIdentityAuthoritySignatureProfileRef(
+          input.ddtRoot
+        )
+      : await loadBaselineSignatureProfileRef(
+          input.ddtRoot
+        );
 
   const proofWithoutValue = {
     proofId,
@@ -191,6 +274,110 @@ export async function createEd25519Proof(input: {
   if (
     privateKey.asymmetricKeyType !== "ed25519"
   ) {
+    throw new Error(
+      "Private key is not Ed25519."
+    );
+  }
+
+  const signature = cryptoSign(
+    null,
+    signingInput,
+    privateKey
+  );
+
+  if (signature.length !== 64) {
+    throw new Error(
+      "Ed25519 signature must be 64 bytes."
+    );
+  }
+
+  const proofValue = base64url(signature);
+
+  if (proofValue.length !== 86) {
+    throw new Error(
+      "Ed25519 proofValue must be exactly 86 base64url characters."
+    );
+  }
+
+  return {
+    ...proofWithoutValue,
+    proofValue,
+  };
+}
+
+export async function createIdentityAuthorityEd25519Proof(input: {
+  proofId: string;
+  purpose: DDTIdentityAuthorityProofPurpose;
+  targetDigest: DDTStructuralDigest;
+  verificationMethod: string;
+  privateKeyPem: string | Buffer;
+  createdAtClaim?: string;
+  ddtRoot?: string;
+}): Promise<DDTIdentityAuthoritySignatureProof> {
+  const proofId = requireNonEmpty(
+    input.proofId,
+    "proofId"
+  );
+
+  const verificationMethod = requireNonEmpty(
+    input.verificationMethod,
+    "verificationMethod"
+  );
+
+  const targetType =
+    IA_PURPOSE_TARGET_PAIRS[input.purpose];
+
+  if (!targetType) {
+    throw new Error(
+      `Unsupported identity/authority proof purpose: ${input.purpose}`
+    );
+  }
+
+  if (
+    input.targetDigest.algorithm !== "SHA-256" ||
+    !/^[0-9a-f]{64}$/.test(input.targetDigest.value)
+  ) {
+    throw new Error(
+      "targetDigest must be a lowercase SHA-256 digest."
+    );
+  }
+
+  const proofProfile =
+    await loadIdentityAuthoritySignatureProfileRef(
+      input.ddtRoot
+    );
+
+  const proofWithoutValue = {
+    proofId,
+    proofType: "DDT_SIGNATURE" as const,
+    proofPurpose: input.purpose,
+    proofProfile,
+    algorithm: "Ed25519" as const,
+    verificationMethod,
+    signedObject: {
+      type: targetType,
+      digest: input.targetDigest,
+    },
+    signatureEncoding: "base64url" as const,
+    ...(input.createdAtClaim
+      ? { createdAtClaim: input.createdAtClaim }
+      : {}),
+  };
+
+  const signingInput = Buffer.from(
+    canonicalizeJcs({
+      domain: SIGNATURE_DOMAIN,
+      proofCore:
+        proofWithoutValue as unknown as DDTJsonValue,
+    }),
+    "utf8"
+  );
+
+  const privateKey = createPrivateKey(
+    input.privateKeyPem
+  );
+
+  if (privateKey.asymmetricKeyType !== "ed25519") {
     throw new Error(
       "Private key is not Ed25519."
     );

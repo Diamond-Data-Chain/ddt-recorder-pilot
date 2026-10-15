@@ -539,8 +539,48 @@ export async function prepareOfflinePackageFromRecordStore(
       )
     );
 
+  const contractArtifacts =
+    asObject(
+      preservationContract.artifacts,
+      "preservationContract.artifacts"
+    );
+
+  const variableRootArtifactIds = [
+    artifactReference(
+      contractArtifacts.conformanceReceiptProfile as DDTJsonValue,
+      "preservationContract.artifacts.conformanceReceiptProfile"
+    ).artifactId,
+
+    artifactReference(
+      contractArtifacts.verificationResultProfile as DDTJsonValue,
+      "preservationContract.artifacts.verificationResultProfile"
+    ).artifactId,
+
+    artifactReference(
+      contractArtifacts.verificationReasonCodeRegistry as DDTJsonValue,
+      "preservationContract.artifacts.verificationReasonCodeRegistry"
+    ).artifactId,
+  ];
+
+  const legacyVariableRootArtifactIds =
+    new Set([
+      "DDT-REFERENCE-RECORDER-CONFORMANCE-RECEIPT-PROFILE-0.1-DRAFT.1",
+      "DDT-VERIFICATION-RESULT-0.2-DRAFT.1",
+      "DDT-VERIFICATION-REASON-CODE-REGISTRY-0.2-DRAFT.1",
+    ]);
+
+  const rootArtifactIds = [
+    ...ROOT_ARTIFACT_IDS.filter(
+      artifactId =>
+        !legacyVariableRootArtifactIds.has(
+          artifactId
+        )
+    ),
+    ...variableRootArtifactIds,
+  ];
+
   const rootArtifacts =
-    ROOT_ARTIFACT_IDS.map(
+    rootArtifactIds.map(
       artifactId => {
         const ref =
           dependencyById.get(
@@ -557,12 +597,43 @@ export async function prepareOfflinePackageFromRecordStore(
       }
     );
 
-  const offlineProfilePath =
-    path.join(
-      ddtRoot,
-      "profiles",
-      "ddt-reference-recorder-offline-verification-profile-v0.1.json"
+  const capabilities =
+    asObject(
+      preservationContract.capabilities,
+      "preservationContract.capabilities"
     );
+
+  const offlineVerification =
+    asObject(
+      capabilities.offlineVerification,
+      "preservationContract.capabilities.offlineVerification"
+    );
+
+  const offlineProfileReference =
+    artifactReference(
+      offlineVerification.profile as DDTJsonValue,
+      "preservationContract.capabilities.offlineVerification.profile"
+    );
+
+  const offlineProfilePath =
+    path.resolve(
+      ddtRoot,
+      offlineProfileReference.immutableRef
+    );
+
+  const resolvedDdtRoot =
+    path.resolve(ddtRoot);
+
+  if (
+    offlineProfilePath !== resolvedDdtRoot &&
+    !offlineProfilePath.startsWith(
+      `${resolvedDdtRoot}${path.sep}`
+    )
+  ) {
+    throw new Error(
+      "Offline Verification Profile immutableRef resolves outside DDT root."
+    );
+  }
 
   const offlineProfile =
     JSON.parse(
@@ -859,6 +930,126 @@ export async function prepareOfflinePackageFromRecordStore(
     );
   }
 
+  /*
+   * The Offline Verification Profile is referenced by the Preservation
+   * Contract capability and is required by the bundled offline verifier.
+   * It is not necessarily part of normativeDependencies, so package it
+   * explicitly from the contract-pinned reference.
+   */
+  await addRepoArtifact(
+    offlineProfileReference
+  );
+
+  /*
+   * The Preservation Contract pins the normative Receipt generation
+   * version, but an archived Record Store bundle may legitimately carry
+   * an earlier supported Receipt version. Offline verification must be
+   * able to validate the actual carrier included in this package.
+   */
+  const targetReceipt =
+    asObject(
+      targetBundle.conformanceReceipt,
+      "target conformanceReceipt"
+    );
+
+  const targetReceiptSpecification =
+    asObject(
+      targetReceipt.specification,
+      "target conformanceReceipt.specification"
+    );
+
+  const targetReceiptVersion =
+    asString(
+      targetReceiptSpecification.version,
+      "target conformanceReceipt.specification.version"
+    );
+
+  if (
+    targetReceiptVersion ===
+    "0.3.0-draft.1"
+  ) {
+    const receiptSchemaRel =
+      "schemas/ddt-conformance-receipt-v0.3.schema.json";
+
+    await addBytes(
+      receiptSchemaRel,
+
+      await fs.readFile(
+        path.join(
+          ddtRoot,
+          receiptSchemaRel
+        )
+      ),
+
+      "application/schema+json",
+
+      "SCHEMA",
+
+      [
+        assembly.target
+          .ddtRecordId,
+      ]
+    );
+  } else if (
+    targetReceiptVersion !==
+    "0.4.0-draft.1"
+  ) {
+    throw new Error(
+      `Unsupported target Conformance Receipt version for offline packaging: ${targetReceiptVersion}`
+    );
+  }
+
+  /*
+   * The bundled v0.3 Offline Verifier emits and signs a
+   * Verification Result v0.3. Its signing profile is verifier-runtime
+   * material, independent of the historical Record's own proof profile.
+   */
+  const verificationResultSignatureProfileRel =
+    "profiles/ddt-ed25519-signature-profile-v0.3.json";
+
+  await addBytes(
+    verificationResultSignatureProfileRel,
+
+    await fs.readFile(
+      path.join(
+        ddtRoot,
+        verificationResultSignatureProfileRel
+      )
+    ),
+
+    "application/json",
+
+    "PROFILE",
+
+    [
+      assembly.target
+        .ddtRecordId,
+    ]
+  );
+
+  const verificationResultSignatureProofSchemaRel =
+    "schemas/ddt-signature-proof-v0.3.schema.json";
+
+  await addBytes(
+    verificationResultSignatureProofSchemaRel,
+
+    await fs.readFile(
+      path.join(
+        ddtRoot,
+        verificationResultSignatureProofSchemaRel
+      )
+    ),
+
+    "application/schema+json",
+
+    "SCHEMA",
+
+    [
+      assembly.target
+        .ddtRecordId,
+    ]
+  );
+
   const summaryProfileRel =
     "profiles/ddt-verification-result-summary-derivation-profile-v0.1.json";
 
@@ -888,7 +1079,7 @@ export async function prepareOfflinePackageFromRecordStore(
     path.join(
       ddtRoot,
       "reference",
-      "v0.2",
+      "v0.3",
       "ddt_ref"
     );
 

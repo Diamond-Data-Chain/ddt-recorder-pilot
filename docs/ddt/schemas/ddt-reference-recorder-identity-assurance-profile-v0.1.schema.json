@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/schemas/ddt-reference-recorder-identity-assurance-profile-v0.1.schema.json",
+  "title": "DDT Reference Recorder Identity Assurance Profile v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specification",
+    "profileId",
+    "profileVersion",
+    "lifecycleStatus",
+    "environment",
+    "identityBindingPolicy",
+    "claimBoundary"
+  ],
+  "properties": {
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "standard",
+        "version"
+      ],
+      "properties": {
+        "standard": {
+          "const": "DDT-REFERENCE-RECORDER-IDENTITY-ASSURANCE-PROFILE"
+        },
+        "version": {
+          "const": "0.1.0-draft.1"
+        }
+      }
+    },
+    "profileId": {
+      "const": "ddt.reference-recorder.identity-assurance.local-v1"
+    },
+    "profileVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "lifecycleStatus": {
+      "const": "DRAFT"
+    },
+    "environment": {
+      "const": "TEST_ONLY"
+    },
+    "identityBindingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identityNamespace",
+        "acceptedRegistrantIdentityTypes",
+        "requiredBindingScopes"
+      ],
+      "properties": {
+        "identityNamespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "acceptedRegistrantIdentityTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "PERSON",
+              "ORGANIZATION",
+              "ORGANIZATION_SERVICE",
+              "DEVICE",
+              "SYSTEM",
+              "OTHER"
+            ]
+          }
+        },
+        "requiredBindingScopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "KEY_CONTROLLER",
+              "DDT_REGISTRANT",
+              "VALIDATOR",
+              "VERIFIER",
+              "WITNESS",
+              "AUTHORITY_ISSUER"
+            ]
+          }
+        }
+      }
+    },
+    "claimBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "establishesProfileConformance",
+        "establishesCivilIdentity",
+        "establishesLegalAuthority",
+        "productionApproved"
+      ],
+      "properties": {
+        "establishesProfileConformance": {
+          "const": true
+        },
+        "establishesCivilIdentity": {
+          "const": false
+        },
+        "establishesLegalAuthority": {
+          "const": false
+        },
+        "productionApproved": {
+          "const": false
+        }
+      }
+    }
+  }
+}

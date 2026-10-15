@@ -15,6 +15,7 @@ import {
 } from "../producer/envelopeCommitments";
 import {
   loadBaselineSignatureProfileRef,
+  loadIdentityAuthoritySignatureProfileRef,
 } from "../signing/ed25519";
 import type {
   DDTStructuralDigest,
@@ -751,6 +752,7 @@ async function verifySignatureProof(
       | "REGISTRATION_STATEMENT_HASH";
     ddtRoot: string;
     keyring: Map<string, Buffer>;
+    profileVersion?: "0.2.0-draft.1" | "0.3.0-draft.1";
   }
 ): Promise<DDTVerifiedProofResult> {
   const proof = asObject(
@@ -806,9 +808,13 @@ async function verifySignatureProof(
   }
 
   const expectedProfile =
-    await loadBaselineSignatureProfileRef(
-      input.ddtRoot
-    );
+    input.profileVersion === "0.3.0-draft.1"
+      ? await loadIdentityAuthoritySignatureProfileRef(
+          input.ddtRoot
+        )
+      : await loadBaselineSignatureProfileRef(
+          input.ddtRoot
+        );
 
   const profile = asObject(
     proof.proofProfile,
@@ -908,6 +914,173 @@ async function verifySignatureProof(
   if (!valid) {
     throw new Error(
       "Ed25519 signature invalid."
+    );
+  }
+
+  return {
+    proofId: asString(
+      proof.proofId,
+      "proof.proofId"
+    ),
+    profile: "MATCH",
+    signature: "VALID",
+  };
+}
+
+export async function verifyIdentityAuthoritySignatureProof(
+  proofValue: DDTJsonValue,
+  input: {
+    expectedDigest: DDTStructuralDigest;
+    purpose:
+      | "IDENTITY_EVIDENCE_ISSUANCE"
+      | "AUTHORITY_EVIDENCE_ISSUANCE"
+      | "LIFECYCLE_EVIDENCE_ISSUANCE";
+    targetType:
+      | "IDENTITY_EVIDENCE_HASH"
+      | "AUTHORITY_EVIDENCE_HASH"
+      | "LIFECYCLE_EVIDENCE_HASH";
+    ddtRoot: string;
+    keyring: Map<string, Buffer>;
+  }
+): Promise<DDTVerifiedProofResult> {
+  const proof = asObject(
+    proofValue,
+    "identity/authority signature proof"
+  );
+
+  if (
+    proof.proofType !== "DDT_SIGNATURE" ||
+    proof.algorithm !== "Ed25519" ||
+    proof.signatureEncoding !== "base64url"
+  ) {
+    throw new Error(
+      "Unsupported or invalid identity/authority proof type/algorithm/encoding."
+    );
+  }
+
+  if (proof.proofPurpose !== input.purpose) {
+    throw new Error(
+      "Unexpected identity/authority proof purpose."
+    );
+  }
+
+  const signedObject = asObject(
+    proof.signedObject,
+    "proof.signedObject"
+  );
+
+  if (signedObject.type !== input.targetType) {
+    throw new Error(
+      "Unexpected identity/authority signedObject.type."
+    );
+  }
+
+  const signedDigest = asDigest(
+    signedObject.digest,
+    "proof.signedObject.digest"
+  );
+
+  if (!sameDigest(signedDigest, input.expectedDigest)) {
+    throw new Error(
+      "Identity/authority signed object digest mismatch."
+    );
+  }
+
+  const expectedProfile =
+    await loadIdentityAuthoritySignatureProfileRef(
+      input.ddtRoot
+    );
+
+  const profile = asObject(
+    proof.proofProfile,
+    "proof.proofProfile"
+  );
+
+  if (
+    profile.artifactId !== expectedProfile.artifactId ||
+    profile.version !== expectedProfile.version ||
+    !sameDigest(
+      asDigest(
+        profile.digest,
+        "proof.proofProfile.digest"
+      ),
+      expectedProfile.digest
+    )
+  ) {
+    throw new Error(
+      "Identity/authority Signature Profile mismatch."
+    );
+  }
+
+  const verificationMethod = asString(
+    proof.verificationMethod,
+    "proof.verificationMethod"
+  );
+
+  const rawPublicKey =
+    input.keyring.get(verificationMethod);
+
+  if (!rawPublicKey) {
+    throw new Error(
+      `Verification key unavailable: ${verificationMethod}`
+    );
+  }
+
+  const proofText = asString(
+    proof.proofValue,
+    "proof.proofValue"
+  );
+
+  if (proofText.length !== 86) {
+    throw new Error(
+      "Ed25519 proofValue must be exactly 86 base64url characters."
+    );
+  }
+
+  const signature = decodeBase64urlStrict(
+    proofText,
+    64
+  );
+
+  const proofCore: JsonObject = {
+    ...proof,
+  };
+
+  delete proofCore.proofValue;
+
+  const signingInput = Buffer.from(
+    canonicalizeJcs({
+      domain: "DDT_SIGNATURE_PROOF_V2",
+      proofCore:
+        proofCore as DDTJsonValue,
+    }),
+    "utf8"
+  );
+
+  const spkiPrefix = Buffer.from(
+    "302a300506032b6570032100",
+    "hex"
+  );
+
+  const publicKey = createPublicKey({
+    key: Buffer.concat([
+      spkiPrefix,
+      rawPublicKey,
+    ]),
+    format: "der",
+    type: "spki",
+  });
+
+  const valid = cryptoVerify(
+    null,
+    signingInput,
+    publicKey,
+    signature
+  );
+
+  if (!valid) {
+    throw new Error(
+      "Identity/authority Ed25519 signature invalid."
     );
   }
 
@@ -1230,6 +1403,16 @@ export async function verifyRecordBundle(
             "RECEIPT_CORE_HASH",
           ddtRoot,
           keyring,
+          ...(receipt.specification &&
+          asObject(
+            receipt.specification,
+            "receipt.specification"
+          ).version === "0.4.0-draft.1"
+            ? {
+                profileVersion:
+                  "0.3.0-draft.1" as const,
+              }
+            : {}),
         }
       )
     );

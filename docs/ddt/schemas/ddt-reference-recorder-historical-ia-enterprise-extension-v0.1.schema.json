@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/schemas/ddt-reference-recorder-historical-ia-enterprise-extension-v0.1.schema.json",
+  "title": "DDT Reference Recorder Historical Identity Authority Enterprise Extension v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "acceptedIdentityAssuranceProfiles",
+    "registrationAuthorityScope"
+  ],
+  "properties": {
+    "acceptedIdentityAssuranceProfiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/artifactReference"
+      }
+    },
+    "registrationAuthorityScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "proofPurpose",
+        "organizationScopesSource",
+        "domainScopes"
+      ],
+      "properties": {
+        "action": {
+          "const": "REGISTER_DDT_RECORD"
+        },
+        "proofPurpose": {
+          "const": "DDT_REGISTRATION"
+        },
+        "organizationScopesSource": {
+          "const": "ENTERPRISE_PROFILE_DOMAIN_ORGANIZATION_SCOPES"
+        },
+        "domainScopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "structuralDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SHA-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "version",
+        "digest"
+      ],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/identifier"
+        },
+        "digest": {
+          "$ref": "#/$defs/structuralDigest"
+        },
+        "immutableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
+    }
+  }
+}

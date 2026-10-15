@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diamonddatachain.org/specifications/ddt/identity-authority/0.1.0-draft.1/trust-configuration.schema.json",
+  "title": "DDT Historical Identity and Authority Trust Configuration v0.1 Draft.1",
+  "description": "Digest-bound trust configuration for Historical Identity and Authority verification, including authoritative lifecycle and status sources used for historical ordering.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "configurationId",
+    "configurationVersion",
+    "authoritativeSequenceSources"
+  ],
+  "properties": {
+    "configurationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "configurationVersion": {
+      "const": "0.1.0-draft.1"
+    },
+    "authoritativeSequenceSources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": {
+        "$ref": "#/$defs/authoritativeSequenceSource"
+      }
+    },
+    "authorityRoots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": {
+        "$ref": "#/$defs/authorityRoot"
+      }
+    },
+    "scopeMatchingPolicy": {
+      "$ref": "#/$defs/scopeMatchingPolicy"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "authoritativeSequenceSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "evidenceTypes",
+        "issuerIdentityRef",
+        "issuerVerificationMethod",
+        "sequenceScope"
+      ],
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "evidenceTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "KEY_LIFECYCLE_EVENT",
+              "IDENTITY_BINDING_STATUS_EVENT",
+              "AUTHORITY_STATUS_EVENT"
+            ]
+          }
+        },
+        "issuerIdentityRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "issuerVerificationMethod": {
+          "$ref": "#/$defs/identifier"
+        },
+        "sequenceScope": {
+          "enum": [
+            "VERIFICATION_METHOD",
+            "IDENTITY_BINDING",
+            "AUTHORITY_GRANT"
+          ]
+        }
+      }
+    },
+    "authorityRoot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rootId",
+        "identityRef",
+        "acceptedGrantorRoles"
+      ],
+      "properties": {
+        "rootId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "identityRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "acceptedGrantorRoles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        }
+      }
+    },
+    "scopeMatchingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arraySemantics",
+        "emptyArrayMeaning",
+        "constraintsPolicy"
+      ],
+      "properties": {
+        "arraySemantics": {
+          "const": "CHILD_VALUES_MUST_BE_SUBSET_OF_PARENT"
+        },
+        "emptyArrayMeaning": {
+          "enum": [
+            "NO_VALUES_PERMITTED",
+            "UNRESTRICTED"
+          ]
+        },
+        "constraintsPolicy": {
+          "enum": [
+            "EXACT_MATCH",
+            "CHILD_MUST_NOT_RELAX_PARENT"
+          ]
+        }
+      }
+    }
+  }
+}

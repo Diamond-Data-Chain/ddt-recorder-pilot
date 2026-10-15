@@ -3,11 +3,21 @@ import type { DDTJsonValue } from "./canonical";
 import { digestJcs } from "./canonical";
 import type { DDTArtifactReference } from "./evidenceManifest";
 import type { DDTPreparedDraft5Record } from "./recorder";
+import type { DDTKeyLifecycleStateEvaluation } from "../validation/historicalIdentityAuthorityEvaluator";
 
-const CONFORMANCE_RECEIPT_SPECIFICATION = {
-  standard: "DDT-CONFORMANCE-RECEIPT",
-  version: "0.3.0-draft.1",
+const CONFORMANCE_RECEIPT_SPECIFICATIONS = {
+  v03: {
+    standard: "DDT-CONFORMANCE-RECEIPT",
+    version: "0.3.0-draft.1",
+  },
+  v04: {
+    standard: "DDT-CONFORMANCE-RECEIPT",
+    version: "0.4.0-draft.1",
+  },
 } as const;
+
+type DDTConformanceReceiptSpecification =
+  (typeof CONFORMANCE_RECEIPT_SPECIFICATIONS)[keyof typeof CONFORMANCE_RECEIPT_SPECIFICATIONS];
 
 const REFERENCE_DERIVATION_PROFILE: DDTArtifactReference = {
   artifactId: "DDT-CONFORMANCE-RESULT-DERIVATION-PROFILE-0.1-DRAFT.1",
@@ -154,13 +164,16 @@ export type DDTConformanceReceiptBuildInput = {
   evidenceEvaluations: DDTEvidenceEvaluation[];
   ruleResults: DDTRuleResult[];
   capabilityResults: DDTCapabilityResults;
+  historicalIdentityAuthority?: {
+    signingKeyLifecycle?: DDTKeyLifecycleStateEvaluation;
+  };
 
   validationStartedAt?: string;
   validationCompletedAt?: string;
 };
 
 export type DDTUnsignedConformanceReceipt = {
-  specification: typeof CONFORMANCE_RECEIPT_SPECIFICATION;
+  specification: DDTConformanceReceiptSpecification;
   receiptCore: {
     receiptId: string;
     recordHash: DDTStructuralDigest;
@@ -190,6 +203,9 @@ export type DDTUnsignedConformanceReceipt = {
     evidenceEvaluations: DDTEvidenceEvaluation[];
     ruleResults: DDTRuleResult[];
     capabilityResults: DDTCapabilityResults;
+    historicalIdentityAuthority?: {
+      signingKeyLifecycle?: DDTKeyLifecycleStateEvaluation;
+    };
 
     overallResult: {
       status: "PASS" | "FAIL" | "INDETERMINATE";
@@ -473,6 +489,11 @@ export function buildConformanceReceiptDraft(
   const ruleResultSetHash = digest(input.ruleResults);
   const capabilityResultSetHash = digest(input.capabilityResults);
 
+  const specification: DDTConformanceReceiptSpecification =
+    input.historicalIdentityAuthority
+      ? CONFORMANCE_RECEIPT_SPECIFICATIONS.v04
+      : CONFORMANCE_RECEIPT_SPECIFICATIONS.v03;
+
   const receiptCore: DDTUnsignedConformanceReceipt["receiptCore"] = {
     receiptId: input.receiptId,
     recordHash,
@@ -501,6 +522,12 @@ export function buildConformanceReceiptDraft(
     evidenceEvaluations,
     ruleResults: input.ruleResults,
     capabilityResults: input.capabilityResults,
+    ...(input.historicalIdentityAuthority
+      ? {
+          historicalIdentityAuthority:
+            input.historicalIdentityAuthority,
+        }
+      : {}),
 
     overallResult: {
       status: derived.status,
@@ -539,7 +566,7 @@ export function buildConformanceReceiptDraft(
   const receiptCoreHash = digest(receiptCore);
 
   return {
-    specification: CONFORMANCE_RECEIPT_SPECIFICATION,
+    specification,
     receiptCore,
     receiptCoreHash,
     proofs: [],

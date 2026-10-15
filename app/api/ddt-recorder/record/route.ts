@@ -26,9 +26,14 @@ class RequestBodyTooLargeError extends Error {
   }
 }
 
+type DDTRecorderApiInput =
+  DDTRecorderInput & {
+    familyCredential?: string;
+  };
+
 async function readJsonBodyWithLimit(
   request: Request
-): Promise<DDTRecorderInput> {
+): Promise<DDTRecorderApiInput> {
   const declaredLength =
     request.headers.get("content-length");
 
@@ -104,7 +109,7 @@ async function readJsonBodyWithLimit(
 
   return JSON.parse(
     text
-  ) as DDTRecorderInput;
+  ) as DDTRecorderApiInput;
 }
 
 function isObject(
@@ -171,7 +176,7 @@ export async function POST(
       );
     }
 
-    let input: DDTRecorderInput;
+    let input: DDTRecorderApiInput;
 
     try {
       input =
@@ -219,7 +224,13 @@ export async function POST(
       );
     }
 
-    if (!hasRecorderInputShape(input)) {
+    if (
+      !hasRecorderInputShape(input) ||
+      (
+        input.familyCredential !== undefined &&
+        typeof input.familyCredential !== "string"
+      )
+    ) {
       return NextResponse.json(
         {
           status: "ERROR",
@@ -238,8 +249,13 @@ export async function POST(
       );
     }
 
+    const {
+      familyCredential,
+      ...recordInput
+    } = input;
+
     try {
-      ingestRecorderInput(input);
+      ingestRecorderInput(recordInput);
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -267,7 +283,10 @@ export async function POST(
       await getReferenceRecorderRuntime();
 
     const result =
-      await recorder.record(input);
+      await recorder.record({
+        record: recordInput,
+        familyCredential,
+      });
 
     return NextResponse.json(
       {

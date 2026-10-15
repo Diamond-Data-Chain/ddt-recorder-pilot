@@ -1,11 +1,30 @@
+import { createHash } from "crypto";
 import { NextResponse } from "next/server";
+
+import {
+  getReferenceRecorderRecordStore,
+} from "@/lib/ddt-recorder/runtime/referenceRecorderRecordStore";
+import {
+  findEarliestRawExactMatch,
+  findEarliestContentExactMatch,
+} from "@/lib/ddt-recorder/runtime/priorContentChecker";
 import "pdf-parse/worker";
-import { PDFParse } from "pdf-parse";
-import * as mammoth from "mammoth";
+import {
+  extractPdfText,
+  extractDocxText,
+  extractJsonText,
+  extractPlainText,
+} from "@/lib/ddt-recorder/runtime/documentTextExtraction";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const runtime = "nodejs";
+
+function sha256Hex(bytes: Buffer): string {
+  return createHash("sha256")
+    .update(bytes)
+    .digest("hex");
+}
 
 const MAX_DOCUMENT_BYTES =
   5 * 1024 * 1024;
@@ -84,84 +103,6 @@ function detectDocumentKind(
   }
 
   return null;
-}
-
-function normalizeText(
-  value: string
-): string {
-  return value
-    .replace(
-      /\u0000/g,
-      ""
-    )
-    .replace(
-      /\r\n?/g,
-      "\n"
-    )
-    .trim();
-}
-
-async function extractPdfText(
-  bytes: Buffer
-): Promise<string> {
-  const parser =
-    new PDFParse({
-      data: bytes,
-    });
-
-  try {
-    const result =
-      await parser.getText();
-
-    return normalizeText(
-      result.text ?? ""
-    );
-  } finally {
-    await parser.destroy();
-  }
-}
-
-async function extractDocxText(
-  bytes: Buffer
-): Promise<string> {
-  const result =
-    await mammoth.extractRawText({
-      buffer: bytes,
-    });
-
-  return normalizeText(
-    result.value
-  );
-}
-
-function extractJsonText(
-  bytes: Buffer
-): string {
-  const text =
-    bytes.toString(
-      "utf8"
-    );
-
-  const parsed =
-    JSON.parse(
-      text
-    ) as unknown;
-
-  return JSON.stringify(
-    parsed,
-    null,
-    2
-  );
-}
-
-function extractPlainText(
-  bytes: Buffer
-): string {
-  return normalizeText(
-    bytes.toString(
-      "utf8"
-    )
-  );
 }
 
 export async function POST(
@@ -345,10 +286,32 @@ export async function POST(
       );
     }
 
+    const rawDigest =
+      sha256Hex(bytes);
+
+    const registeredBundles =
+      await getReferenceRecorderRecordStore()
+        .listRegistered();
+
+    const rawExactMatch =
+      findEarliestRawExactMatch(
+        registeredBundles,
+        rawDigest
+      );
+
+    const priorContent =
+      rawExactMatch ??
+      await findEarliestContentExactMatch(
+        registeredBundles,
+        extractedText
+      );
+
     return NextResponse.json(
       {
         status:
           "EXTRACTED",
+
+        priorContent,
 
         document: {
           name:

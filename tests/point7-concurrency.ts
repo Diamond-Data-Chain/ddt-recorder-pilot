@@ -189,9 +189,11 @@ async function main() {
             attempts,
         },
         () =>
-          recorder.record(
-            input
-          )
+          recorder.record({
+            record: input,
+            familyCredential:
+              "point7-concurrency-test-credential",
+          })
       )
     );
 

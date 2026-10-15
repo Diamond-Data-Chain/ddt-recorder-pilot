@@ -1,0 +1,64 @@
+{
+  "specification": {
+    "standard": "DDT-CONFORMANCE-RECEIPT-PROFILE",
+    "version": "0.2.0-draft.1"
+  },
+  "profileId": "ddt.conformance-receipt.reference-recorder-v2",
+  "profileVersion": "0.2.0-draft.1",
+  "roles": [
+    "CONFORMANCE_RECEIPT_PROFILE",
+    "CONFORMANCE_RESULT_DERIVATION_BINDING"
+  ],
+  "receiptSpecification": {
+    "artifactId": "DDT-CONFORMANCE-RECEIPT-0.4-DRAFT.1",
+    "version": "0.4.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "fc68d6eae8ee5c246fd7c32dc8455f012d32d58c24606525d3a8fa756c02c507"
+    },
+    "immutableRef": "specs/DDT_CONFORMANCE_RECEIPT_V0.4_DRAFT.md",
+    "mediaType": "text/markdown"
+  },
+  "receiptSchema": {
+    "artifactId": "DDT-CONFORMANCE-RECEIPT-SCHEMA-0.4-DRAFT.1",
+    "version": "0.4.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "4c65c8ec3d6356586f074763fb56e9f592077dfe6c358f951ebf8a8c5cd47e5e"
+    },
+    "immutableRef": "schemas/ddt-conformance-receipt-v0.4.schema.json",
+    "mediaType": "application/schema+json"
+  },
+  "derivationProfile": {
+    "artifactId": "DDT-CONFORMANCE-RESULT-DERIVATION-PROFILE-0.1-DRAFT.1",
+    "version": "0.1.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "31f0f96ddf7d59d6e524cd67eb339d3265fe6fd2cf94f1f0d2f822232ff46504"
+    },
+    "immutableRef": "profiles/ddt-conformance-result-derivation-profile-v0.1.json",
+    "mediaType": "application/json"
+  },
+  "signatureProfile": {
+    "artifactId": "DDT-ED25519-SIGNATURE-PROFILE-0.3-DRAFT.1",
+    "version": "0.3.0-draft.1",
+    "digest": {
+      "algorithm": "SHA-256",
+      "value": "b24ccfd6cb8a9380a5dbf0ef17f05efba9f4f69f397a1612c1349e32a2a7e813"
+    }
+  },
+  "requirements": {
+    "minimumReceiptProofs": 1,
+    "proofPurpose": "CONFORMANCE_ATTESTATION",
+    "signedObjectType": "RECEIPT_CORE_HASH",
+    "registrationRequiresOverallPass": true,
+    "normativeDependencyClosureExactMatchRequired": true
+  },
+  "claimBoundary": {
+    "substantiveTruthEstablished": false,
+    "legalValidityEstablished": false,
+    "independentTimeEstablished": false,
+    "networkFinalityEstablished": false
+  },
+  "extensions": []
+}

@@ -50,6 +50,9 @@ function publicKeyBase64urlFromEnv(): string {
 }
 
 async function buildRuntime() {
+  const publicKeyBase64url =
+    publicKeyBase64urlFromEnv();
+
   const ddtRoot = path.join(
     process.cwd(),
     "docs",
@@ -101,6 +104,7 @@ async function buildRuntime() {
   const {
     registrationStore,
     recordStore,
+    familyAuthorizationStore,
   } =
     getReferenceRecorderStores();
 
@@ -198,28 +202,48 @@ async function buildRuntime() {
               semanticScope: {
                 historicallyLoadBearing:
                   item.bindings?.includes(
+                    "ACTOR_AUTHORITY"
+                  ) ||
+                  item.bindings?.includes(
                     "SEMANTIC_CONTEXT"
-                  ) ?? false,
+                  ) ||
+                  false,
 
                 ...(item.bindings?.includes(
-                  "SEMANTIC_CONTEXT"
+                  "ACTOR_AUTHORITY"
                 )
                   ? {
                       dependencyClass:
-                        "SEMANTIC_CONTEXT",
+                        "IDENTITY_AUTHORITY_CONTEXT",
                     }
-                  : {}),
+                  : item.bindings?.includes(
+                        "SEMANTIC_CONTEXT"
+                      )
+                    ? {
+                        dependencyClass:
+                          "SEMANTIC_CONTEXT",
+                      }
+                    : {}),
 
                 reconstructionScopes:
                   item.bindings?.includes(
-                    "SEMANTIC_CONTEXT"
+                    "ACTOR_AUTHORITY"
                   )
                     ? [
-                        "UPSTREAM_SEMANTIC_CONTEXT",
+                        "HISTORICAL_IDENTITY_AUTHORITY",
                       ]
-                    : [],
+                    : item.bindings?.includes(
+                          "SEMANTIC_CONTEXT"
+                        )
+                      ? [
+                          "UPSTREAM_SEMANTIC_CONTEXT",
+                        ]
+                      : [],
 
                 unresolvedResult:
+                  item.bindings?.includes(
+                    "ACTOR_AUTHORITY"
+                  ) ||
                   item.bindings?.includes(
                     "SEMANTIC_CONTEXT"
                   )
@@ -251,19 +275,20 @@ async function buildRuntime() {
 
     verificationMethod,
 
+    publicKeyBase64url,
+
     verificationKeyring: {
       keys: [
         {
           verificationMethod,
-
-          publicKeyBase64url:
-            publicKeyBase64urlFromEnv(),
+          publicKeyBase64url,
         },
       ],
     },
 
     registrar,
     recordStore,
+    familyAuthorizationStore,
     ddtRoot,
   });
 }

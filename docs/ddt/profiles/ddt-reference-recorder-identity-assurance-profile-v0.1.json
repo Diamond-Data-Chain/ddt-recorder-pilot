@@ -1,0 +1,25 @@
+{
+  "specification": {
+    "standard": "DDT-REFERENCE-RECORDER-IDENTITY-ASSURANCE-PROFILE",
+    "version": "0.1.0-draft.1"
+  },
+  "profileId": "ddt.reference-recorder.identity-assurance.local-v1",
+  "profileVersion": "0.1.0-draft.1",
+  "lifecycleStatus": "DRAFT",
+  "environment": "TEST_ONLY",
+  "identityBindingPolicy": {
+    "identityNamespace": "urn:ddt:local",
+    "acceptedRegistrantIdentityTypes": [
+      "ORGANIZATION_SERVICE"
+    ],
+    "requiredBindingScopes": [
+      "DDT_REGISTRANT"
+    ]
+  },
+  "claimBoundary": {
+    "establishesProfileConformance": true,
+    "establishesCivilIdentity": false,
+    "establishesLegalAuthority": false,
+    "productionApproved": false
+  }
+}

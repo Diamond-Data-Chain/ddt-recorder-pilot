@@ -13,3 +13,8 @@ docs/ddt/reference/.venv/
 tsconfig.tsbuildinfo
 .vercel
 .env*
+
+# Local development / backup artifacts
+.venv-ddt/
+*.before-*
+*.after-full-ia-regression-pass

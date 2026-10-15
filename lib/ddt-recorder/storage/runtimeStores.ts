@@ -17,6 +17,14 @@ import type {
 } from "./recordStore";
 
 import type {
+  DDTFamilyAuthorizationStore,
+} from "./familyAuthorizationStore";
+
+import {
+  JsonFileDDTFamilyAuthorizationStore,
+} from "./jsonFamilyAuthorizationStore";
+
+import type {
   DDTOfflineArtifactStore,
 } from "./offlineArtifactStore";
 
@@ -43,6 +51,9 @@ export type DDTRecorderStores = {
 
   recordStore:
     DDTRecordStore;
+
+  familyAuthorizationStore?:
+    DDTFamilyAuthorizationStore;
 
   offlineArtifactStore:
     DDTOfflineArtifactStore;
@@ -118,6 +129,14 @@ function buildJsonStores():
         path.join(
           stateDir,
           "records.json"
+        )
+      ),
+
+    familyAuthorizationStore:
+      new JsonFileDDTFamilyAuthorizationStore(
+        path.join(
+          stateDir,
+          "family-authorizations.json"
         )
       ),
 

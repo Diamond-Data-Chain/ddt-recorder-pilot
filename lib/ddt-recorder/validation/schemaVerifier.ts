@@ -36,6 +36,12 @@ const EXTERNAL_SCHEMAS = [
     expectedId:
       "https://diamonddatachain.org/specifications/ddt/signature-proof/0.2.0-draft.1/schema.json",
   },
+  {
+    file:
+      "ddt-signature-proof-v0.3.schema.json",
+    expectedId:
+      "https://diamonddatachain.org/specifications/ddt/signature-proof/0.3.0-draft.1/schema.json",
+  },
 ] as const;
 
 const TARGET_SCHEMAS = {
@@ -201,15 +207,99 @@ export function verifyEnvelopeSchema(
   );
 }
 
-export function verifyConformanceReceiptSchema(
+export async function verifyConformanceReceiptSchema(
   value: unknown,
-  ddtRoot?: string
+  ddtRoot = path.join(
+    process.cwd(),
+    "docs",
+    "ddt"
+  )
 ): Promise<DDTSchemaVerificationResult> {
-  return verifySchema(
-    "receipt",
-    value,
-    ddtRoot
-  );
+  const version =
+    typeof value === "object" &&
+    value !== null &&
+    "specification" in value &&
+    typeof (value as { specification?: unknown }).specification === "object" &&
+    (value as { specification?: unknown }).specification !== null &&
+    "version" in
+      ((value as { specification: object }).specification)
+      ? String(
+          (
+            (value as {
+              specification: { version?: unknown };
+            }).specification
+          ).version
+        )
+      : undefined;
+
+  if (version === "0.3.0-draft.1") {
+    return verifySchema(
+      "receipt",
+      value,
+      ddtRoot
+    );
+  }
+
+  if (version === "0.4.0-draft.1") {
+    const schemasDir = path.join(
+      ddtRoot,
+      "schemas"
+    );
+
+    const ajv = new Ajv2020({
+      allErrors: true,
+      strict: false,
+      validateFormats: true,
+    });
+
+    addFormats(ajv);
+
+    for (const dependency of EXTERNAL_SCHEMAS) {
+      const schema = await loadJson(
+        path.join(
+          schemasDir,
+          dependency.file
+        )
+      );
+
+      if (schema.$id !== dependency.expectedId) {
+        throw new Error(
+          `Schema $id mismatch for ${dependency.file}: expected ${dependency.expectedId}, got ${String(schema.$id)}`
+        );
+      }
+
+      ajv.addSchema(schema);
+    }
+
+    const schema = await loadJson(
+      path.join(
+        schemasDir,
+        "ddt-conformance-receipt-v0.4.schema.json"
+      )
+    );
+
+    const validator = ajv.compile(schema);
+    const valid = validator(value);
+
+    return valid
+      ? {
+          status: "PASS",
+          errors: [],
+        }
+      : {
+          status: "FAIL",
+          errors: formatErrors(
+            validator.errors
+          ),
+        };
+  }
+
+  return {
+    status: "FAIL",
+    errors: [
+      `Unsupported Conformance Receipt specification version: ${String(version)}`,
+    ],
+  };
 }
 
 export function verifyRegistrationResultSchema(

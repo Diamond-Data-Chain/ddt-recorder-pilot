@@ -39,6 +39,13 @@ import {
   type DDTRecordStore,
   type DDTRegisteredRecordBundle,
 } from "../storage/recordStore";
+import type {
+  DDTFamilyAuthorizationStore,
+} from "../storage/familyAuthorizationStore";
+import {
+  createFamilyCredential,
+  verifyFamilyCredential,
+} from "../storage/familyCredential";
 import {
   validateReferenceRecorderPreparedRecord,
 } from "../validation/referenceRecorderValidator";
@@ -78,6 +85,9 @@ export type DDTReferenceRecorderOrchestratorConfig = {
   verificationMethod:
     string;
 
+  publicKeyBase64url:
+    string;
+
   verificationKeyring:
     DDTVerificationKeyring;
 
@@ -87,9 +97,18 @@ export type DDTReferenceRecorderOrchestratorConfig = {
   recordStore:
     DDTRecordStore;
 
+  familyAuthorizationStore?:
+    DDTFamilyAuthorizationStore;
+
   ddtRoot?: string;
 
   now?: () => Date;
+};
+
+export type DDTReferenceRecorderInput = {
+  record: DDTRecorderInput;
+
+  familyCredential?: string;
 };
 
 export type DDTReferenceRecorderResult = {
@@ -253,8 +272,12 @@ export class DDTReferenceRecorderOrchestrator {
   }
 
   async record(
-    input: DDTRecorderInput
+    request: DDTReferenceRecorderInput
   ): Promise<DDTReferenceRecorderResult> {
+    const input = request.record;
+    const familyCredential =
+      request.familyCredential?.trim() ?? "";
+
     const ddtRoot =
       this.config.ddtRoot ??
       "docs/ddt";
@@ -278,6 +301,38 @@ export class DDTReferenceRecorderOrchestrator {
       if (!previousBundle) {
         throw new Error(
           `Previous DDT Record not found: ${ingested.previousDDTNumber}`
+        );
+      }
+
+      if (
+        !this.config.familyAuthorizationStore
+      ) {
+        throw new Error(
+          "Family authorization store is unavailable."
+        );
+      }
+
+      const authorization =
+        await this.config.familyAuthorizationStore
+          .getByFamilyId(
+            previousBundle.ddtFamilyId
+          );
+
+      if (!authorization) {
+        throw new Error(
+          "Family continuation is not authorized for this legacy or unclaimed DDT family."
+        );
+      }
+
+      const authorized =
+        await verifyFamilyCredential(
+          authorization,
+          familyCredential
+        );
+
+      if (!authorized) {
+        throw new Error(
+          "Invalid family credential."
         );
       }
 
@@ -305,6 +360,15 @@ export class DDTReferenceRecorderOrchestrator {
      * Different source events may legitimately carry
      * identical business payloads and must remain distinct.
      */
+    if (
+      !ingested.previousDDTNumber &&
+      !familyCredential
+    ) {
+      throw new Error(
+        "Family credential is required for a new DDT family."
+      );
+    }
+
     const incomingSourceEventKey =
       sourceEventKeyFromIngested(
         ingested,
@@ -458,7 +522,14 @@ export class DDTReferenceRecorderOrchestrator {
         prepared,
         this.config
           .preservationContract,
-        ddtRoot
+        ddtRoot,
+        {
+          registrant: this.config.registrant,
+          verificationMethod:
+            this.config.verificationMethod,
+          publicKeyBase64url:
+            this.config.publicKeyBase64url,
+        }
       );
 
     const validationStartedAt =
@@ -496,6 +567,13 @@ export class DDTReferenceRecorderOrchestrator {
         capabilityResults:
           validation.capabilityResults,
 
+        ...(validation.historicalIdentityAuthority
+          ? {
+              historicalIdentityAuthority:
+                validation.historicalIdentityAuthority,
+            }
+          : {}),
+
         validationStartedAt,
         validationCompletedAt,
       });
@@ -505,8 +583,26 @@ export class DDTReferenceRecorderOrchestrator {
         .overallResult.status !==
       "PASS"
     ) {
+      const blockingRuleResults =
+        receiptDraft.receiptCore.ruleResults
+          .filter(
+            (result) =>
+              result.status !== "PASS" &&
+              result.status !==
+                "NOT_APPLICABLE"
+          )
+          .map(
+            (result) => ({
+              resultId: result.resultId,
+              sourceId: result.sourceId,
+              status: result.status,
+              reasonCodes:
+                result.reasonCodes,
+            })
+          );
+
       throw new Error(
-        `Reference Recorder validation result is ${receiptDraft.receiptCore.overallResult.status}; registration is blocked.`
+        `Reference Recorder validation result is ${receiptDraft.receiptCore.overallResult.status}; registration is blocked. Blocking rules: ${JSON.stringify(blockingRuleResults)}`
       );
     }
 
@@ -535,6 +631,14 @@ export class DDTReferenceRecorderOrchestrator {
           this.now().toISOString(),
 
         ddtRoot,
+
+        ...(receiptDraft.specification.version ===
+        "0.4.0-draft.1"
+          ? {
+              profileVersion:
+                "0.3.0-draft.1" as const,
+            }
+          : {}),
       });
 
     const receipt = {
@@ -653,6 +757,40 @@ export class DDTReferenceRecorderOrchestrator {
     let atomicBundle:
       DDTRegisteredRecordBundle;
 
+    let createdFamilyAuthorization =
+      false;
+
+    if (!ingested.previousDDTNumber) {
+      if (
+        !this.config.familyAuthorizationStore
+      ) {
+        throw new Error(
+          "Family authorization store is unavailable."
+        );
+      }
+
+      const existingAuthorization =
+        await this.config.familyAuthorizationStore
+          .getByFamilyId(
+            normalized.ddtFamilyId
+          );
+
+      if (!existingAuthorization) {
+        const authorization =
+          await createFamilyCredential(
+            normalized.ddtFamilyId,
+            familyCredential,
+            this.now().toISOString()
+          );
+
+        await this.config.familyAuthorizationStore
+          .create(authorization);
+
+        createdFamilyAuthorization =
+          true;
+      }
+    }
+
     try {
       atomicBundle =
         await this.config.registrar
@@ -741,6 +879,16 @@ export class DDTReferenceRecorderOrchestrator {
       );
     } catch (error) {
       if (
+        createdFamilyAuthorization &&
+        this.config.familyAuthorizationStore
+      ) {
+        await this.config.familyAuthorizationStore
+          .delete(
+            normalized.ddtFamilyId
+          );
+      }
+
+      if (
         error instanceof
         DDTSourceEventRaceError
       ) {
@@ -755,7 +903,7 @@ export class DDTReferenceRecorderOrchestrator {
          * exact same content -> existing DDT
          * conflicting content -> replay conflict
          */
-        return this.record(input);
+        return this.record(request);
       }
 
       throw error;

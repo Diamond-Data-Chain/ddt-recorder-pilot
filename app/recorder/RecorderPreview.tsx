@@ -108,7 +108,7 @@ function normalizeJson(
 }
 
 
-function stableJson(
+export function stableJson(
   value: unknown
 ): string {
   return JSON.stringify(
@@ -223,6 +223,12 @@ export default function RecorderPreview({
   ] =
     useState("");
 
+  const [
+    familyCredential,
+    setFamilyCredential,
+  ] =
+    useState("");
+
 
   useEffect(
     () => {
@@ -235,6 +241,10 @@ export default function RecorderPreview({
       );
 
       setRecordError(
+        ""
+      );
+
+      setFamilyCredential(
         ""
       );
 
@@ -305,6 +315,22 @@ export default function RecorderPreview({
     }
 
     if (
+      !familyCredential.trim()
+    ) {
+      setRecordState(
+        "ERROR"
+      );
+
+      setRecordError(
+        input.previousDDTNumber
+          ? "Family password is required to continue this DDT family."
+          : "Set a family password before registering this new DDT family."
+      );
+
+      return;
+    }
+
+    if (
       rawStatus !==
       "MATCH"
     ) {
@@ -345,9 +371,11 @@ export default function RecorderPreview({
             },
 
             body:
-              JSON.stringify(
-                input
-              ),
+              JSON.stringify({
+                ...input,
+                familyCredential:
+                  familyCredential.trim(),
+              }),
 
             cache:
               "no-store",
@@ -764,6 +792,53 @@ export default function RecorderPreview({
             </p>
           </div>
 
+          <div className="w-full lg:w-80">
+            <label
+              htmlFor="ddt-family-credential"
+              className="block text-xs font-bold uppercase tracking-[0.18em] text-slate-300"
+            >
+              {input.previousDDTNumber
+                ? "Family Password"
+                : "Set Family Password"}
+            </label>
+
+            <input
+              id="ddt-family-credential"
+              type="password"
+              value={familyCredential}
+              onChange={event =>
+                setFamilyCredential(
+                  event.target.value
+                )
+              }
+              autoComplete={
+                input.previousDDTNumber
+                  ? "current-password"
+                  : "new-password"
+              }
+              disabled={
+                recordState ===
+                  "SUBMITTING" ||
+                recordState ===
+                  "REGISTERED"
+              }
+              placeholder={
+                input.previousDDTNumber
+                  ? "Enter family password"
+                  : "Create family password"
+              }
+              className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-blue-400 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+
+            <p className="mt-2 text-xs leading-relaxed text-slate-400">
+              {input.previousDDTNumber
+                ? `Authorizes continuation from ${input.previousDDTNumber}.`
+                : "Protects future continuation of this DDT family."}
+              {" "}
+              This password is not part of the DDT Record.
+            </p>
+          </div>
+
           <button
             type="button"
             onClick={() =>
@@ -775,7 +850,8 @@ export default function RecorderPreview({
               recordState ===
                 "REGISTERED" ||
               rawStatus !==
-                "MATCH"
+                "MATCH" ||
+              !familyCredential.trim()
             }
             className="shrink-0 rounded-xl border border-blue-400/70 bg-blue-500/25 px-6 py-3 font-bold text-blue-100 shadow-lg shadow-blue-950/30 transition hover:border-blue-300 hover:bg-blue-500/35 disabled:cursor-not-allowed disabled:opacity-40"
           >

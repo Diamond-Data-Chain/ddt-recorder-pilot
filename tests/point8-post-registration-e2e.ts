@@ -311,10 +311,14 @@ async function main() {
       ],
     };
 
+  const familyCredential =
+    "point8-family-test-credential";
+
   const root =
-    await recorder.record(
-      rootInput
-    );
+    await recorder.record({
+      record: rootInput,
+      familyCredential,
+    });
 
   if (
     root.ddtNumber !==
@@ -502,9 +506,10 @@ async function main() {
     };
 
   const successor =
-    await recorder.record(
-      successorInput
-    );
+    await recorder.record({
+      record: successorInput,
+      familyCredential,
+    });
 
   if (
     successor.ddtNumber !==

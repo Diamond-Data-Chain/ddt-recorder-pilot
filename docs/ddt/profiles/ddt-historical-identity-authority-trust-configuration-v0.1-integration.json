@@ -1,0 +1,47 @@
+{
+  "configurationId": "ddt.reference-recorder.historical-identity-authority.integration",
+  "configurationVersion": "0.1.0-draft.1",
+  "authoritativeSequenceSources": [
+    {
+      "sourceId": "ddt.reference-recorder.lifecycle-authority",
+      "evidenceTypes": [
+        "KEY_LIFECYCLE_EVENT"
+      ],
+      "issuerIdentityRef": "did:example:authority",
+      "issuerVerificationMethod": "did:example:authority#key-1",
+      "sequenceScope": "VERIFICATION_METHOD"
+    },
+    {
+      "sourceId": "ddt.reference-recorder.identity-status-authority",
+      "evidenceTypes": [
+        "IDENTITY_BINDING_STATUS_EVENT"
+      ],
+      "issuerIdentityRef": "did:example:identity-authority",
+      "issuerVerificationMethod": "did:example:identity-authority#key-1",
+      "sequenceScope": "IDENTITY_BINDING"
+    },
+    {
+      "sourceId": "ddt.reference-recorder.authority-status-source",
+      "evidenceTypes": [
+        "AUTHORITY_STATUS_EVENT"
+      ],
+      "issuerIdentityRef": "did:example:authority-status",
+      "issuerVerificationMethod": "did:example:authority-status#key-1",
+      "sequenceScope": "AUTHORITY_GRANT"
+    }
+  ],
+  "authorityRoots": [
+    {
+      "rootId": "ddt.reference-recorder.integration-root",
+      "identityRef": "did:example:root-authority",
+      "acceptedGrantorRoles": [
+        "DDT_REGISTRAR"
+      ]
+    }
+  ],
+  "scopeMatchingPolicy": {
+    "arraySemantics": "CHILD_VALUES_MUST_BE_SUBSET_OF_PARENT",
+    "emptyArrayMeaning": "NO_VALUES_PERMITTED",
+    "constraintsPolicy": "EXACT_MATCH"
+  }
+}

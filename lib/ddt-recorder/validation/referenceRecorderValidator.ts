@@ -15,7 +15,17 @@ import type {
 } from "../producer/conformanceReceipt";
 import type { DDTArtifactReference } from "../producer/evidenceManifest";
 import { produceEvidenceSet } from "../producer/evidence";
-import type { DDTPreparedDraft5Record } from "../producer/recorder";
+import type {
+  DDTPreparedDraft5Record,
+  DDTRegistrant,
+} from "../producer/recorder";
+import {
+  evaluateHistoricalIdentityAuthority,
+  type DDTHistoricalIdentityAuthorityTrustConfiguration,
+  type DDTHistoricalIdentityAuthorityRelevantMoment,
+  type DDTHistoricalIdentityAuthorityEvaluation,
+  type DDTReferenceRecorderHistoricalIAPolicy,
+} from "./historicalIdentityAuthorityEvaluator";
 
 const DIRECT_ARTIFACT_KEYS = [
   "envelopeSchema",
@@ -48,10 +58,53 @@ const EVIDENCE_DIGEST_PROFILE_ARTIFACT_ID =
 const EVIDENCE_RULE_RESULT_ID =
   "profile.reference-recorder.evidence.01";
 
+type DDTReferenceRecorderEnterpriseProfileForHistoricalIA = {
+  profileVersion: string;
+  domain: {
+    recordTypes: string[];
+    subjectNamespaces: string[];
+    organizationScopes?: string[];
+  };
+  extensions: Array<{
+    namespace: string;
+    schema: DDTArtifactReference;
+    value: unknown;
+  }>;
+};
+
+type DDTReferenceRecorderHistoricalIAExtension = {
+  acceptedIdentityAssuranceProfiles: DDTArtifactReference[];
+  registrationAuthorityScope: {
+    action: string;
+    proofPurpose: string;
+    organizationScopesSource:
+      "ENTERPRISE_PROFILE_DOMAIN_ORGANIZATION_SCOPES";
+    domainScopes: string[];
+  };
+};
+
+type DDTReferenceRecorderIdentityAssuranceProfile = {
+  profileId: string;
+  profileVersion: string;
+  environment: "TEST_ONLY";
+  identityBindingPolicy: {
+    identityNamespace: string;
+    acceptedRegistrantIdentityTypes: string[];
+    requiredBindingScopes: string[];
+  };
+};
+
 type ManifestEntry = {
   evidenceId: string;
+  role: string;
   evidenceClass: string;
   mediaType: string;
+  semanticScope: {
+    historicallyLoadBearing: boolean;
+    dependencyClass?: string;
+    reconstructionScopes: string[];
+    unresolvedResult: string;
+  };
   representation: {
     mode: string;
     byteLength: number;
@@ -70,6 +123,9 @@ export type DDTReferenceRecorderValidationResult = {
   evidenceEvaluations: DDTEvidenceEvaluation[];
   ruleResults: DDTRuleResult[];
   capabilityResults: DDTCapabilityResults;
+  historicalIdentityAuthority?: {
+    signingKeyLifecycle?: DDTHistoricalIdentityAuthorityEvaluation["signingKeyLifecycle"];
+  };
 };
 
 function sha256(bytes: Uint8Array): DDTStructuralDigest {
@@ -173,6 +229,37 @@ async function evaluateArtifact(
   }
 }
 
+async function loadVerifiedJsonArtifact<T>(
+  ddtRoot: string,
+  artifact: DDTArtifactReference,
+  evaluation: DDTArtifactEvaluation
+): Promise<T | undefined> {
+  if (
+    evaluation.availability !== "AVAILABLE" ||
+    evaluation.integrity !== "PASS" ||
+    !artifact.immutableRef
+  ) {
+    return undefined;
+  }
+
+  const root = path.resolve(ddtRoot);
+  const resolved = path.resolve(root, artifact.immutableRef);
+
+  if (
+    resolved !== root &&
+    !resolved.startsWith(`${root}${path.sep}`)
+  ) {
+    return undefined;
+  }
+
+  try {
+    const bytes = await fs.readFile(resolved);
+    return JSON.parse(bytes.toString("utf8")) as T;
+  } catch {
+    return undefined;
+  }
+}
+
 function artifactEvaluationToRuleResult(
   evaluation: DDTArtifactEvaluation,
   resultId: string,
@@ -218,6 +305,13 @@ function evaluateEvidence(
   contract: DDTReferenceRecorderPreservationContract
 ): {
   evaluations: DDTEvidenceEvaluation[];
+  sourceEvidenceRefs: Map<
+    number,
+    {
+      evidenceRef: string;
+      commitment: DDTStructuralDigest;
+    }
+  >;
   rule: DDTRuleResult;
 } {
   const produced = produceEvidenceSet(record);
@@ -229,6 +323,13 @@ function evaluateEvidence(
   );
 
   const evaluations: DDTEvidenceEvaluation[] = [];
+  const sourceEvidenceRefs = new Map<
+    number,
+    {
+      evidenceRef: string;
+      commitment: DDTStructuralDigest;
+    }
+  >();
 
   const aggregateReasons: string[] = [];
 
@@ -339,6 +440,14 @@ function evaluateEvidence(
     const item =
       matched.item;
 
+    sourceEvidenceRefs.set(
+      matched.sourceIndex,
+      {
+        evidenceRef: entry.evidenceId,
+        commitment: item.digest,
+      }
+    );
+
     const reasons:
       string[] = [];
 
@@ -443,6 +552,7 @@ function evaluateEvidence(
 
   return {
     evaluations,
+    sourceEvidenceRefs,
     rule: {
       resultId: EVIDENCE_RULE_RESULT_ID,
       sourceType: "PROFILE_RULE",
@@ -595,7 +705,17 @@ export async function validateReferenceRecorderPreparedRecord(
   record: DDTNormalizedRecord,
   prepared: DDTPreparedDraft5Record,
   contract: DDTReferenceRecorderPreservationContract,
-  ddtRoot = path.join(process.cwd(), "docs", "ddt")
+  ddtRoot = path.join(process.cwd(), "docs", "ddt"),
+  signingContext?: {
+    registrant: DDTRegistrant;
+    verificationMethod: string;
+    publicKeyBase64url: string;
+  },
+  verificationContext?: {
+    historicalIdentityAuthority?: {
+      relevantMoment: DDTHistoricalIdentityAuthorityRelevantMoment;
+    };
+  }
 ): Promise<DDTReferenceRecorderValidationResult> {
   if (
     prepared.commitments.preservationContractCommitment.value !==
@@ -669,7 +789,172 @@ export async function validateReferenceRecorderPreparedRecord(
 
   const normativeRules = normativePairs.map((item) => item.rule);
 
+  const historicalIdentityAuthorityTrustArtifactIndex =
+    contract.normativeDependencies.artifacts.findIndex(
+      (artifact) =>
+        artifact.artifactId.startsWith(
+          "DDT-HISTORICAL-IDENTITY-AUTHORITY-TRUST-CONFIGURATION-"
+        )
+    );
+
+  const historicalIdentityAuthorityTrustConfiguration =
+    historicalIdentityAuthorityTrustArtifactIndex >= 0
+      ? await loadVerifiedJsonArtifact<
+          DDTHistoricalIdentityAuthorityTrustConfiguration
+        >(
+          ddtRoot,
+          contract.normativeDependencies.artifacts[
+            historicalIdentityAuthorityTrustArtifactIndex
+          ],
+          normativePairs[
+            historicalIdentityAuthorityTrustArtifactIndex
+          ].evaluation
+        )
+      : undefined;
+
+  const historicalIAPolicyArtifactIds = {
+    extensionSchema:
+      "DDT-REFERENCE-RECORDER-HISTORICAL-IA-ENTERPRISE-EXTENSION-SCHEMA-0.1-DRAFT.1",
+    assuranceProfile:
+      "DDT-REFERENCE-RECORDER-IDENTITY-ASSURANCE-PROFILE-0.1-DRAFT.1",
+    assuranceSchema:
+      "DDT-REFERENCE-RECORDER-IDENTITY-ASSURANCE-PROFILE-SCHEMA-0.1-DRAFT.1",
+  } as const;
+
+  const normativeArtifactIndex = (artifactId: string) =>
+    contract.normativeDependencies.artifacts.findIndex(
+      (artifact) => artifact.artifactId === artifactId
+    );
+
+  const extensionSchemaIndex = normativeArtifactIndex(
+    historicalIAPolicyArtifactIds.extensionSchema
+  );
+  const assuranceProfileIndex = normativeArtifactIndex(
+    historicalIAPolicyArtifactIds.assuranceProfile
+  );
+  const assuranceSchemaIndex = normativeArtifactIndex(
+    historicalIAPolicyArtifactIds.assuranceSchema
+  );
+
+  const verifiedNormativeArtifact = (index: number) =>
+    index >= 0 &&
+    normativePairs[index]?.evaluation.availability === "AVAILABLE" &&
+    normativePairs[index]?.evaluation.integrity === "PASS";
+
+  const enterpriseProfile =
+    await loadVerifiedJsonArtifact<
+      DDTReferenceRecorderEnterpriseProfileForHistoricalIA
+    >(
+      ddtRoot,
+      contract.artifacts.enterpriseProfile,
+      artifactEvaluations.enterpriseProfile
+    );
+
+  const assuranceProfile =
+    assuranceProfileIndex >= 0
+      ? await loadVerifiedJsonArtifact<
+          DDTReferenceRecorderIdentityAssuranceProfile
+        >(
+          ddtRoot,
+          contract.normativeDependencies.artifacts[
+            assuranceProfileIndex
+          ],
+          normativePairs[assuranceProfileIndex].evaluation
+        )
+      : undefined;
+
+  const historicalIAExtension =
+    enterpriseProfile?.extensions.find(
+      (extension) =>
+        extension.namespace ===
+        "urn:ddt:extension:reference-recorder:historical-identity-authority"
+    );
+
+  const historicalIAExtensionValue =
+    historicalIAExtension?.value &&
+    typeof historicalIAExtension.value === "object"
+      ? historicalIAExtension.value as
+          DDTReferenceRecorderHistoricalIAExtension
+      : undefined;
+
+  const acceptedAssuranceReference =
+    historicalIAExtensionValue
+      ?.acceptedIdentityAssuranceProfiles?.[0];
+
+  const normativeAssuranceReference =
+    assuranceProfileIndex >= 0
+      ? contract.normativeDependencies.artifacts[
+          assuranceProfileIndex
+        ]
+      : undefined;
+
+  const referenceRecorderHistoricalIAPolicy:
+    DDTReferenceRecorderHistoricalIAPolicy | undefined =
+      enterpriseProfile?.profileVersion === "0.2.0-draft.3" &&
+      historicalIAExtension &&
+      historicalIAExtensionValue &&
+      historicalIAExtensionValue
+        .acceptedIdentityAssuranceProfiles.length === 1 &&
+      acceptedAssuranceReference &&
+      normativeAssuranceReference &&
+      sameArtifactReference(
+        acceptedAssuranceReference,
+        normativeAssuranceReference
+      ) &&
+      verifiedNormativeArtifact(extensionSchemaIndex) &&
+      verifiedNormativeArtifact(assuranceProfileIndex) &&
+      verifiedNormativeArtifact(assuranceSchemaIndex) &&
+      assuranceProfile?.profileVersion === "0.1.0-draft.1" &&
+      assuranceProfile.environment === "TEST_ONLY" &&
+      historicalIAExtensionValue.registrationAuthorityScope
+        .organizationScopesSource ===
+        "ENTERPRISE_PROFILE_DOMAIN_ORGANIZATION_SCOPES" &&
+      enterpriseProfile.domain.organizationScopes?.length
+        ? {
+            acceptedIdentityAssuranceProfiles:
+              historicalIAExtensionValue
+                .acceptedIdentityAssuranceProfiles,
+            identityAssurance: {
+              identityNamespace:
+                assuranceProfile.identityBindingPolicy
+                  .identityNamespace,
+              acceptedRegistrantIdentityTypes:
+                assuranceProfile.identityBindingPolicy
+                  .acceptedRegistrantIdentityTypes,
+              requiredBindingScopes:
+                assuranceProfile.identityBindingPolicy
+                  .requiredBindingScopes,
+            },
+            registrationAuthorityScope: {
+              action:
+                historicalIAExtensionValue
+                  .registrationAuthorityScope.action,
+              proofPurpose:
+                historicalIAExtensionValue
+                  .registrationAuthorityScope.proofPurpose,
+              recordTypes: enterpriseProfile.domain.recordTypes,
+              subjectNamespaces:
+                enterpriseProfile.domain.subjectNamespaces,
+              organizationScopes:
+                enterpriseProfile.domain.organizationScopes,
+              domainScopes:
+                historicalIAExtensionValue
+                  .registrationAuthorityScope.domainScopes,
+            },
+          }
+        : undefined;
+
   const evidence = evaluateEvidence(record, prepared, contract);
+
+  const historicalIdentityAuthority =
+    await evaluateHistoricalIdentityAuthority(
+      record,
+      signingContext,
+      evidence.sourceEvidenceRefs,
+      verificationContext?.historicalIdentityAuthority?.relevantMoment,
+      historicalIdentityAuthorityTrustConfiguration,
+      referenceRecorderHistoricalIAPolicy
+    );
 
   const capabilityEntries = CAPABILITY_KEYS.map((key) => [
     key,
@@ -687,6 +972,40 @@ export async function validateReferenceRecorderPreparedRecord(
     ])
   ) as DDTCapabilityResults;
 
+  if (historicalIdentityAuthority.applicable) {
+    const axisRules = historicalIdentityAuthority.ruleResults;
+
+    capabilityResults.identityAuthority = {
+      ...capabilityResults.identityAuthority,
+      applicability: "APPLICABLE",
+      status: axisRules.some((rule) => rule.status === "FAIL")
+        ? "FAIL"
+        : axisRules.every((rule) => rule.status === "PASS")
+          ? "PASS"
+          : "INDETERMINATE",
+      reasonCodes: [
+        ...new Set(axisRules.flatMap((rule) => rule.reasonCodes)),
+      ].sort(),
+      ruleResultRefs: axisRules
+        .map((rule) => rule.resultId)
+        .sort(),
+      evidenceRefs: [
+        ...new Set(axisRules.flatMap((rule) => rule.evidenceRefs)),
+      ].sort(),
+    };
+  } else if (
+    contract.capabilities.identityAuthority.requirement === "REQUIRED"
+  ) {
+    capabilityResults.identityAuthority = {
+      ...capabilityResults.identityAuthority,
+      applicability: "UNRESOLVED",
+      status: "INDETERMINATE",
+      reasonCodes: ["AUTHORITY_EVIDENCE_UNAVAILABLE"],
+      ruleResultRefs: ["capability.identityAuthority"],
+      evidenceRefs: [],
+    };
+  }
+
   const capabilityRules = capabilityEntries.map(
     ([, value]) => value.rule
   );
@@ -699,8 +1018,21 @@ export async function validateReferenceRecorderPreparedRecord(
       ...directRules,
       ...normativeRules,
       evidence.rule,
+      ...historicalIdentityAuthority.ruleResults,
       ...capabilityRules,
     ],
     capabilityResults,
+    ...(historicalIdentityAuthority.applicable
+      ? {
+          historicalIdentityAuthority: {
+            ...(historicalIdentityAuthority.signingKeyLifecycle
+              ? {
+                  signingKeyLifecycle:
+                    historicalIdentityAuthority.signingKeyLifecycle,
+                }
+              : {}),
+          },
+        }
+      : {}),
   };
 }
